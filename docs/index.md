@@ -26,4 +26,4 @@ layout: default
 - API Documentation
   - Data Sources
   - Record Structure
-  - Methods
+  - Call Methods
