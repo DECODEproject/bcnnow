@@ -16,8 +16,7 @@ layout: default
   - Requirements
   - Backend Setup
   - Frontend Setup
-- Usage Examples
-  - Data Collector Insertion
+- End-User Interaction Examples
   - Single-Level Visualization Design
   - Multi-level Visualization Design
   - Dashboards Design
