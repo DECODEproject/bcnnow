@@ -22,7 +22,7 @@ layout: default
   - Dashboards Design
 - Customization
   - Data Collector Insertion
-  - Widget Insertion
+  - Data Widget Insertion
 - API Documentation
   - Data Sources
   - Record Structure
