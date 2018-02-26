@@ -3,10 +3,10 @@ layout: default
 ---
 
 
-## Table of Contents:
+## Table of Contents
 
-- BarcelonaNow
-  - Introduction
+- Introduction
+  - Context and Scope
   - DECODE Project
   - Acknowlegements
 - Reference Architecture
