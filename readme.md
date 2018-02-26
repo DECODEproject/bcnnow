@@ -94,7 +94,7 @@ ACM, New York, NY, USA.
 }
 ```
 ## Credits and License
-Copyright (C) 2017-2018 by the Data Science and Data Analytics team at [EURECAT - Technology Centre of Catalonia](https://www.decodeproject.eu/).
+Copyright (C) 2018 by the [EURECAT - Technology Centre of Catalonia](https://www.decodeproject.eu/).
 
 The European Union Horizon 2020 Programme under grant agreement N.732546 has been supporting this on-going pilot work during the [DECODE (DEcentralised Citizens Owned Data Ecosystem)](https://eurecat.org/en/) project.
 
