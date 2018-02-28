@@ -6,8 +6,9 @@
 
 This is an environment which enables citizens to create and explore interactive visualizations of city-related data and arrange them into dashboards. The solution offers customization capabilities to different user-defined exploration scenarios and techniques according to specific needs and goals. The back-end data aggregator and manipulator built upon state-of-the-art technologies provides normalized access to heterogeneous data. On top of it, the front-end interface allows users to create and combine visualizations, get insights out of the data and share them with others, fostering data-driven public awareness. 
 
-* [Online Demo](http://bcnnow.decodeproject.eu) 
-* [Documentation](https://decodeproject.github.io/bcnnow/) 
+* [Video](http://bcnnow.decodeproject.eu/bcnnow.mp4)
+* [Demonstration](http://bcnnow.decodeproject.eu)
+* [Documentation](https://decodeproject.github.io/bcnnow/)
 
 ## Installation 
 Ready to install BarcelonaNow's environment? Here's how to get started on Linux.
