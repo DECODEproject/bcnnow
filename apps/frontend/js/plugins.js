@@ -8,10 +8,9 @@ $(function() {
                 $("#dp-2,#dp-3,#dp-4").datepicker(); // Sample
             }           
             
-        }
-        // END Bootstrap datepicker
+        }// END Bootstrap datepicker
         
-        // Bootstrap timepicker
+        //Bootstrap timepicker
         var feTimepicker = function(){
             // Default timepicker
             if($(".timepicker").length > 0)
@@ -21,17 +20,16 @@ $(function() {
             if($(".timepicker24").length > 0)
                 $(".timepicker24").timepicker({minuteStep: 5,showSeconds: true,showMeridian: false});
             
-        }
-        // END Bootstrap timepicker
+        }// END Bootstrap timepicker
         
-        // Daterangepicker
+        //Daterangepicker 
         var feDaterangepicker = function(){
             if($(".daterange").length > 0)
                $(".daterange").daterangepicker({format: 'YYYY-MM-DD',startDate: '2013-01-01',endDate: '2013-12-31'});
         }
         // END Daterangepicker
         
-        // Bootstrap colopicker
+        //Bootstrap colopicker        
         var feColorpicker = function(){
             // Default colorpicker hex
             if($(".colorpicker").length > 0)
@@ -45,10 +43,9 @@ $(function() {
             if($("#colorpicker").length > 0)
                 $("#colorpicker").colorpicker();
             
-        }
-        // END Bootstrap colorpicker
+        }// END Bootstrap colorpicker
         
-        // Bootstrap select
+        //Bootstrap select
         var feSelect = function(){
             if($(".select").length > 0){
                 $(".select").selectpicker();
@@ -62,11 +59,10 @@ $(function() {
                     }
                 });
             }
-        }
-        // END Bootstrap select
+        }//END Bootstrap select
         
         
-        // Validation Engine
+        //Validation Engine
         var feValidation = function(){
             if($("form[id^='validate']").length > 0){
                 
@@ -87,10 +83,9 @@ $(function() {
                                                                         usePrefix: prefix 
                                                                      });              
             }
-        }
-        //END Validation Engine
+        }//END Validation Engine
         
-        // Masked Inputs
+        //Masked Inputs
         var feMasked = function(){            
             if($("input[class^='mask_']").length > 0){
                 $("input.mask_tin").mask('99-9999999');
@@ -102,23 +97,20 @@ $(function() {
                 $("input.mask_credit").mask('9999-9999-9999-9999');        
                 $("input.mask_percent").mask('99%');
             }            
-        }
-        // END Masked Inputs
+        }//END Masked Inputs
         
-        // Bootstrap tooltip
+        //Bootstrap tooltip
         var feTooltips = function(){            
             $("body").tooltip({selector:'[data-toggle="tooltip"]',container:"body"});
-        }
-        // END Bootstrap tooltip
+        }//END Bootstrap tooltip
        
-        // Bootstrap Popover
+        //Bootstrap Popover
         var fePopover = function(){            
             $("[data-toggle=popover]").popover();
             $(".popover-dismiss").popover({trigger: 'focus'});
-        }
-        // END Bootstrap Popover
+        }//END Bootstrap Popover
         
-        // Tagsinput
+        //Tagsinput
         var feTagsinput = function(){
             if($(".tagsinput").length > 0){
                 
@@ -133,10 +125,9 @@ $(function() {
                 });
 
             }
-        }
-        // END Tagsinput
+        }// END Tagsinput
         
-        // iCheckbox and iRadion - custom elements
+        //iCheckbox and iRadion - custom elements
         var feiCheckbox = function(){
             if($(".icheckbox,.iradio").length > 0){
                  $(".icheckbox,.iradio").iCheck({checkboxClass: 'icheckbox_minimal-grey',radioClass: 'iradio_minimal-grey'});
@@ -144,14 +135,14 @@ $(function() {
         }
         // END iCheckbox
         
-        // Bootstrap file input
+        //Bootstrap file input
         var feBsFileInput = function(){
             
             if($("input.fileinput").length > 0)
                 $("input.fileinput").bootstrapFileInput();
             
         }
-        // END Bootstrap file input
+        //END Bootstrap file input
         
         return {// Init all form element features
 		init: function(){                    
@@ -173,7 +164,7 @@ $(function() {
 
     var uiElements = function(){
 
-        // Datatables
+        //Datatables
         var uiDatatable = function(){
             if($(".datatable").length > 0){                
                 $(".datatable").dataTable();
@@ -188,14 +179,12 @@ $(function() {
                     onresize(100);
                 });                
             }            
-        }
-        // END Datatable
+        }//END Datatable        
         
-
-        // RangeSlider: This function can be removed or cleared.
+        //RangeSlider // This function can be removed or cleared.
         var uiRangeSlider = function(){
             
-            // Default Slider with start value
+            //Default Slider with start value
             if($(".defaultSlider").length > 0){                
                 $(".defaultSlider").each(function(){                    
                     var rsMin = $(this).data("min");
@@ -206,9 +195,9 @@ $(function() {
                         defaultValues: {min: rsMin, max: rsMax}
                     });                    
                 });                                
-            } // End Default
+            }//End Default
             
-            // Date range slider
+            //Date range slider
             if($(".dateSlider").length > 0){                
                 $(".dateSlider").each(function(){
                     $(this).dateRangeSlider({
@@ -216,10 +205,9 @@ $(function() {
                         defaultValues:{min: new Date(2012, 10, 15),max: new Date(2014, 12, 15)}
                     });
                 });                                                
-            }
-            // End date range slider
+            }//End date range slider
             
-            // Range slider with predefinde range
+            //Range slider with predefinde range            
             if($(".rangeSlider").length > 0){                
                 $(".rangeSlider").each(function(){                    
                     var rsMin = $(this).data("min");
@@ -231,10 +219,9 @@ $(function() {
                         defaultValues: {min: rsMin, max: rsMax}
                     });                    
                 });                                
-            }
-            // End
+            }//End
             
-            // Range Slider with custom step
+            //Range Slider with custom step
             if($(".stepSlider").length > 0){                
                 $(".stepSlider").each(function(){
                     var rsMin = $(this).data("min");
@@ -246,32 +233,28 @@ $(function() {
                         step: 10
                     });    
                 });                                                
-            }
-            // End
+            }//End
             
-        }
-        // END RangeSlider
+        }//END RangeSlider
         
-        // Start Knob Plugin
+        //Start Knob Plugin
         var uiKnob = function(){
             
             if($(".knob").length > 0){
                 $(".knob").knob();
             }            
             
-        }
-        // End Knob
+        }//End Knob
         
         // Start Smart Wizard
         var uiSmartWizard = function(){
             
             if($(".wizard").length > 0){
                 
-                // Check count of steps in each wizard
+                //Check count of steps in each wizard
                 $(".wizard > ul").each(function(){
                     $(this).addClass("steps_"+$(this).children("li").length);
-                });
-                // end
+                });//end
                 
                 // This par of code used for example
                 if($("#wizard-validation").length > 0){
@@ -308,8 +291,7 @@ $(function() {
                             }
                         });
                         
-                }
-                // End of example
+                }// End of example
                 
                 $(".wizard").smartWizard({                        
                     // This part of code can be removed FROM
@@ -333,10 +315,9 @@ $(function() {
                         }    
                         
                         return true;
-                    },
-                    // <-- TO
+                    },// <-- TO
                     
-                    // This is important part of wizard init
+                    //This is important part of wizard init
                     onShowStep: function(obj){                        
                         var wizard = obj.parents(".wizard");
 
@@ -350,13 +331,11 @@ $(function() {
                             }                         
                         }
                         return true;                         
-                    }
-                    // End
+                    }//End
                 });
             }            
             
-        }
-        // End Smart Wizard
+        }// End Smart Wizard
         
         // Summernote 
         var uiSummernote = function(){
@@ -405,8 +384,7 @@ $(function() {
             }
             /* END Email summernote editor */
             
-        }
-        // END Summernote
+        }// END Summernote 
         
         // Custom Content Scroller
         var uiScroller = function(){
@@ -415,8 +393,7 @@ $(function() {
                 $(".scroll").mCustomScrollbar({axis:"y", autoHideScrollbar: true, scrollInertia: 20, advanced: {autoScrollOnFocus: false}});
             }
             
-        }
-        // END Custom Content Scroller
+        }// END Custom Content Scroller
        
         // Sparkline
         var uiSparkline = function(){
@@ -424,8 +401,7 @@ $(function() {
             if($(".sparkline").length > 0)
                $(".sparkline").sparkline('html', { enableTagOptions: true,disableHiddenCheck: true});   
            
-       }
-       // End sparkline
+       }// End sparkline              
 
        
         return {

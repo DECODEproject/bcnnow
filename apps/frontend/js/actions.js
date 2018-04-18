@@ -1,8 +1,8 @@
 $(document).ready(function(){        
     
-    /* PROGRESS START */
+    /* PROGGRESS START */
     $.mpb("show",{value: [0,50],speed: 5});        
-    /* END PROGRESS START */
+    /* END PROGGRESS START */
     
     var html_click_avail = true;
     

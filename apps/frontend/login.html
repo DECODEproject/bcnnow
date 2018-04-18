@@ -2,24 +2,26 @@
 <html lang="en" class="body-full-height">
     <head>        
         <!-- META SECTION -->
-        <title>BarcelonaNow</title>
+        <title>BCNNow</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
         <link rel="icon" href="favicon.png" type="image/x-icon" />
         <!-- END META SECTION -->
-
+        
         <!-- CSS INCLUDE -->
         <script type="text/javascript" src="js/plugins/jquery/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="js/plugins/jqueryui/jquery-ui.js"></script>
         <script type="text/javascript" src="js/plugins/jqueryui/jquery.ui.touch-punch.min.js"></script>
         <script type="text/javascript" src="js/plugins/bootstrap/bootstrap.min.js"></script>
         <link rel="stylesheet" href="css/theme-default.css" type="text/css"/>
-        <!-- END CSS INCLUDE -->
+        <!-- EOF CSS INCLUDE -->                                    
     </head>
     <body>
-
+        
         <div class="login-container">
+        
             <div class="login-box animated fadeInDown">
                 <a target="_blank" href="https://decodeproject.eu"><div class="login-logo"></div></a>
                 <div class="login-body">
@@ -31,6 +33,7 @@
                         </div>
                     </div>
                     <div class="default">
+                        default: <span class="default-user">demo-user</span>
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
@@ -38,6 +41,7 @@
                         </div>
                     </div>
                     <div class="default">
+                        default: <span class="default-user">demo-pass</span>
                     </div>
                    <div class="errors">
 
@@ -52,15 +56,50 @@
                     </div>
                     </form>
                 </div>
+                <!--
+                <div class="login-body promo">
+                    <div class="row">
+                        <div class="col-md-8"><a href="https://youtube.com" target="_blank"><span class="youtube-promo">Segui il video introduttivo (1 minuto) </span></a> </div>
+                        <div class="col-md-4"> <img class="youtube-logo" src="img/youtube.svg"/></div>
+                    </div>
+                </div>
+                --->
                 <div class="login-footer">
                     <div class="pull-left">
-                        &copy; 2018 EURECAT - Technology Centre of Catalonia
+                        &copy; 2017 BCNNow
                     </div>
                     <div class="pull-right">
+                        <a href="#">About</a> |
+                        <a href="#">Privacy</a> |
+                        <a href="#">Contact Us</a>
                     </div>
                 </div>
             </div>
+            
         </div>
+
+    <script>
+        function validateForm() {
+            $('.errors').html('');
+            var user = document.forms["form-login"]["username"].value;
+            var pass = document.forms["form-login"]["password"].value;
+            result = true;
+            if (user == "") {
+                $('.errors').append('<div class="alert alert-danger">Username must be filled out.</div>');
+                result = false;
+            }
+            if (pass == "") {
+                $('.errors').append('<div class="alert alert-danger">Password must be filled out.</div>');
+                result = false;
+            }
+            if (result == true && (user != "demo-user" || pass != "demo-pass")) {
+                $('.errors').append('<div class="alert alert-danger">Username or password are not valid.</div>');
+                result = false;
+            }
+            return result;
+        }
+    </script>
+
     </body>
 </html>
 
