@@ -16,7 +16,6 @@
     Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 '''
 
-
 # This class defines a set of configuration variables for ASIA collector.
 class Config:
 

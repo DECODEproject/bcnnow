@@ -15,6 +15,8 @@
     this source code; if not, write to:
     Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 '''
+import sys
+sys.path.append('Insert your path to the BarcelonaNow project folder')
 
 from apps.backend.data.collectors.pull.InsideAirbnbCollector.Config import Config as collectorConfig
 collectorCfg = collectorConfig().get()
@@ -22,9 +24,9 @@ collectorCfg = collectorConfig().get()
 from config.Config import Config as globalConfig
 globalCfg = globalConfig().get()
 
-from apps.backend.data.collectors.pull import InsideAirbnbReviewPayload
-from apps.backend.data.models import BaseRecord
-from apps.backend.data import LocationHelper
+from apps.backend.data.collectors.pull.InsideAirbnbCollector.InsideAirbnbReviewPayload import InsideAirbnbReviewPayload
+from apps.backend.data.models.BaseRecord import BaseRecord
+from apps.backend.data.helpers.LocationHelper import LocationHelper
 from apps.backend.data.models.LocationRecord import LocationRecord
 from apps.backend.data.helpers.GeneralHelper import GeneralHelper
 from apps.backend.data.helpers.StorageHelper import StorageHelper
