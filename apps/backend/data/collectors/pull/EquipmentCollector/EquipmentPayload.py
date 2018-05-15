@@ -19,7 +19,7 @@
 import json
 
 # This class defines the structure of the payload field for an instance of an ODI Equipment BaseRecord.
-class AsiaEquipmentPayload:
+class EquipmentPayload:
 
     def __init__(self):
         self.id = ''

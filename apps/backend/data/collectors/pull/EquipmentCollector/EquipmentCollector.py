@@ -18,13 +18,13 @@
 import sys
 sys.path.append('Insert your path to the BarcelonaNow project folder')
 
-from apps.backend.data.collectors.pull.EquipmentCollector import Config as collectorConfig
+from apps.backend.data.collectors.pull.EquipmentCollector.Config import Config as collectorConfig
 collectorCfg = collectorConfig().get()
 
 from config.Config import Config as globalConfig
 globalCfg = globalConfig().get()
 
-from apps.backend.data.collectors.pull.EquipmentCollector.EquipmentPayload import AsiaEquipmentPayload
+from apps.backend.data.collectors.pull.EquipmentCollector.EquipmentPayload import EquipmentPayload
 from apps.backend.data.models.BaseRecord import BaseRecord
 from apps.backend.data.models.LocationRecord import LocationRecord
 from apps.backend.data.helpers.LocationHelper import LocationHelper
@@ -71,7 +71,7 @@ class EquipmentCollector:
     # This method build an ODI Equipment BaseRecord
     def buildRecord(self, item, type=''):
         record = BaseRecord()
-        payload = AsiaEquipmentPayload()
+        payload = EquipmentPayload()
         location = LocationRecord()
 
         payload.setId(item['dct:identifier'])
@@ -111,7 +111,7 @@ class EquipmentCollector:
                 StorageHelper().store(self.buildRecord(item, type).toJSON())
 
 if __name__ == "__main__":
-    base = collectorCfg['collectors']['odi']['asia']['equipment_base_url']
-    resourceIDs = collectorCfg['collectors']['odi']['asia']['equipment_urls']
+    base = collectorCfg['collectors']['odi']['equipment']['equipment_base_url']
+    resourceIDs = collectorCfg['collectors']['odi']['equipment']['equipment_urls']
     EquipmentCollector().start(base, resourceIDs)
 

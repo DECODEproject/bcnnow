@@ -18,16 +18,33 @@
 
 # This class defines a set of configuration variables for ODI Equipment collector.
 class Config:
-
     def __init__(self):
         self.config = {
             "collectors": {
-                  "odi": {
-                          "source_name": "odi",
-                          "equipment": {
-                                    "source_name": "equipment",
-                          }
-                  }
+                "odi": {
+                    "source_name": "odi",
+                    "equipment": {
+                        "source_name": "equipment",
+                        "source_type": "event",
+                        "equipment_base_url": "http://www.bcn.cat/tercerlloc/",
+                        "equipment_urls": ['esports.rdf',
+                                           'restaurants.rdf',
+                                           'educacio.rdf',
+                                           'sanitat.rdf',
+                                           'cementiris.rdf',
+                                           'comercial.rdf',
+                                           'transports.rdf',
+                                           'mediambient.rdf',
+                                           'cultura.rdf',
+                                           'religio.rdf',
+                                           'associacions.rdf',
+                                           'administracio_publica.rdf',
+                                           'centres_informacio.rdf',
+                                           'animals_plantes.rdf',
+                                           'serveis_socials.rdf',
+                                           'comunicacio.rdf']
+                    }
+                }
             }
         }
 

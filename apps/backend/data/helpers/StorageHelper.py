@@ -25,7 +25,6 @@ cfg = Config().get()
 
 # This class defines a set of utilities methods to storage BaseRecord instances.
 class StorageHelper:
-
     def __init__(self):
         return
 
@@ -40,5 +39,5 @@ class StorageHelper:
             client = MongoClient(cfg['storage']['mongodb']['ip'], cfg['storage']['mongodb']['port'])
             db = client[cfg['storage']['mongodb']['dbname']]
             collection = db[record['source']]
-            collection.replace_one({"id": record['id']}, {"$set": record}, upsert=True)
-
+            print(record)
+            collection.replace_one({"id": record['id']}, record, upsert=True)

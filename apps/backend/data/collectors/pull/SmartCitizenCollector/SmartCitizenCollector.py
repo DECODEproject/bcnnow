@@ -18,7 +18,7 @@
 import sys
 sys.path.append('Insert your path to the BarcelonaNow project folder')
 
-from apps.backend.data.collectors.pull.SmartCitizenCollector import Config as collectorConfig
+from apps.backend.data.collectors.pull.SmartCitizenCollector.Config import Config as collectorConfig
 collectorCfg = collectorConfig().get()
 
 from config.Config import Config as globalConfig

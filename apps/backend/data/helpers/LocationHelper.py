@@ -30,9 +30,11 @@ cfg = Config().get()
 class LocationHelper:
 
     def __init__(self):
-        with open('barcelona.geojson') as f:
-            self.neighbourhoods = json.load(f)
+        import os
+        dir_path = os.path.dirname(os.path.realpath(__file__))
 
+        with open(dir_path + '\\assets\\barcelona.geojson') as f:
+            self.neighbourhoods = json.load(f)
     # This method translates the Barcelona City Council latitude and longitude format into standard WGS84 format
     def toWGS84(self, latitude, longitude, coordinates='EPSG:23031'):
         if GeneralHelper().check(latitude) and GeneralHelper().check(longitude):
@@ -46,6 +48,8 @@ class LocationHelper:
 
     # This method returns the Barcelona district and neighbourhood in which the point (latitude, longitude) is included
     def getLocationAreas(self, latitude, longitude):
+        district = ''
+        neighbourhood = ''
         try:
             for feature in self.neighbourhoods['features']:
                 if shape(feature['geometry']).contains(Point(float(longitude), float(latitude))):

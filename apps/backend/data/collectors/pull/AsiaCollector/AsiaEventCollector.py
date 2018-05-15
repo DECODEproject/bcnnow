@@ -15,8 +15,9 @@
     this source code; if not, write to:
     Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 '''
-import sys
-sys.path.append('Insert your path to the BarcelonaNow project folder')
+
+#import sys
+#sys.path.append('C:/Users/mirko/Desktop/Code Repository/decode-bcnnow/')
 
 from apps.backend.data.collectors.pull.AsiaCollector.Config import Config as collectorConfig
 collectorCfg = collectorConfig().get()
@@ -78,8 +79,8 @@ class AsiaEventCollector:
         payload.setId(GeneralHelper().default(item['id']))
         payload.setName(GeneralHelper().default(item['nom']))
         payload.setEventType(GeneralHelper().toAsiaType(item['tipus_acte']))
-        payload.setStartDate(TimeHelper().toDash(item['collection']['data_inici']))
-        payload.setEndDate(TimeHelper().toDash(item['collection']['data_fi']))
+        payload.setStartDate(TimeHelper().toDash(item['data']['data_inici']))
+        payload.setEndDate(TimeHelper().toDash(item['data']['data_fi']))
         payload.setEquipmentID(GeneralHelper().default(item['lloc_simple']['id'] if 'id' in item['lloc_simple'] else ''))
         payload.setState(GeneralHelper().toAsiaState(item['estat']))
         payload.setStateCycle(GeneralHelper().toAsiaStateCycle(item['estat_cicle']))
@@ -97,10 +98,10 @@ class AsiaEventCollector:
 
         record.setId(GeneralHelper().default(item['id']))
         record.setSource(collectorCfg['collectors']['odi']['asia']['source_name'])
-        record.setProvider('')
+        record.setProvider('odi')
         record.setPublisher('')
         record.setType('event')
-        record.setTimestamp(TimeHelper().toDash(item['collection']['data_inici']))
+        record.setTimestamp(TimeHelper().toDash(item['data']['data_inici']))
         record.setLocation(location)
         record.setPayload(payload)
 

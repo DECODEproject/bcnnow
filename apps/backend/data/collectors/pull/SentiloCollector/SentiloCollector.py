@@ -57,7 +57,7 @@ class SentiloCollector:
                     a = datetime.datetime.strptime(start, '%d/%m/%YT%H:%M:%S')
                     b = datetime.timedelta(minutes=1)
                     lastReading = (a + b).strftime("%d/%m/%YT%H:%M:%S")
-                    url = collectorCfg['collectors']['sentilo']['base_url'] + 'collection/' + provider['provider'] + '/' + sensor['sensor'] + '?' + 'limit=100000&from=' + lastReading
+                    url = collectorCfg['collectors']['sentilo']['base_url'] + 'data/' + provider['provider'] + '/' + sensor['sensor'] + '?' + 'limit=100000&from=' + lastReading
                     for observation in reversed(self.sendRequest(url, "observations")['observations']):
                         self.saveData(observation, provider, sensor)
                         lastReading = observation['timestamp']
@@ -80,6 +80,7 @@ class SentiloCollector:
                     data = requests.get(url, headers=headers).json()
                 elif type == "observations":
                     data = requests.get(url, headers=headers).json()
+                print(data)
                 return data
             except:
                 print(str(datetime.datetime.now()) + ' ' + '         Reconnecting...')
