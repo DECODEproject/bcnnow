@@ -219,19 +219,19 @@ class InsideAirbnbListingPayload:
         self.squareFeet = str(squareFeet)
 
     def setPrice(self, price):
-        self.price = float(price)
+        self.price = str(price)
 
     def setWeeklyPrice(self, weeklyPrice):
-        self.weeklyPrice = float(weeklyPrice)
+        self.weeklyPrice = str(weeklyPrice)
 
     def setMonthlyPrice(self, monthlyPrice):
-        self.monthlyPrice = float(monthlyPrice)
+        self.monthlyPrice = str(monthlyPrice)
 
     def setSecurityDeposit(self, securityDeposit):
-        self.securityDeposit = float(securityDeposit)
+        self.securityDeposit = str(securityDeposit)
 
     def setCleaningFee(self, cleaningFee):
-        self.cleaningFee = float(cleaningFee)
+        self.cleaningFee = str(cleaningFee)
 
     def setGuestsIncluded(self, guestsIncluded):
         self.guestsIncluded = str(guestsIncluded)
