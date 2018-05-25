@@ -48,6 +48,11 @@ class SentiloCollector:
         lastReadings = pickle.load(open(lastUrl, 'rb')) if os.path.isfile(lastUrl) else {}
         url =  collectorCfg['collectors']['sentilo']['base_url'] + 'catalog/'
         providers = self.sendRequest(url, "sensors")
+
+        print("Providers List:")
+        for i, provider in enumerate(providers['providers']):
+            print(i, provider['provider'])
+
         if 'providers' in providers:
             for provider in providers['providers']:
                 print(str(datetime.datetime.now()) + ' ' + '    Collecting collection for ' + provider['provider'])
@@ -80,7 +85,6 @@ class SentiloCollector:
                     data = requests.get(url, headers=headers).json()
                 elif type == "observations":
                     data = requests.get(url, headers=headers).json()
-                print(data)
                 return data
             except:
                 print(str(datetime.datetime.now()) + ' ' + '         Reconnecting...')
