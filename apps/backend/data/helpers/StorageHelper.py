@@ -31,13 +31,13 @@ class StorageHelper:
     # This method saves the BaseRecord record. The global configuration variable storage/mode specifies the destination.
     def store(self, record):
         record = json.loads(record, encoding="utf8")
-        if cfg['storage']['mode'] == 'kafka':
+        if cfg['collectors']['common']['destination'] == 'kafka':
             producer = KafkaProducer(value_serializer=lambda v: v.encode('utf-8'))
             future = producer.send(record['source'], json.dumps(record))
             future.get(timeout=60)
-        elif cfg['storage']['mode'] == 'mongodb':
-            client = MongoClient(cfg['storage']['mongodb']['ip'], cfg['storage']['mongodb']['port'])
-            db = client[cfg['storage']['mongodb']['dbname']]
+        elif cfg['collectors']['common']['destination'] == 'mongodb':
+            client = MongoClient(cfg['storage']['ipaddress'], cfg['storage']['port'])
+            db = client[cfg['storage']['dbname']]
             collection = db[record['source']]
             print(record)
             collection.replace_one({"id": record['id']}, record, upsert=True)

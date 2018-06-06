@@ -112,7 +112,7 @@
         "1": {
         "type": "time-series",
         "name": "smartcitizen",
-        "description": "Noise levels",
+        "description": "SmartCitizen > Noise",
         "provider": "smartcitizen",
         "start": "2017-01-01T00:00:00Z",
         "end": null,
@@ -127,7 +127,7 @@
         "2": {
         "type": "record",
         "name": "asia",
-        "description": "City events",
+        "description": "ASIA > Events",
         "provider": "asia",
         "start": "2017-11-01T00:00:00Z",
         "end": "2018-02-01T00:00:00Z",
@@ -142,7 +142,7 @@
         "3": {
         "type": "record",
         "name": "iris",
-        "description": "City claims and suggestions",
+        "description": "IRIS > Claims",
         "provider": "iris",
         "start": "2014-01-01T00:00:00Z",
         "end": "2018-01-01T00:00:00Z",
@@ -157,7 +157,7 @@
         "4": {
         "type": "time-series",
         "name": "bicing",
-        "description": "Bicing bikes",
+        "description": "ODI > Bike Stations",
         "provider": "odi",
         "start": "2017-11-01T00:00:00Z",
         "end": null,
@@ -172,7 +172,7 @@
         "5": {
         "type": "record",
         "name": "insideairbnb",
-        "description": "Airbnb listings",
+        "description": "Airbnb > Listings",
         "provider": "insideairbnb",
         "start": "2017-04-08T00:00:00Z",
         "end": "2017-04-08T00:00:00Z",
@@ -183,7 +183,22 @@
         "radius": 3,
         "colors": ['#004304'],
         "cuts": [-1]
-        }
+        },
+        "6": {
+        "type": "record",
+        "name": "cityos-ptt_carril_bici",
+        "description": "CityOS > Bike Lanes",
+        "provider": "cityos:ptt_carril_bici",
+        "start": "2017-11-01T00:00:00Z",
+        "end": "2018-06-01T00:00:00Z",
+        "language": "Catalan",
+        "labels": null,
+        "targetvalue": 1,
+        "aggregator": "count",
+        "radius": 20,
+        "colors": ['#003366'],
+        "cuts": [-1]
+        },
     };
 
 
@@ -208,22 +223,22 @@
 
         },
         "page-1": {
-            "name": "Bicing Station Patterns",
-            "widgets": [
+            "name": "Mobility with Bikes",
+            "widgets":  [
                 {
-                    "id": "widget-3553",
-                    "title": "Explore temporal bicing patterns",
+                    "id": "widget-4534",
+                    "title": "Explore bike lanes",
                     "authors": ["carmen"],
-                    "modified": "2018-01-12T00:00:00Z",
+                    "modified": "2018-01-12T20:00:00Z",
                     "sources": [{
-                        "id": "4",
+                        "id": "6",
                         "aggregation": "none",
-                        "chart": "map-points",
+                        "chart": "map-lines",
                         "type": "points",
-                        "granularity": "minutes",
+                        "granularity": "cumulative",
                         "keyword": "",
-                        "start": "2018-01-18T00:00:00Z",
-                        "end": "2018-01-19T00:00:00Z",
+                        "start": "2018-01-01T00:00:00Z",
+                        "end": "2018-06-30T00:00:00Z",
                         "dataset": null,
                         "markers": null
                     }
@@ -234,12 +249,12 @@
                     "data": [],
                     "highmarker": [],
                     "highmarkericon": [],
-                    "type": "dynamic"
+                    "type": "static"
                 }
                 ]
         },
         "page-2": {
-            "name": "City Events Search",
+            "name": "Agenda with events",
             "widgets": [
                 {
                     "id": "widget-5467",
@@ -253,8 +268,8 @@
                         "type": "points",
                         "granularity": "cumulative",
                         "keyword": "",
-                        "start": "2018-01-01T00:00:00Z",
-                        "end": "2018-01-30T00:00:00Z",
+                        "start": "2018-05-01T00:00:00Z",
+                        "end": "2018-05-02T00:00:00Z",
                         "dataset": null,
                         "markers": null
                     }
@@ -270,7 +285,7 @@
                 ]
         },
         "page-3": {
-            "name": "Noise Level Awareness",
+            "name": "Awareness on Noise",
             "widgets": [
                 {
                     "id": "widget-343",
@@ -284,8 +299,8 @@
                         "type": "points",
                         "granularity": "hours",
                         "keyword": "",
-                        "start": "2018-01-30T00:00:00Z",
-                        "end": "2018-01-31T00:00:00Z",
+                        "start": "2018-05-20T00:00:00Z",
+                        "end": "2018-05-21T00:00:00Z",
                         "dataset": null,
                         "markers": null
                     }
@@ -310,8 +325,8 @@
                         "type": "points",
                         "granularity": "cumulative",
                         "keyword": "soroll",
-                        "start": "2017-04-03T00:00:00Z",
-                        "end": "2018-01-30T00:00:00Z",
+                        "start": "2017-06-01T00:00:00Z",
+                        "end": "2018-05-21T00:00:00Z",
                         "dataset": null,
                         "markers": null
                     },
@@ -330,7 +345,7 @@
 
 
 $(document).ready(function() {
-    var api_endopoint = 'http://5f14ad67.ngrok.io';
+    var api_endopoint = 'http://127.0.0.1:9530';
     var current_latitude = 0;
     var current_longitude = 0;
     var start_date = moment().subtract('days', 6).toISOString();
@@ -343,7 +358,7 @@ $(document).ready(function() {
         $("#" + pages[page]['widgets'][windex]['id'] + "-loader").show();
         pages[page]['widgets'][windex]['sources'][sindex]['markers'] = new L.LayerGroup();
         try {
-            map = L.map(pages[page]['widgets'][windex]['id'] + '-map').setView([41.390205,2.154007], 12);
+            map = L.map(pages[page]['widgets'][windex]['id'] + '-map').setView([41.390205,2.154007], 13);
             L.tileLayer.grayscale('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
                 attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
                 maxZoom: 18,
@@ -373,13 +388,19 @@ $(document).ready(function() {
                 qtxt = "&$payload.name=[" + query + "]";
             }
         }
+        if(c == 'cityos-ptt_carril_bici') {
+            other_par = 'geometry@location.geometry,'
+        }
+        if(c == 'cityos-potencial_fotovoltaic') {
+            other_par = 'geometry@location.geometry,'
+        }
         var aggregation = '';
         var operators = '';
         if(pages[page]['widgets'][windex]['sources'][sindex]['aggregation'] != 'none') {
             aggregation = pages[page]['widgets'][windex]['sources'][sindex]['aggregation'] + '@' + 'location.' + pages[page]['widgets'][windex]['sources'][sindex]['aggregation'] + ',';
             operators = 'aggregators=avg@payload.' + datasets[pages[page]['widgets'][windex]['sources'][sindex]['id']]['targetvalue'] + '&';
         }
-        console.log(api_endopoint + "/api/v0/" + datasets[pages[page]['widgets'][windex]['sources'][sindex]['id']]['name'] + "?" + operators + "group=" + aggregation + "timestamp@timestamp&fields=" + other_par + "id@payload.id,value@payload." + datasets[pages[page]['widgets'][windex]['sources'][sindex]['id']]['targetvalue'] + ",point@location.point.coordinates&sort=a@timestamp&isObservation&$timestamp=gte@" + pages[page]['widgets'][windex]['sources'][sindex]['start'] + ",lt@" + pages[page]['widgets'][windex]['sources'][sindex]['end'] + qtxt);
+        //console.log(api_endopoint + "/api/v0/" + datasets[pages[page]['widgets'][windex]['sources'][sindex]['id']]['name'] + "?" + operators + "group=" + aggregation + "timestamp@timestamp&fields=" + other_par + "id@payload.id,value@payload." + datasets[pages[page]['widgets'][windex]['sources'][sindex]['id']]['targetvalue'] + ",point@location.point.coordinates&sort=a@timestamp&isObservation&$timestamp=gte@" + pages[page]['widgets'][windex]['sources'][sindex]['start'] + ",lt@" + pages[page]['widgets'][windex]['sources'][sindex]['end'] + qtxt);
         $.ajax({
             url: api_endopoint + "/api/v0/" + datasets[pages[page]['widgets'][windex]['sources'][sindex]['id']]['name'] + "?" + operators + "group=" + aggregation + "timestamp@timestamp&fields=" + other_par + "id@payload.id,value@payload." + datasets[pages[page]['widgets'][windex]['sources'][sindex]['id']]['targetvalue'] + ",point@location.point.coordinates&sort=a@timestamp&isObservation&$timestamp=gte@" + pages[page]['widgets'][windex]['sources'][sindex]['start'] + ",lt@" + pages[page]['widgets'][windex]['sources'][sindex]['end'] + qtxt,
             success: function(data) {
@@ -508,7 +529,7 @@ $(document).ready(function() {
     function getIcon(dataset, value) {
         var colors = dataset['colors'];
         var cuts = dataset['cuts'];
-        var color = '#00f';
+        var color = '#217C7E';
 
         cuts.forEach(function (cut, i) {
             if(cut < value) {
@@ -581,8 +602,10 @@ $(document).ready(function() {
             });
 
         }
-        console.log(obs);
+
         var heatmapdata = [];
+        var maplinesdata = [];
+        var polygondata = [];
 
         if(pages[page]['widgets'][windex]['sources'][sindex]['aggregation'] != "none") {
             $.ajax({
@@ -727,6 +750,8 @@ $(document).ready(function() {
             obs.forEach(function(element) {
                 var value = (pages[page]['widgets'][windex]['sources'][sindex]['aggregation'] == 'none')? (typeof datasets[pages[page]['widgets'][windex]['sources'][sindex]['id']]['targetvalue'] === "string"? element[datasets[pages[page]['widgets'][windex]['sources'][sindex]['id']]['targetvalue']]:datasets[pages[page]['widgets'][windex]['sources'][sindex]['id']]['targetvalue']) : element[datasets[pages[page]['widgets'][windex]['sources'][sindex]['id']]['aggregator']];
                 heatmapdata.push({lat: element["point"][1], lng: element["point"][0], value: value});
+                maplinesdata.push(element["geometry"]);
+                polygondata.push(element["geometry"]);
                 id = element["id"];
                 obsval = parseInt(element["value"]);
                 icon = L.vectorIcon({
@@ -960,6 +985,33 @@ $(document).ready(function() {
             if(pages[page]['widgets'][windex]['sources'][sindex]['chart'] == 'heat-map') {
                 pages[page]['widgets'][windex]['sources'][sindex]['markers'].addLayer(heatmapLayer);
             }
+            else if(pages[page]['widgets'][windex]['sources'][sindex]['chart'] == 'map-lines') {
+                console.log(maplinesdata);
+
+                var myStyle = {
+                    "color": "#003366",
+                    "weight": 2,
+                    "opacity": 0.65
+                };
+
+                line_layer = L.geoJSON(maplinesdata, {
+                    style: myStyle
+                });
+                pages[page]['widgets'][windex]['sources'][sindex]['markers'].addLayer(line_layer);
+            }
+            else if(pages[page]['widgets'][windex]['sources'][sindex]['chart'] == 'polygons') {
+
+                var myStyle = {
+                    "color": "#ff7800",
+                    "weight": 5,
+                    "opacity": 0.65
+                };
+
+                polygon_layer = L.geoJSON(polygondata, {
+                    style: myStyle
+                });
+                pages[page]['widgets'][windex]['sources'][sindex]['markers'].addLayer(polygon_layer);
+            }
             else {
                 pages[page]['widgets'][windex]['sources'][sindex]['markers'].addLayer(markers_layer);
             }
@@ -984,7 +1036,6 @@ $(document).ready(function() {
             html += '<span class="' + windex + '-source-list">';
             html +=         '<div class="row">' +
                                 '<div class="high-name header-column col-md-2">' + 'Data' + '</div> ' +
-                                '<div class="high-name header-column col-md-2">' + 'Source' + '</div> ' +
                                 '<div class="high-name header-column col-md-2">' + 'From' + '</div>' +
                                 '<div class="high-name header-column col-md-2">' + 'To' + '</div> ' +
                                 '<div class="high-name header-column col-md-2">' + 'Filtered by' + '</div> ' +
@@ -994,7 +1045,6 @@ $(document).ready(function() {
             widget['sources'].forEach(function(source, sindex){
                 html +=         '<div  id="' + windex + '-' + sindex + '-source-item" class="row source-item">' +
                                     '<div class="high-name col-md-2">' + datasets[source['id']]['description'] + '</div> ' +
-                                    '<div class="high-name col-md-2">' + datasets[source['id']]['provider'] + '</div> ' +
                                     '<div class="high-name col-md-2">' + moment(source['start']).format('MMMM Do YYYY') + '</div>' +
                                     '<div class="high-name col-md-2">' + moment(source['end']).format('MMMM Do YYYY') + '</div> ' +
                                     '<div class="high-name col-md-2">' + (source['keyword'] != '' ? source['keyword']: '-')  + '</div> ' +
@@ -1023,9 +1073,9 @@ $(document).ready(function() {
                                               '<label for="time_interval">Select time interval:</label><br/>' +
                                               '<div id="' + windex + '-' + sindex + '-edit-time-interval" class="dtrange">' +
                                                     '<span></span><b class="caret"></b>' +
-                                              '</div><br/><br/><br/>' +
-                                              '<label for="type">Select time granularity:</label>' +
-                                              '<select class="form-control" id="' + windex + '-' + sindex + '-edit-granularity">' +
+                                              '</div><br/><br/>' +
+                                              '<label style="display:none" for="type">Select time granularity:</label>' +
+                                              '<select style="display:none" class="form-control" id="' + windex + '-' + sindex + '-edit-granularity">' +
                                                 '<option value="cumulative">Cumulative</option>' +
                                                 '<option value="minutes">Minutes</option>' +
                                                 '<option value="hours">Hours</option>' +
@@ -1081,9 +1131,9 @@ $(document).ready(function() {
                                                   '<label for="time_interval">Select time interval:</label><br/>' +
                                                   '<div id="' + windex + '-plus-time-interval" class="dtrange">' +
                                                         '<span></span><b class="caret"></b>' +
-                                                  '</div><br/><br/><br/>' +
-                                                  '<label for="type">Select time granularity:</label>' +
-                                                  '<select class="form-control" id="' + windex + '-plus-granularity">' +
+                                                  '</div><br/><br/>' +
+                                                  '<label style="display:none" for="type">Select time granularity:</label>' +
+                                                  '<select style="display:none" class="form-control" id="' + windex + '-plus-granularity">' +
                                                     '<option value="cumulative">Cumulative</option>' +
                                                     '<option value="minutes">Minutes</option>' +
                                                     '<option value="hours">Hours</option>' +
@@ -1289,7 +1339,6 @@ $(document).ready(function() {
                     $('.' + windex + '-source-list').empty();
                     $('.' + windex + '-source-list').append('<div class="row">' +
                                         '<div class="high-name header-column col-md-2">' + 'Data' + '</div> ' +
-                                        '<div class="high-name header-column col-md-2">' + 'Source' + '</div> ' +
                                         '<div class="high-name header-column col-md-2">' + 'From' + '</div>' +
                                         '<div class="high-name header-column col-md-2">' + 'To' + '</div> ' +
                                         '<div class="high-name header-column col-md-2">' + 'Filtered by' + '</div> ' +
@@ -1299,7 +1348,6 @@ $(document).ready(function() {
                         $('.' + windex + '-source-list').append(
                             '<div  id="' + windex + '-' + sindex + '-source-item" class="row source-item">' +
                                 '<div class="high-name col-md-2">' + datasets[source['id']]['description'] + '</div> ' +
-                                '<div class="high-name col-md-2">' + datasets[source['id']]['provider'] + '</div> ' +
                                 '<div class="high-name col-md-2">' + moment(source['start']).format('MMMM Do YYYY') + '</div>' +
                                 '<div class="high-name col-md-2">' + moment(source['end']).format('MMMM Do YYYY') + '</div> ' +
                                 '<div class="high-name col-md-2">' + (source['keyword'] != '' ? source['keyword']: '-')  + '</div> ' +
@@ -1477,7 +1525,6 @@ $(document).ready(function() {
                             $('.' + windex + '-source-list').append(
                                 '<div  id="' + windex + '-' + sindex + '-source-item" class="row source-item">' +
                                     '<div class="high-name col-md-2">' + datasets[source['id']]['description'] + '</div> ' +
-                                    '<div class="high-name col-md-2">' + datasets[source['id']]['provider'] + '</div> ' +
                                     '<div class="high-name col-md-2">' + moment(source['start']).format('MMMM Do YYYY') + '</div>' +
                                     '<div class="high-name col-md-2">' + moment(source['end']).format('MMMM Do YYYY') + '</div> ' +
                                     '<div class="high-name col-md-2">' + (source['keyword'] != '' ? source['keyword']: '-')  + '</div> ' +

@@ -17,6 +17,7 @@
 '''
 
 import json
+import numpy as np
 
 import pyproj as pyproj
 from shapely.geometry import shape, Point
@@ -32,9 +33,9 @@ class LocationHelper:
     def __init__(self):
         import os
         dir_path = os.path.dirname(os.path.realpath(__file__))
-
         with open(dir_path + '\\assets\\barcelona.geojson') as f:
             self.neighbourhoods = json.load(f)
+
     # This method translates the Barcelona City Council latitude and longitude format into standard WGS84 format
     def toWGS84(self, latitude, longitude, coordinates='EPSG:23031'):
         if GeneralHelper().check(latitude) and GeneralHelper().check(longitude):
@@ -59,3 +60,15 @@ class LocationHelper:
             district = ''
             neighbourhood = ''
         return district, neighbourhood
+
+    def toWGS84Geometry(self, geometry, coordinates='EPSG:23031'):
+        FROM = pyproj.Proj('+init=' + coordinates)
+        WGS84 = pyproj.Proj('+init=' + 'EPSG:4326')
+
+        wgs84_coordinates = []
+        for coord in geometry['coordinates']:
+            wgs84_long, wgs84_lat = pyproj.transform(FROM, WGS84, coord[0], coord[1])
+            wgs84_coordinates.append([wgs84_long, wgs84_lat, 0.0])
+        geometry['coordinates'] = wgs84_coordinates
+
+        return geometry

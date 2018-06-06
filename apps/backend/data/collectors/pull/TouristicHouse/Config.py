@@ -16,12 +16,23 @@
     Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 '''
 
-# This class defines the structure of the payload field for an instance of a CityOS BaseRecord.
-class CityOSPayload:
+# This class defines a set of configuration variables for IRIS collector.
+class Config:
 
     def __init__(self):
-        return
+        self.config = {
+            "collectors": {
+                  "odi": {
+                          "source_name": "odi",
+                          "touristic_house": {
+                                      "source_name": "touristic_house",
+                                      "base_url": "http://opendata-ajuntament.barcelona.cat/data",
+                                      "api_base_url": "/api/action/datastore_search?resource_id=",
+                                      "habitages_urls": ['b32fa7f6-d464-403b-8a02-0292a64883bf'],
+                                    }
+                  }
+            }
+        }
 
-    def toJSON(self):
-        return '{'   +\
-               '}'
+    def get(self):
+        return self.config

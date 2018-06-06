@@ -404,8 +404,9 @@ color:#fff;
 .x-navigation li.xn-title {
     padding: 10px 15px 10px;
     line-height: 20px;
-    font-weight: 300;
-    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 1rem;
     cursor: pointer;
     border-bottom: 1px solid #F0F5F7;
     text-align: left;
@@ -435,10 +436,12 @@ input.input-dashboard-page {
     color: #999;
 }
 li.add {
-    padding: 10px 15px 10px 40px;
+    padding: 10px 15px 10px 0px;
+    margin-left: -10px;
     line-height: 20px;
-    font-weight: 300;
-    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 1rem;
     color: #e4701e;
     cursor: pointer;
     border-bottom: 1px solid #F0F5F7;
@@ -447,8 +450,9 @@ li.add {
 li.dashboard-page.editor {
     padding: 10px 15px 10px;
     line-height: 20px;
-    font-weight: 300;
-    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 1rem;
     color: #e4701e;
     cursor: pointer;
     border-bottom: 1px solid #F0F5F7;
@@ -508,12 +512,12 @@ li.dashboard-page.editor {
 li.dashboard-page {
     padding: 10px 15px 10px;
     line-height: 20px;
-    font-weight: 300;
-    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 1rem;
     cursor: pointer;
     border-bottom: 1px solid #F0F5F7;
     text-align: left;
-    padding-left: 50px;
 }
 .x-navigation > li.xn-openable:before {
   top: 15px;
@@ -7386,7 +7390,7 @@ span.slider-date.button-back {
     margin-right: 13px;
 }
 .slider-date-graph {
-    min-height: 380px!important;
+    min-height: 300px!important;
     margin-left: 0;
 }
 .chart-holder {
