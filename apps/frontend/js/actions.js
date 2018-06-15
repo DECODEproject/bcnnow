@@ -308,7 +308,7 @@ function onload(){
 function page_content_onresize(){
     $(".page-content,.content-frame-body,.content-frame-right,.content-frame-left").css("width","").css("height","");
     
-    var content_minus = 0;
+    var content_minus = 40;
     content_minus = ($(".page-container-boxed").length > 0) ? 40 : content_minus;
     content_minus += ($(".page-navigation-top-fixed").length > 0) ? 50 : 0;
     

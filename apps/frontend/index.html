@@ -2,7 +2,7 @@
 <html lang="en">
     <head>        
         <!-- META SECTION -->
-        <title>BCNNow</title>
+        <title>BarcelonaNow</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -32,15 +32,14 @@
         <link rel="stylesheet" src="css/easybutton/easy-button.css" type="text/css"/>
         <link rel="stylesheet" src="css/labeledslider/jquery.ui.labeledslider.css" type="text/css"/>
         <script src="https://use.fontawesome.com/10b85c751b.js"></script>
-        <script type="text/javascript" src="js/dashboard.js"></script>
+
         <script type="text/javascript" src="js/TileLayer.Grayscale.js"></script>
-        <script type="text/javascript" src="js/urlshortner.js"> </script>
         <script type="text/javascript" src="js/notify.min.js"> </script>
         <script type="text/javascript" src="js/svg.js"> </script>
         <script type="text/javascript" src="js/plotly.min.js"> </script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/js/bootstrap-dialog.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/css/bootstrap-dialog.min.css" type="text/css" />
-
+        <link href='https://fonts.googleapis.com/css?family=Montserrat:400' rel='stylesheet' type='text/css'>
         <!-- END LEAFLET INCLUDE -->
 
         <script>
@@ -55,7 +54,7 @@
                 <!-- START X-NAVIGATION -->
                 <ul class="x-navigation">
                     <li class="xn-logo">
-                        <a href="index.html">BarcelonaNow</a>
+                        <a href="index.html" class="dashboard-link">BarcelonaNow</a>
                         <a href="#" class="x-navigation-control"></a>
                     </li>
                     <li class="xn-profile">
@@ -71,32 +70,46 @@
                             </div>
                         </div>
                     </li>
-                    <li id="page-0" class="editor dashboard-page">
-                        Create New Widget
+                    <li class="dashboard-page-title">
+                        Creators
                     </li>
-                    <li id="page-1" class="dashboard-page" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <li id="page-0" class="editor dashboard-page">
+                        Create Map Widget
+                    </li>
+                    <li class="dashboard-page-title">
+                        Dashboards
+                    </li>
+                    <li id="page-1" class="dashboard-page">
                         Mobility with bikes
                     </li>
-                    <li id="page-2" class="dashboard-page" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <li id="page-2" class="dashboard-page">
                         Agenda with events
                     </li>
-                    <li id="page-3" class="dashboard-page" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <li id="page-3" class="dashboard-page">
                         Awareness on noise
                     </li>
                     <li class="add">
-                        Create Dashboard Page
+                        Create Dashboard
                     </li>
-                    <li class="empty">
-
+                    <li class="dashboard-page-title">
+                        Resources
+                    </li>
+                    <li class="dashboard-page-default">
+                        <a target="_blank" href="http://bcnnow.decodeproject.eu/video.mp4">Showcase Video</a>
+                    </li>
+                    <li class="dashboard-page-default">
+                        <a target="_blank" href="https://www.slideshare.net/sdivad/barcelonanow-dashboard-showcase">Showcase Slides</a>
+                    </li>
+                    <li class="dashboard-page-default">
+                        <a target="_blank" href="https://dl.acm.org/ft_gateway.cfm?id=3186983&ftid=1958136&dwn=1&CFID=31876962&CFTOKEN=9559f888e1611a-E4A518E5-E815-4B15-7C9FE2DBB2C79F13">Showcase Paper</a>
+                    </li>
+                    <li class="dashboard-page-default">
+                        <a target="_blank" href="http://bcnnow.decodeproject.eu/poster.pdf">Showcase Poster</a>
+                    </li>
+                    <li class="dashboard-page-default">
+                        <a target="_blank" href="https://github.com/DECODEproject/bcnnow">Code Repository</a>
                     </li>
                 </ul>
-                <span>
-                    <div class="ack"><span class="high-name">BarcelonaNow</span> is developed by</div>
-                    <a target="_blank" href="https://eurecat.org/en/"><div class="center"><img class="x-eurecat-logo" src="img/eurecat.png"></div></a>
-                    <div class="ack">under the European Project</div>
-                    <a target="_blank" href="https://decodeproject.eu"><div class="center"><img class="x-decode-logo" src="img/logo.svg"></div></a>
-                    <!--<div class="ack justified">to empower citizens to explore and put in contrast relevant information on issues that might interest them.</div>-->
-                </span>
                 <!-- END X-NAVIGATION -->
             </div>
             <!-- END PAGE SIDEBAR -->
@@ -111,9 +124,6 @@
                     <!-- SEARCH -->
                     <!-- END SEARCH -->
                     <!-- SIGN OUT -->
-                    <li>
-                        <a target="_blank" href="https://youtu.be/_QTuGo5n8IE"><span class="short-video">Short Video Demonstration</span></a>
-                    </li>
                     <li class="xn-icon-button pull-right">
                         <a class="sign-in-link" href="login.html"><span class="sign-in-text">Sign In</span><span class="fa fa-sign-in"></span></a>
                     </li>
@@ -130,14 +140,18 @@
                 <!-- END BREADCRUMB -->                       
                 
                 <!-- PAGE CONTENT WRAPPER -->
-                <div class="page-content-wrap">
-
+                <div id="sortable" class="page-content-wrap">
                 </div>
                 <!-- END PAGE CONTENT WRAPPER -->                                
             </div>            
             <!-- END PAGE CONTENT -->
         </div>
         <!-- END PAGE CONTAINER -->
+        <div class="footer">
+            <div class="footer-content">
+                BarcelonaNow is managed on behalf of the <a target="_blank" href="https://eurecat.org/en/">EURECAT Technology Centre of Catalonia</a> and funded by the European Union's Horizon 2020 Programme under grant agreement number 732546 (<a target="_blank" href="https://decodeproject.eu">DECODE Project</a>).
+            </div>
+        </div>
 
         <!-- LOG OUT BOX-->
         <div class="message-box animated fadeIn" data-sound="alert" id="mb-signout">
@@ -163,7 +177,9 @@
         <audio id="audio-alert" src="audio/alert.mp3" preload="auto"></audio>
         <audio id="audio-fail" src="audio/fail.mp3" preload="auto"></audio>
         <!-- END PRELOADS -->
+
         <!-- START SCRIPTS -->
+
             <!-- START THIS PAGE PLUGINS-->
             <script type='text/javascript' src='js/plugins/owl/owl.carousel.min.js'></script>
             <script type="text/javascript" src="js/plugins/moment.min.js"></script>
@@ -172,28 +188,19 @@
             <script type="text/javascript" src="js/plugins/morris/raphael-min.js"></script>
             <script type="text/javascript" src="js/plugins/morris/morris.min.js"></script>
             <script type="text/javascript" src="js/plugins/labeledslider/jquery.ui.labeledslider.js"></script>
+            <script src="https://apis.google.com/js/client.js"> </script>
             <!-- END THIS PAGE PLUGINS-->
+
             <!-- START TEMPLATE -->
             <script type="text/javascript" src="js/plugins.js"></script>
             <script type="text/javascript" src="js/actions.js"></script>
+            <script type="text/javascript" src="js/dashboard/datasets.js"></script>
+            <script type="text/javascript" src="js/dashboard/dashboards.js"></script>
+            <script type="text/javascript" src="js/dashboard/main.js"></script>
             <!-- END TEMPLATE -->
-            <!-- START WIDGET SCRIPTS -->
-        <!--
-            <script>
-                $("#w1").load("widgets/IrisCounterWidget/iris-counter-widget.html");
-                $.getScript("widgets/IrisCounterWidget/iris-counter-widget.js", function( collection, textStatus, jqxhr ) {});
-                $("#w2").load("notifications/AsiaNotification/asia-notification.html");
-                $.getScript("notifications/AsiaNotification/asia-notification.js", function( collection, textStatus, jqxhr ) {});
-                $("#w4").load("notifications/PointsInterestNotification/points-interest-notification.html");
-                $.getScript("notifications/PointsInterestNotification/points-interest-notification.js", function( collection, textStatus, jqxhr ) {});
-                $("#w6").load("widgets/AsiaMapWidget/asia-map-widget.html");
-                $.getScript("widgets/AsiaMapWidget/asia-map-widget.js", function( collection, textStatus, jqxhr ) {});
-                $("#w7").load("widgets/IrisMapWidget/iris-map-widget.html");
-                $.getScript("widgets/IrisMapWidget/iris-map-widget.js", function( collection, textStatus, jqxhr ) {});
-            </script>
-            -->
-            <!-- END WIDGET SCRIPTS -->
+
         <!-- END SCRIPTS -->
+
     </body>
 </html>
 
