@@ -5,7 +5,7 @@
 var url_api = 'http://b3d4739d.ngrok.io/api/v0/'; // Get the endpoint url of BarcelonaNow API
 var datasets = getDatasets(); // Get the available datasets from datasets.js file
 var dashboards = getDashboards(); // Get the available dashboards from dashboards.js file
-var page = 'page-' + (Object.keys(dashboards).length - 1); // Get the current dashboard to show (the last by default)
+var page = 'page-3';// + (Object.keys(dashboards).length - 1); // Get the current dashboard to show (the last by default)
 var color_palette = ['#4D9DE0', '#E15554', '#E1BC29', '#3BB273', '#7768AE']; // Default color palette for time series
 var start_date = moment().subtract('days', 6).toISOString();
 var end_date = moment().toISOString();
@@ -117,6 +117,16 @@ $(document).ready(function() {
     /*
     */
     function dragDropSamePage() {
+         $( "#sortable" ).sortable({
+            handle: ".panel-heading",
+            start: function (event, ui) {
+                previous_position = ui.item.index();
+            },
+            stop:  function (event, ui) {
+                dashboards[page]['widgets'] = array_move(dashboards[page]['widgets'], previous_position, ui.item.index());
+            }
+        });
+        $("#sortable").disableSelection();
     }
 
     /*
@@ -393,6 +403,19 @@ $(document).ready(function() {
         }
     }
 
+    function getPolygonColor(feature, dataset) {
+        var bordercolor = 'rgba(0,0,0,0)';
+        var fillcolor = getIconColor(dataset, feature.properties.value);
+
+        return {
+          color: bordercolor,
+          weight: 1,
+          opacity: 1,
+          fillColor: fillcolor,
+          fillOpacity: 0.8
+        }
+    }
+
     /*
         Transforms a text to camel case
         @str The string to be modified
@@ -581,21 +604,14 @@ $(document).ready(function() {
         var is_observation = 'isObservation' + '&';
         var conditions = '$timestamp=gte@' + widget['sources'][sindex]['start'] + ',lt@' + widget['sources'][sindex]['end'] + '&';
         $('#' + widget['id'] + '-loader').show();
+        console.log(url_api + dataset['name'] + '?' + operators  + aggregation + parameters + sort + is_observation + conditions + filters)
         $.ajax({
             url: url_api + dataset['name'] + '?' + operators  + aggregation + parameters + sort + is_observation + conditions + filters,
             success: function(data) {
                 widget['sources'][sindex]['dataset'] = getPreparedData(widget['sources'][sindex]['aggregation'], data, windex, sindex);
                 addSlider(widget, windex, sindex);
                 addLegend(widget, dataset);
-                try {
-                    updateMap(windex, sindex, 0);
-                }
-                catch(err) {
-                    BootstrapDialog.alert({
-                        title: 'Alert',
-                        message: 'No data available for "' + datasets[widget['sources'][sindex]['id']]['description'] + '" during the selected period on the widget "' + widget['title'] + '"'
-                    });
-                }
+                updateMap(windex, sindex, 0);
                 $("#" + widget['id'] + "-loader").hide();
             },
             error: function() {
@@ -620,8 +636,8 @@ $(document).ready(function() {
         if(widget['sources'][sindex]['chart'] == 'heat-map'){
             data.push({lat: element["point"][1], lng: element["point"][0], value: value});
         }
-        else if(widget['sources'][sindex]['chart'] == 'polygon'){
-            data.push(element["geometry"]);
+        else if(widget['sources'][sindex]['chart'] == 'map-polygons'){
+            data.push({ "type": "Feature", "properties": {"value": element['value']}, "geometry": element["polygon"] });
         }
         else if(widget['sources'][sindex]['chart'] == 'map-lines'){
             data.push(element["line"]);
@@ -659,6 +675,20 @@ $(document).ready(function() {
             });
         }
 
+        if(dataset['name'] == 'pointsinterest') {
+            $("#" + windex + "-time-series-title").text("POINT OF INTEREST ID " + markerid);
+            $.each(output.records, function(index, element) {
+                if(widget['sources'][sindex]['aggregation'] == 'none') {
+                     $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Name:</span> ' + element.doc[0].name + '</div>');
+                     $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Type:</span> ' + element.doc[0].type + '</div>');
+                     $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Short Description:</span> ' + element.doc[0].shortdescription + '</div>');
+                }
+                else {
+                    $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Number of PoIs:</span> ' + element.doc[0].count + '</div>');
+                }
+            });
+        }
+
         if(dataset['name'] == 'iris') {
             $("#" + windex + "-time-series-title").text("IRIS ID " + markerid);
             $.each(output.records, function(index, element) {
@@ -677,6 +707,7 @@ $(document).ready(function() {
                 }
             });
         }
+
         if(dataset['name'] == 'smartcitizen' || dataset['name'] == 'bicing') {
             var flag = false;
             widget['data'].forEach(function(record, index){
@@ -777,7 +808,7 @@ $(document).ready(function() {
             var agg = (widget['sources'][sindex]['aggregation'] != 'none') ? "avg" : 'value';
             var filters = (widget['sources'][sindex]['keyword'] != '') ? "$" + dataset['filter_field'] + "=[" + query + "]" : '';
             var parameters = "fields=" + dataset['details'] + "id@id,value@payload." + datasets[widget['sources'][sindex]['id']]['targetvalue'] + ",point@location.point.coordinates" + "&";
-            var current = (widget['sources'][sindex]['aggregation'] != 'none' && (dataset['name'] == 'asia' || dataset['name'] == 'iris')) ? "&$timestamp=gte@" + moment(widget['sources'][sindex]['dataset'].records[(val-1)%(max)]["_id"].replace(' ', 'T') + 'Z').set({hour:0,minute:0,second:0,millisecond:0}).toISOString() + ",lt@" + moment(widget['sources'][sindex]['dataset'].records[(val-1)%(max)]["_id"].replace(' ', 'T') + 'Z').add(1, "days").set({hour:0,minute:0,second:0,millisecond:0}).toISOString() : "&$timestamp=gte@" + widget['sources'][sindex]['start'] + ",lt@" + widget['sources'][sindex]['end'] ;
+            var current = (widget['sources'][sindex]['aggregation'] != 'none' && (dataset['name'] == 'asia' || dataset['name'] == 'iris' || dataset['name'] == 'pointsinterest')) ? "&$timestamp=gte@" + moment(widget['sources'][sindex]['dataset'].records[(val-1)%(max)]["_id"].replace(' ', 'T') + 'Z').set({hour:0,minute:0,second:0,millisecond:0}).toISOString() + ",lt@" + moment(widget['sources'][sindex]['dataset'].records[(val-1)%(max)]["_id"].replace(' ', 'T') + 'Z').add(1, "days").set({hour:0,minute:0,second:0,millisecond:0}).toISOString() : "&$timestamp=gte@" + widget['sources'][sindex]['start'] + ",lt@" + widget['sources'][sindex]['end'] ;
             var sort = "sort=a@timestamp" + "&";
             var is_observation = "isObservation" + "&";
             console.log(url_api + dataset['name'] + '?' + operators + aggregation + parameters + sort + is_observation + geo + current + filters);
@@ -823,9 +854,14 @@ $(document).ready(function() {
             });
             widget['sources'][sindex]['markers'].addLayer(layer);
         }
-        else if(widget['sources'][sindex]['chart'] == 'polygon') {
-            layer = L.geoJSON(data, {
-                style: {'color': '#ff7800', 'weight': 5, 'opacity': 0.65}
+        else if(widget['sources'][sindex]['chart'] == 'map-polygons') {
+            layer = L.geoJson(data, {
+              style: function(feature) {
+                return getPolygonColor(feature, dataset);
+              },
+              onEachFeature: function(feature, layer) {
+                layer.bindTooltip(dataset['labels'] + ': ' + feature.properties.value);
+              }
             });
             widget['sources'][sindex]['markers'].addLayer(layer);
         }

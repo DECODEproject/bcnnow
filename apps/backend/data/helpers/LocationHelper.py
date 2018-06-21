@@ -54,21 +54,26 @@ class LocationHelper:
         try:
             for feature in self.neighbourhoods['features']:
                 if shape(feature['geometry']).contains(Point(float(longitude), float(latitude))):
-                    neighbourhood = feature['properties']['neighbourhood'].encode('latin1').decode('utf8')
-                    district = feature['properties']['neighbourhood_group'].encode('latin1').decode('utf8')
+                    neighbourhood = feature['properties']['neighbourhood']
+                    district = feature['properties']['neighbourhood_group']
         except:
             district = ''
             neighbourhood = ''
         return district, neighbourhood
 
-    def toWGS84Geometry(self, geometry, coordinates='EPSG:23031'):
+    def toWGS84Geometry(self, geometry, coordinates='EPSG:23031', isNested=False):
         FROM = pyproj.Proj('+init=' + coordinates)
         WGS84 = pyproj.Proj('+init=' + 'EPSG:4326')
-
         wgs84_coordinates = []
-        for coord in geometry['coordinates']:
+        if (isNested == True):
+            old_coordinates = geometry['coordinates'][0]
+        else:
+            old_coordinates = geometry['coordinates']
+        for coord in old_coordinates:
             wgs84_long, wgs84_lat = pyproj.transform(FROM, WGS84, coord[0], coord[1])
             wgs84_coordinates.append([wgs84_long, wgs84_lat, 0.0])
+        if (isNested == True):
+            wgs84_coordinates = [wgs84_coordinates]
         geometry['coordinates'] = wgs84_coordinates
 
         return geometry

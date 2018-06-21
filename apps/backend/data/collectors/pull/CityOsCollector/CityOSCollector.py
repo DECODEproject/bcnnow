@@ -57,7 +57,7 @@ class CityOSCollector:
             flag = True
             total = 0
             while flag:
-                url = rurl + '&startIndex' + str(total)
+                url = rurl + '&startIndex=' + str(total)
                 print(str(datetime.datetime.now()) + ' ' + '        ' + ' Access to URL: ' + url)
                 data = self.sendRequest(url)
                 self.saveData(data, rID)
@@ -90,21 +90,24 @@ class CityOSCollector:
 
     # This method builds a CityOS BaseRecord
     def buildRecord(self, item, type):
-        LocationHelper().toWGS84Geometry(item['geometry'], 'EPSG:25831')
 
         if type == "cityos:potencial_fotovoltaic":
+            LocationHelper().toWGS84Geometry(item['geometry'], 'EPSG:25831', isNested=True)
             payload = CityOSPVPotentialPayload()
             payload.setId(item['id'])
             payload.setPowTh(item['properties']['POW_TH'])
             payload.setEventCode(item['properties']['EventCode'])
             payload.setSuitability(item['properties']['SUITABILITY'])
             payload.setSumModare(item['properties']['SUM_MODARE'])
+            payload.setPolygon(item['geometry'])
         elif type == "cityos:ptt_carril_bici":
+            LocationHelper().toWGS84Geometry(item['geometry'], 'EPSG:25831')
             payload = CityOSBikeLinesPayload()
             payload.setId(item['id'])
             payload.setId1(item['properties']['ID1'])
             payload.setId2(item['properties']['ID2'])
             payload.setEventCode(item['properties']['EventCode'])
+            payload.setLine(item['geometry'])
 
         location = LocationRecord()
         coords = shape(item['geometry']).centroid
@@ -117,7 +120,6 @@ class CityOSCollector:
         location.setNeighbourhood(GeneralHelper().default(neighbourhood))
         location.setStreetName(GeneralHelper().default(''))
         location.setStreetNumber(GeneralHelper().default(''))
-        location.setGeometry(item['geometry'])
 
         record = BaseRecord()
         record.setId(item['id'])
@@ -133,6 +135,7 @@ class CityOSCollector:
 
     # This method permanently stores a CityOS BaseRecord
     def saveData(self, data, type):
+        print(data)
         items = data['features']
         if len(items) >= 0:
             for index, item in enumerate(items):

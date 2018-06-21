@@ -23,7 +23,7 @@ class CityOSPVPotentialPayload:
 
     def __init__(self):
         self.id = ''
-        self.powTh = ''
+        self.powTh = 0
         self.polygon = []
         self.eventCode = ''
         self.suitability = ''
@@ -33,7 +33,8 @@ class CityOSPVPotentialPayload:
         self.id = str(id)
 
     def setPowTh(self, powTh):
-        self.powTh = str(powTh)
+        if powTh != "":
+            self.powTh = float(powTh)
 
     def setPolygon(self, polygon):
         self.polygon = polygon

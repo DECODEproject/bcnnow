@@ -91,32 +91,32 @@ function getDashboards() {
         "page-2": {
             "name": "Agenda with events",
             "widgets": [
-                {
-                    "id": "widget-5467",
-                    "title": "Find City Events Around You",
-                    "authors": ["carmen"],
-                    "modified": "2018-01-12T20:00:00Z",
-                    "sources": [{
-                        "id": "2",
-                        "aggregation": "none",
-                        "chart": "map-points",
-                        "type": "points",
-                        "granularity": "cumulative",
-                        "keyword": "",
-                        "start": "2018-05-01T00:00:00Z",
-                        "end": "2018-05-02T00:00:00Z",
-                        "dataset": null,
-                        "markers": null
+                    {
+                        "id": "widget-5467",
+                        "title": "Find City Events Around You",
+                        "authors": ["carmen"],
+                        "modified": "2018-01-12T20:00:00Z",
+                        "sources": [{
+                            "id": "2",
+                            "aggregation": "none",
+                            "chart": "map-points",
+                            "type": "points",
+                            "granularity": "cumulative",
+                            "keyword": "",
+                            "start": "2018-05-01T00:00:00Z",
+                            "end": "2018-05-02T00:00:00Z",
+                            "dataset": null,
+                            "markers": null
+                        }
+                        ],
+                        "timeinterval": null,
+                        "map": null,
+                        "refreshIntervalId": [],
+                        "data": [],
+                        "highmarker": [],
+                        "highmarkericon": [],
+                        "type": "static"
                     }
-                    ],
-                    "timeinterval": null,
-                    "map": null,
-                    "refreshIntervalId": [],
-                    "data": [],
-                    "highmarker": [],
-                    "highmarkericon": [],
-                    "type": "static"
-                }
                 ]
         },
         "page-3": {
@@ -199,6 +199,37 @@ function getDashboards() {
                     "highmarker": [],
                     "highmarkericon": [],
                     "type": "static"
+                }
+            ]
+        },
+        "page-4": {
+            "name": "Photovoltaic Potential",
+            "widgets": [
+                {
+                    "id": "widget-fdfd",
+                    "title": "Explore photovoltaic potential distribution",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "7",
+                        "aggregation": "none",
+                        "chart": "map-polygons",
+                        "type": "points",
+                        "granularity": "cumulative",
+                        "keyword": "",
+                        "start": "2018-06-11T00:00:00Z",
+                        "end": "2018-06-15T00:00:00Z",
+                        "dataset": null,
+                        "markers": null
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type": "dynamic"
                 }
             ]
         }

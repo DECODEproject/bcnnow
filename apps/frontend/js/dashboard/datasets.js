@@ -83,7 +83,7 @@ function getDatasets() {
         "type": "record",
         "name": "cityos-ptt_carril_bici",
         "description": "CityOS Bike Lanes",
-        "provider": "cityos:ptt_carril_bici",
+        "provider": "cityos-ptt_carril_bici",
         "start": "2018-04-01T00:00:00Z",
         "end": "2018-05-01T00:00:00Z",
         "language": "Catalan",
@@ -116,6 +116,25 @@ function getDatasets() {
         "filter_field": "",
         "details": "",
         "allowed_visual_models": ["points-map", "heat-map"]
+        },
+        "7": {
+        "id": "7",
+        "type": "record",
+        "name": "cityos-potencial_fotovoltaic",
+        "description": "CityOS Photovoltaic Potencial",
+        "provider": "cityos-potencial_fotovoltaic",
+        "start": "2018-06-13T00:00:00Z",
+        "end": "2018-06-14T00:00:00Z",
+        "language": "English",
+        "labels": "Potential [unit]",
+        "targetvalue": "powth",
+        "aggregator": "avg",
+        "radius": 20,
+        "colors": ['#004304', '#86C98A', '#FFF592', '#FFDB2B', '#F55E00', '#FF1300', '#801515'],
+        "cuts": [-1, 500, 550, 600, 650, 700, 750],
+        "parameters": "polygon@payload.polygon,",
+        "filter_field": "",
+        "allowed_visual_models": ["points-map", "map-polygons"]
         }
     };
 
