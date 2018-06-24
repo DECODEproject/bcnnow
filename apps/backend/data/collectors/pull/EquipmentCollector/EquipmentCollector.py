@@ -1,51 +1,31 @@
-'''
-    BarcelonaNow (c) Copyright 2018 by the Eurecat - Technology Centre of Catalonia
-
-    This source code is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Public License as published
-    by the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This source code is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    Please refer to the GNU Public License for more details.
-
-    You should have received a copy of the GNU Public License along with
-    this source code; if not, write to:
-    Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-'''
 import sys
-sys.path.append('Insert your path to the BarcelonaNow project folder')
+sys.path.append('/home/code/projects/decode-bcnnow/')
 
 from apps.backend.data.collectors.pull.EquipmentCollector.Config import Config as collectorConfig
 collectorCfg = collectorConfig().get()
-
 from config.Config import Config as globalConfig
 globalCfg = globalConfig().get()
 
-from apps.backend.data.collectors.pull.EquipmentCollector.EquipmentPayload import EquipmentPayload
+from apps.backend.data.collectors.pull.EquipmentCollector.EquipmentPayload import AsiaEquipmentPayload
 from apps.backend.data.models.BaseRecord import BaseRecord
 from apps.backend.data.models.LocationRecord import LocationRecord
 from apps.backend.data.helpers.LocationHelper import LocationHelper
 from apps.backend.data.helpers.GeneralHelper import GeneralHelper
 from apps.backend.data.helpers.StorageHelper import StorageHelper
-
 import requests
 import datetime
 import xmltodict
 
-# This class defines the structure of ODI Equipment collector which adopts the pull strategy.
 class EquipmentCollector:
 
     def __init__(self, ):
         return
 
-    # This method starts the collection process
+    # Start reader process
     def start(self, base, resourceIDs=[]):
         print(str(datetime.datetime.now()) + ' ' + 'Start collection')
         for rindex, rID in enumerate(resourceIDs):
-            print(str(datetime.datetime.now()) + ' ' + '    Collecting collection for ' + rID)
+            print(str(datetime.datetime.now()) + ' ' + '    Collecting data for ' + rID)
             url = base + str(rID)
             total = 0
             print(str(datetime.datetime.now()) + ' ' + '        ' + ' Access to URL: ' + url)
@@ -55,7 +35,7 @@ class EquipmentCollector:
             print(str(datetime.datetime.now()) + ' ' + '         Total: ' + str("{0:0>9}".format(total)))
         print(str(datetime.datetime.now()) + ' ' + 'End collection')
 
-    # This method sends a request to get ODI Equipment data
+    # Send request to get data
     def sendRequest(self, url):
         flag = True
         while flag:
@@ -68,10 +48,10 @@ class EquipmentCollector:
                 print(str(datetime.datetime.now()) + ' ' + '         Reconnecting...')
                 flag = True
 
-    # This method build an ODI Equipment BaseRecord
+    # Build a record in the standard format
     def buildRecord(self, item, type=''):
         record = BaseRecord()
-        payload = EquipmentPayload()
+        payload = AsiaEquipmentPayload()
         location = LocationRecord()
 
         payload.setId(item['dct:identifier'])
@@ -103,12 +83,13 @@ class EquipmentCollector:
 
         return record
 
-    # This method saves an ODI Equipment BaseRecord
+    # Save data to permanent storage
     def saveData(self, data, type=''):
         items = data['rdf:RDF']['v:VCard']
         if len(items) >= 0:
             for index, item in enumerate(items):
                 StorageHelper().store(self.buildRecord(item, type).toJSON())
+                #print(str(datetime.datetime.now()) + ' ' + '            ' + str(index+1) + ' of ' + str(len(items)) + ' Saving ' + record.toJSON())
 
 if __name__ == "__main__":
     base = collectorCfg['collectors']['odi']['equipment']['equipment_base_url']

@@ -1,26 +1,8 @@
-'''
-    BarcelonaNow (c) Copyright 2018 by the Eurecat - Technology Centre of Catalonia
-
-    This source code is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Public License as published
-    by the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This source code is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    Please refer to the GNU Public License for more details.
-
-    You should have received a copy of the GNU Public License along with
-    this source code; if not, write to:
-    Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-'''
 import sys
-sys.path.append('Insert your path to the BarcelonaNow project folder')
+sys.path.append('/home/code/projects/decode-bcnnow/')
 
 from apps.backend.data.collectors.pull.SmartCitizenCollector.Config import Config as collectorConfig
 collectorCfg = collectorConfig().get()
-
 from config.Config import Config as globalConfig
 globalCfg = globalConfig().get()
 
@@ -37,21 +19,20 @@ import re
 import os
 import pickle
 
-# This class defines the structure of Smart Citizen collector which adopts the pull strategy.
-class SmartCitizenCollector:
+class SmartCitizentCollector:
 
     def __init__(self, ):
         return
 
-    # This method starts the collection process
+    # Start reader process
     def start(self, base):
         print(str(datetime.datetime.now()) + ' ' + 'Start collection')
-        lastUrl = 'history/smartcitizen-last-readings.pkl'
+        lastUrl = globalCfg['project']['base_url'] + 'backend/data/collectors/polling/SmartCitizenCollector/history/smartcitizen-last-readings.pkl'
         lastReadings = pickle.load(open(lastUrl, 'rb')) if os.path.isfile(lastUrl) else {}
         total = 0
         resourceIDs = self.getAllSensors()
         for rindex, rID in enumerate(resourceIDs):
-            print(str(datetime.datetime.now()) + ' ' + '    ' + str(rindex+1) + '/' + str(len(resourceIDs)) + ' Collecting collection for ' + rID['name'])
+            print(str(datetime.datetime.now()) + ' ' + '    ' + str(rindex+1) + '/' + str(len(resourceIDs)) + ' Collecting data for ' + rID['name'])
             start = lastReadings[rID['id']] if rID['id'] in lastReadings else '2017-01-01T00:00:00Z'
             a = datetime.datetime.strptime(start, '%Y-%m-%dT%H:%M:%SZ')
             b = datetime.timedelta(days=90)
@@ -77,7 +58,7 @@ class SmartCitizenCollector:
             pickle.dump(lastReadings, open(lastUrl, 'wb'))
         print(str(datetime.datetime.now()) + ' ' + 'End collection')
 
-    # This method sends a request to get Smart Citizen data
+    # Send request to get data
     def sendRequest(self, url):
         flag = True
         while flag:
@@ -90,7 +71,7 @@ class SmartCitizenCollector:
                 print(str(datetime.datetime.now()) + ' ' + '         Reconnecting...')
                 flag = True
 
-    # This method builds a Smart Citizen BaseRecord
+    # Build a record in the standard format
     def buildRecord(self, item, sensor):
         record = BaseRecord()
         payload = SmartCitizenPayload()
@@ -124,13 +105,15 @@ class SmartCitizenCollector:
 
         return record
 
-    # This method saves a Smart Citizen BaseRecord
+    # Save data to permanent storage
     def saveData(self, data, sensor):
+        items = data
         if 'readings' in data:
             for item in reversed(data['readings']):
                 StorageHelper().store(self.buildRecord(item, sensor).toJSON())
+                #print(str(datetime.datetime.now()) + ' ' + '            ' + str(index+1) + ' of ' + str(len(items)) + ' Saving ' + record.toJSON())
 
-    # This method retrieves the list of all the Smart Citizen sensors
+    # Get the list of all the sensors
     def getAllSensors(self):
         flag = True
         while flag:
@@ -146,4 +129,4 @@ class SmartCitizenCollector:
 
 if __name__ == "__main__":
     base = collectorCfg['collectors']['smartcitizen']['base_url']
-    SmartCitizenCollector().start(base)
+    SmartCitizentCollector().start(base)

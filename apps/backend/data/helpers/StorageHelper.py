@@ -1,43 +1,35 @@
-'''
-    BarcelonaNow (c) Copyright 2018 by the Eurecat - Technology Centre of Catalonia
-
-    This source code is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Public License as published
-    by the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This source code is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    Please refer to the GNU Public License for more details.
-
-    You should have received a copy of the GNU Public License along with
-    this source code; if not, write to:
-    Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-'''
-
-from pymongo import MongoClient
+from pymongo import MongoClient, GEO2D
 from kafka import KafkaProducer
 from config.Config import Config
 import json
+import datetime
 
 cfg = Config().get()
 
-# This class defines a set of utilities methods to storage BaseRecord instances.
 class StorageHelper:
+
     def __init__(self):
         return
 
-    # This method saves the BaseRecord record. The global configuration variable storage/mode specifies the destination.
+    # Store record in Kafka or MongoDB
     def store(self, record):
-        record = json.loads(record, encoding="utf8")
+        json_record = json.loads(record, encoding="utf8")
         if cfg['collectors']['common']['destination'] == 'kafka':
             producer = KafkaProducer(value_serializer=lambda v: v.encode('utf-8'))
-            future = producer.send(record['source'], json.dumps(record))
-            future.get(timeout=60)
+            future = producer.send(cfg['storage']['topic'], json.dumps(json_record))
+            result = future.get(timeout=60)
+            print(str(datetime.datetime.now()) + ' ' + '              Saved to ' + cfg['collectors']['common']['destination'] + ' ' + record)
         elif cfg['collectors']['common']['destination'] == 'mongodb':
             client = MongoClient(cfg['storage']['ipaddress'], cfg['storage']['port'])
             db = client[cfg['storage']['dbname']]
-            collection = db[record['source']]
-            print(record)
-            collection.replace_one({"id": record['id']}, record, upsert=True)
+            collection = db[json_record['source']]
+            try:
+                if collection.find({"id": json_record['id']}).count() == 0:
+                    collection.insert_one(json_record)
+                    print(str(datetime.datetime.now()) + ' ' + '              Saved to ' + cfg['collectors']['common']['destination'] + ' ' + record)
+                else:
+                    collection.update_one({"id": json_record['id']}, {"$set": json_record}, upsert=False)
+                    print(str(datetime.datetime.now()) + ' ' + '              Updated to ' + cfg['collectors']['common']['destination'] + ' ' + record)
+            except:
+                print(str(datetime.datetime.now()) + ' ' + '              Error with ' + cfg['collectors']['common']['destination'] + ' ' + record)
+

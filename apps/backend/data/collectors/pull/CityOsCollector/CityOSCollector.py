@@ -33,6 +33,7 @@ from apps.backend.data.models.LocationRecord import LocationRecord
 from apps.backend.data.helpers.LocationHelper import LocationHelper
 from apps.backend.data.helpers.GeneralHelper import GeneralHelper
 from apps.backend.data.helpers.StorageHelper import StorageHelper
+
 from shapely.geometry import shape, Point
 import datetime
 import requests
@@ -55,7 +56,7 @@ class CityOSCollector:
             print(str(datetime.datetime.now()) + ' ' + '    Collecting collection for ' + rID)
             rurl = base + '&typeName=' + str(rID) + '&maxFeatures=' + str(max_features)
             flag = True
-            total = 0
+            total = 90048
             while flag:
                 url = rurl + '&startIndex=' + str(total)
                 print(str(datetime.datetime.now()) + ' ' + '        ' + ' Access to URL: ' + url)
