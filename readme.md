@@ -6,7 +6,7 @@
 
 This is an environment which enables citizens to create and explore interactive visualizations of city-related data and arrange them into dashboards. The solution offers customization capabilities to different user-defined exploration scenarios and techniques according to specific needs and goals. The back-end data aggregator and manipulator built upon state-of-the-art technologies provides normalized access to heterogeneous data. On top of it, the front-end interface allows users to create and combine visualizations, get insights out of the data and share them with others, fostering data-driven public awareness. 
 
-* [Video](http://bcnnow.decodeproject.eu/bcnnow.mp4)
+* [Video](https://www.youtube.com/watch?v=_QTuGo5n8IE)
 * [Demonstration](http://bcnnow.decodeproject.eu)
 * [Documentation](https://decodeproject.github.io/bcnnow/)
 
@@ -37,11 +37,11 @@ $ git clone https://github.com/DECODEproject/bcnnow.git
 ```
 Install all the required dependencies:
 ```
-$ pip install -r bcnnow-master/requirements.txt
+$ pip install -r bcnnow/requirements.txt
 ```
 Copy the dashboard app folder into the Apache public folder:
 ```
-$ cp 'bcnnow-master/apps/dashboard' '/var/www/html/'
+$ sudo cp -r bcnnow/apps/frontend /var/www/html/
 ```
 
 ## Usage
@@ -53,17 +53,17 @@ $ crontab -e
 ```
 Copy and save the following commands:
 ```
-* * */30 * * python3 bcnnow-master/backend/data/collectors/pull/AsiaEventCollector.py
-*/10 * * * * python3 bcnnow-master/backend/data/collectors/pull/BicingCollector.py
-* * */30 * * python3 bcnnow-master/backend/data/collectors/pull/EquipmentCollector.py
-* * */90 * * python3 bcnnow-master/backend/data/collectors/pull/IrisCollector.py
-* * */30 * * python3 bcnnow-master/backend/data/collectors/pull/PointsInterestCollector.py
-*/30 * * * * python3 bcnnow-master/backend/data/collectors/pull/SentiloCollector.py
-*/60 * * * * python3 bcnnow-master/backend/data/collectors/pull/SmartCitizenCollector.py
+* * */30 * * python3 bcnnow/backend/data/collectors/pull/AsiaEventCollector.py
+*/10 * * * * python3 bcnnow/backend/data/collectors/pull/BicingCollector.py
+* * */30 * * python3 bcnnow/backend/data/collectors/pull/EquipmentCollector.py
+* * */90 * * python3 bcnnow/backend/data/collectors/pull/IrisCollector.py
+* * */30 * * python3 bcnnow/backend/data/collectors/pull/PointsInterestCollector.py
+*/30 * * * * python3 bcnnow/backend/data/collectors/pull/SentiloCollector.py
+*/60 * * * * python3 bcnnow/backend/data/collectors/pull/SmartCitizenCollector.py
 ```
 Run BarcelonaNow's API in background (see this [link](http://flask.pocoo.org/docs/0.12/deploying/) for Flask deployment in production):
 ```
-nohup python3 bcnnow-master/backend/logic/api/v0/app.py &
+nohup python3 bcnnow/backend/logic/api/v0/app.py &
 ```
 Open your browser at the following link:
 ```
