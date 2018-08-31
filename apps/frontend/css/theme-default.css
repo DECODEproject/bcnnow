@@ -308,7 +308,7 @@ body.page-container-boxed .page-container {
   position: relative;
 }
 .x-navigation li > a {
-  display: block;
+  /* display: block; */
   float: left;
   width: 100%;
   line-height: 19px;

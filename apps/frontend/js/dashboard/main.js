@@ -249,6 +249,9 @@ $(document).ready(function() {
             $('#bread-item').html(dashboards[page]['name'] + '<span id="popup-dashboard" class="fa fa-link popup-dashboard"></span>');
             addEventsShareDashboard();
             displayWidgets(dashboards[$(element).attr('id')]['widgets']);
+
+            // hide sidebar
+            $('.x-navigation').removeClass('x-navigation-open');
         }
     }
 
@@ -731,6 +734,10 @@ $(document).ready(function() {
             var WIDTH_IN_PERCENT_OF_PARENT = 100,
                 HEIGHT_IN_PERCENT_OF_PARENT = 100;
 
+            if ($(window).width() < 1300) {
+                WIDTH_IN_PERCENT_OF_PARENT = WIDTH_IN_PERCENT_OF_PARENT * 1.2;
+            }
+
             var gd3 = d3.select('#' + widget['id'] + '-dashboard-line')
                 .append('div')
                 .style({
@@ -745,8 +752,8 @@ $(document).ready(function() {
             }
 
             Plotly.newPlot(gd, widget['data'], {
-                  autosize: true,
-                  height: 300,
+                  //autosize: true,
+                  height: 320,
                   margin: {
                     l: 35,
                     r: 50,
@@ -1118,8 +1125,6 @@ $(document).ready(function() {
                                             '</div>' +
                                         '</div>' +
                                     '</div>' +
-                                    '<div class="col-md-6">' +
-                                    '</div>' +
                                 '</div>' +
                             '</div>' +
                             '<div id="' + windex + '-slider-date-graph" class="col-md-6 slider-date-graph" style="display: none;">' +
@@ -1385,7 +1390,11 @@ $(document).ready(function() {
 
         // Close right sidebar
         $("#" + windex + "-sub-widget").click(function(e) {
-            $("#" + widget['id']).css("width", "49%");
+            if ($(window).width() < 1300) {
+                $("#" + widget['id']).css("width", "99%");
+            } else {
+                $("#" + widget['id']).css("width", "49%");
+            }
             widget['data'] = [];
             $("#" + windex + "-slider-date").removeClass('col-md-6').addClass('col-md-12');
             $("#" + windex + "-slider-date-graph").hide()
