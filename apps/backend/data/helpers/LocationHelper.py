@@ -52,8 +52,10 @@ class LocationHelper:
         neighbourhood = ''
         for feature in self.neighbourhoods['features']:
             if shape(feature['geometry']).contains(Point(float(longitude), float(latitude))):
-                neighbourhood = feature['properties']['neighbourhood']
-                district = feature['properties']['neighbourhood_group']
+                  neighbourhood = feature['properties']['neighbourhood']
+                  district = feature['properties']['neighbourhood_group']
+
+
         return district, neighbourhood
 
     def toWGS84Geometry(self, geometry, coordinates='EPSG:23031', isNested=False):

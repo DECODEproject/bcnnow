@@ -4,14 +4,15 @@ class Config:
         self.config = {
             "api": {
                   "v0": {
-                          "ipaddress": "http://84.88.76.35",
+                          "ipaddress": "http://localhost",
                           "port": 9530,
                           "database_url": ""
                   }
             },
             "collectors": {
                   "common": {
-                            "destination": "mongodb"
+                            "destination": "mongodb",
+                            "collection":"collector_config"
                   }
             },
             "storage": {
@@ -22,7 +23,7 @@ class Config:
                   "topic": "decode-bcnnow"
             },
             "project": {
-                  "base_url": "/home/code/projects/decode-bcnnow/",
+                  "base_url": "/home/rohit.kumar/Documents/Projects/Decode/code/bcnnow/",
             }
         }
 
