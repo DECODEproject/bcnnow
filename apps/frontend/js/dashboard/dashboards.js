@@ -232,6 +232,139 @@ function getDashboards() {
                     "type": "dynamic"
                 }
             ]
+        },
+        "page-5": {
+            "name": "Housing",
+            "widgets": [
+                {
+                    "id": "widget-879",
+                    "title": "Explore touristic house offer together with Airbnb data",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "8",
+                        "aggregation": "district",
+                        "chart": "map-points",
+                        "type": "points",
+                        "granularity": "cumulative",
+                        "keyword": "",
+                        "start": "2016-06-11T00:00:00Z",
+                        "end": "2018-06-12T00:00:00Z",
+                        "dataset": null,
+                        "markers": null
+                    },
+                    {
+                        "id": "5",
+                        "aggregation": "none",
+                        "chart": "heat-map",
+                        "type": "points",
+                        "granularity": "cumulative",
+                        "keyword": "",
+                        "start": "2016-06-11T00:00:00Z",
+                        "end": "2018-06-12T00:00:00Z",
+                        "dataset": null,
+                        "markers": null
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type": "dynamic"
+                },
+                {
+                    "id": "widget-0683",
+                    "title": "Explore monthly rent price over years",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "9",
+                        "aggregation": "district",
+                        "chart": "map-points",
+                        "type": "points",
+                        "granularity": "dynamic",
+                        "keyword": "",
+                        "start": "2004-06-11T00:00:00Z",
+                        "end": "2018-06-12T00:00:00Z",
+                        "dataset": null,
+                        "markers": null
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type": "dynamic"
+                },
+                {
+                    "id": "widget-0295",
+                    "title": "Explore hotels",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "10",
+                        "aggregation": "district",
+                        "chart": "map-points",
+                        "type": "points",
+                        "granularity": "cumulative",
+                        "keyword": "",
+                        "start": "2010-06-11T00:00:00Z",
+                        "end": "2018-06-12T00:00:00Z",
+                        "dataset": null,
+                        "markers": null
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type": "dynamic"
+                },
+                {
+                    "id": "widget-5363",
+                    "title": "Explore hotels together with Airbnb data",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "10",
+                        "aggregation": "district",
+                        "chart": "map-points",
+                        "type": "points",
+                        "granularity": "cumulative",
+                        "keyword": "",
+                        "start": "2010-06-11T00:00:00Z",
+                        "end": "2018-06-12T00:00:00Z",
+                        "dataset": null,
+                        "markers": null
+                    },
+                    {
+                        "id": "5",
+                        "aggregation": "none",
+                        "chart": "heat-map",
+                        "type": "points",
+                        "granularity": "cumulative",
+                        "keyword": "",
+                        "start": "2016-06-11T00:00:00Z",
+                        "end": "2018-06-12T00:00:00Z",
+                        "dataset": null,
+                        "markers": null
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type": "dynamic"
+                }
+            ]
         }
     };
 
