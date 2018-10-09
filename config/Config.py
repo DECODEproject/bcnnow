@@ -13,6 +13,7 @@ class Config:
                   "common": {
                             "destination": "mongodb",
                             "collection":"collector_config"
+
                   }
             },
             "storage": {
@@ -20,7 +21,12 @@ class Config:
                   "port": 27017,
                   "dbname": "decode",
                   "clname": "bcnnow",
-                  "topic": "decode-bcnnow"
+                  "topic": "decode-bcnnow",
+                 "sqllitedb": "decodebcn"
+            },
+            "iotconfig": {
+                "header": "{predicate:'schema:iotCommunity'}",
+                "callbackurl": "decodeurl"
             },
             "project": {
                   "base_url": "/home/rohit.kumar/Documents/Projects/Decode/code/bcnnow/",
