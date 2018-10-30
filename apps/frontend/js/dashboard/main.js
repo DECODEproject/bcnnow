@@ -2,10 +2,10 @@
                                                     GLOBAL VARIABLES 
 **********************************************************************************************************************/
 
-var url_api = 'http://b3d4739d.ngrok.io/api/v0/'; // Get the endpoint url of BarcelonaNow API
+var url_api = 'http://127.0.0.1:9530/api/v0/'; // Get the endpoint url of BarcelonaNow API
 var datasets = getDatasets(); // Get the available datasets from datasets.js file
 var dashboards = getDashboards(); // Get the available dashboards from dashboards.js file
-var page = 'page-3';// + (Object.keys(dashboards).length - 1); // Get the current dashboard to show (the last by default)
+var page = 'page-5';// + (Object.keys(dashboards).length - 1); // Get the current dashboard to show (the last by default)
 var color_palette = ['#4D9DE0', '#E15554', '#E1BC29', '#3BB273', '#7768AE']; // Default color palette for time series
 var start_date = moment().subtract('days', 6).toISOString();
 var end_date = moment().toISOString();
@@ -531,7 +531,7 @@ $(document).ready(function() {
                 var faultstatus = dataset['cuts'];
                 div.innerHTML += '<strong> ' + dataset['labels'] + ' </strong> <br>';
                 for (var i = faultstatus.length-1; i >= 0; i--) {
-                    div.innerHTML += '<i class="circle" style="background:' + dataset['colors'][i] + '"></i> ' + (faultstatus[i+1] ? '' : '&ge; ') + (faultstatus[i]+1) + (faultstatus[i+1] ? ' - ' + (faultstatus[i+1]) : '') + '<br>';
+                    div.innerHTML += '<i class="circle" style="background:' + dataset['colors'][i] + '"></i> ' + (faultstatus[i+1] ? '' : '&ge; ') + (faultstatus[i]+(i == 0 ? 1 : 0)) + (faultstatus[i+1] ? ' - ' + (faultstatus[i+1]) : '') + '<br>';
                 }
                 return div;
             };
@@ -793,7 +793,6 @@ $(document).ready(function() {
             
             widget["highmarker"].push(e.target);
             widget["highmarkericon"].push(e.target.options.icon);
-            console.log(e.target);
 
             $('.' + 'circle-icon-' + windex + '-' + sindex + '-' + markerid).empty();
             e.target.setIcon(getRectangleIcon(windex + '-' + sindex + '-' + markerid, widget));
@@ -881,7 +880,8 @@ $(document).ready(function() {
         @dataset The source dataset to insert
         @obs The observation associated to all the geographical areas
     */
-    function drawBoundaries(widget, windex, sindex, dataset, obs) {
+
+    function drawBoundaries(widget, windex, sindex, dataset, obs, output) {
         $.ajax({
             dataType: 'json',
             url: 'assets/geojson/' + widget['sources'][sindex]['aggregation'] + '.geojson',
@@ -895,6 +895,73 @@ $(document).ready(function() {
                           if(element) {
                               layer.bindTooltip(feature.properties.neighbourhood + ' ' + dataset['labels'] + ': ' + element.value);
                           }
+                          layer.on('click', function (e) {
+                            $("#" + widget['id'] + "-dashboard-line").empty();
+                            $("#" + widget['id']).css("width", "100%");
+                            $("#" + windex + "-slider-date").removeClass('col-md-12').addClass('col-md-6');
+                            $("#" + windex + "-slider-date-graph").show();
+                            $("#" + windex + "-graph-loader").show();
+                            var flag = false;
+                            widget['data'].forEach(function(record, index){
+                                if(record['name'] == feature.properties.neighbourhood)
+                                    flag = true;
+                            });
+                            var x = [];
+                            var y = [];
+                            $.each(output.records, function(index, element) {
+                                var timestamp = element["_id"];
+                                x.push(timestamp);
+                                $.each(element.doc, function(cod_d, obs_d) {
+                                    if(obs_d['id'] == feature.properties.neighbourhood)
+                                        y.push(obs_d['value']);
+                                });
+                            });
+
+                            var d3 = Plotly.d3;
+
+                            var WIDTH_IN_PERCENT_OF_PARENT = 100,
+                                HEIGHT_IN_PERCENT_OF_PARENT = 100;
+
+                            var gd3 = d3.select('#' + widget['id'] + '-dashboard-line')
+                                .append('div')
+                                .style({
+                                    width: WIDTH_IN_PERCENT_OF_PARENT + '%',
+                                    'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%'
+                                });
+
+                            var gd = gd3.node();
+
+                            if(flag == false)
+                                widget['data'].push({name: feature.properties.neighbourhood, x: x, y: y, type: 'scatter', line: {color: color_palette[widget['data'].length+1], width: 1}});
+
+                            Plotly.newPlot(gd, widget['data'], {
+                                  autosize: true,
+                                  height: 300,
+                                  margin: {
+                                    l: 35,
+                                    r: 50,
+                                    b: 35,
+                                    t: 15,
+                                    pad: 4
+                                  },
+                                  showlegend: true,
+                                  legend: {
+                                    x: 1,
+                                    y: 1
+                                  }
+                            });
+
+                            window.onresize = function() {
+                                Plotly.Plots.resize(gd);
+                            };
+                            var centroid = turf.centroid(feature);
+                            var lon = centroid.geometry.coordinates[0];
+                            var lat = centroid.geometry.coordinates[1];
+                            marker = L.marker([lat, lon], {icon: getRectangleIcon(windex + '-' + sindex + '-' + feature.properties.neighbourhood, widget)}).addTo(widget['map']);
+                            widget["highmarker"].push(marker);
+                            widget["highmarkericon"].push(marker.icon);
+                            $("#" + windex + "-graph-loader").hide();
+                          });
                       }
                 });
                 widget['sources'][sindex]['markers'] = new L.LayerGroup();
@@ -933,7 +1000,8 @@ $(document).ready(function() {
         }
 
         if(widget['sources'][sindex]['aggregation'] != 'none') {
-            drawBoundaries(widget, windex, sindex, dataset, obs);
+            all = dashboards[page]['widgets'][windex]['sources'][sindex]['dataset'];
+            drawBoundaries(widget, windex, sindex, dataset, obs, all);
         }
         else {
             var data = [];
@@ -1390,6 +1458,13 @@ $(document).ready(function() {
             $("#" + windex + "-slider-date").removeClass('col-md-6').addClass('col-md-12');
             $("#" + windex + "-slider-date-graph").hide()
             widget["highmarker"].forEach(function(highmarker, hindex){
+                var flag = false;
+                widget['sources'].forEach(function(source, sindex){
+                    if(source['aggregation'] != 'none')
+                        flag = true;
+                });
+                if(flag)
+                    widget['map'].removeLayer(highmarker);
                 $('.' + highmarker.options.icon.options.className).empty();
                 $('.' + highmarker.options.icon.options.className).empty();
                 highmarker.setIcon(dashboards[page]['widgets'][windex]["highmarkericon"][hindex]);

@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/home/code/projects/decode-bcnnow/')
+sys.path.append('/home/rohit.kumar/Documents/Projects/Decode/code/bcnnow')
 
 from apps.backend.data.collectors.pull.AsiaCollector.Config import Config as collectorConfig
 collectorCfg = collectorConfig().get()
@@ -66,23 +66,36 @@ class AsiaEventCollector:
         payload.setCategories(GeneralHelper().toClassifications(item['classificacions']))
 
         longitude, latitude = LocationHelper().toWGS84(GeneralHelper().default(item['lloc_simple']['adreca_simple']['coordenades']['geocodificacio']['@y']), GeneralHelper().default(item['lloc_simple']['adreca_simple']['coordenades']['geocodificacio']['@x']))
-        location.setPoint(latitude, longitude)
-        location.setAltitude('0.0')
-        location.setCity('Barcelona')
-        district, neighbourhood = LocationHelper().getLocationAreas(latitude, longitude)
-        location.setDistrict(GeneralHelper().default(district))
-        location.setNeighbourhood(GeneralHelper().default(neighbourhood))
-        location.setStreetName(GeneralHelper().default(item['lloc_simple']['adreca_simple']['carrer']['#text'] if '#text' in item['lloc_simple']['adreca_simple']['carrer'] else ''))
-        location.setStreetNumber(GeneralHelper().default(item['lloc_simple']['adreca_simple']['numero']['@enter'] if '@enter' in item['lloc_simple']['adreca_simple']['numero'] else ''))
+        try:
+            location.setPoint(latitude, longitude)
+            location.setAltitude('0.0')
+            location.setCity('Barcelona')
 
-        record.setId(GeneralHelper().default(item['id']))
-        record.setSource(collectorCfg['collectors']['odi']['asia']['source_name'])
-        record.setProvider('')
-        record.setPublisher('')
-        record.setType('event')
-        record.setTimestamp(TimeHelper().toDash(item['data']['data_inici']))
-        record.setLocation(location)
-        record.setPayload(payload)
+            district, neighbourhood = LocationHelper().getLocationAreas(latitude, longitude)
+            location.setDistrict(GeneralHelper().default(district))
+            location.setNeighbourhood(GeneralHelper().default(neighbourhood))
+            location.setStreetName(GeneralHelper().default(
+                item['lloc_simple']['adreca_simple']['carrer']['#text'] if '#text' in
+                                                                           item['lloc_simple']['adreca_simple'][
+                                                                               'carrer'] else ''))
+            location.setStreetNumber(GeneralHelper().default(
+                item['lloc_simple']['adreca_simple']['numero']['@enter'] if '@enter' in
+                                                                            item['lloc_simple']['adreca_simple'][
+                                                                                'numero'] else ''))
+
+            record.setId(GeneralHelper().default(item['id']))
+            record.setSource(collectorCfg['collectors']['odi']['asia']['source_name'])
+            record.setProvider('')
+            record.setPublisher('')
+            record.setType('event')
+            record.setTimestamp(TimeHelper().toDash(item['data']['data_inici']))
+            record.setLocation(location)
+            record.setPayload(payload)
+        except ValueError:
+                return None
+
+
+
 
         return record
 
@@ -91,7 +104,9 @@ class AsiaEventCollector:
         items = data['response']['body']['resultat']['actes']['acte']
         if len(items) >= 0:
             for index, item in enumerate(items):
-                StorageHelper().store(self.buildRecord(item).toJSON())
+                record=self.buildRecord(item)
+                if(record is not None):
+                    StorageHelper().store(record.toJSON())
                 #print(str(datetime.datetime.now()) + ' ' + '            ' + str(index+1) + ' of ' + str(len(items)) + ' Saving ' + record.toJSON())
 
 

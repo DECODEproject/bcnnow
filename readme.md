@@ -63,7 +63,7 @@ Copy and save the following commands:
 ```
 Run BarcelonaNow's API in background (see this [link](http://flask.pocoo.org/docs/0.12/deploying/) for Flask deployment in production):
 ```
-nohup python3 bcnnow/backend/logic/api/v0/app.py &
+nohup python3 bcnnow/apps/backend/api/v0/app.py &
 ```
 Open your browser at the following link:
 ```
