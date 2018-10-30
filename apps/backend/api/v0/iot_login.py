@@ -12,7 +12,7 @@ import sys
 import flask
 import qrcode
 import io
-import secrets
+from os import urandom
 import json
 from flask import request
 from config.Config import Config
@@ -80,7 +80,7 @@ class IoTWalletLoginManager(Resource):
 
     def get_new_token(self):
         #generate new token
-        tkn=secrets.token_urlsafe(20)
+        tkn=urandom(12).hex()
         tkn_manager=TokenManager()
         if(tkn_manager.insert_token(tkn)):
             return  tkn

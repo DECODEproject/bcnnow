@@ -23,7 +23,7 @@ from shapely.geometry import shape, Point
 
 from apps.backend.data.helpers.GeneralHelper import GeneralHelper
 from config.Config import Config
-
+import io
 cfg = Config().get()
 
 # This class defines a set of utilities methods to manage geographic locations.
@@ -32,7 +32,7 @@ class LocationHelper:
     def __init__(self):
         import os
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(dir_path + '/assets/barcelona.geojson', encoding='utf-8') as f:
+        with io.open(dir_path + '/assets/barcelona.geojson', encoding='utf-8') as f:
             self.neighbourhoods = json.load(f)
             
     # This method translates the Barcelona City Council latitude and longitude format into standard WGS84 format
@@ -61,7 +61,7 @@ class LocationHelper:
     # This method returns the Barcelona district and neighbourhood centroid
     def getAreaGeometry(self, identifier, type):
         for feature in self.neighbourhoods['features']:
-            print(feature['properties'][type], identifier)
+        #    print(feature['properties'][type], identifier)
             if feature['properties'][type] == identifier:
                 return feature['geometry']
         return None

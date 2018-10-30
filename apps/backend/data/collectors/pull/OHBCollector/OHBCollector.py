@@ -16,7 +16,7 @@
     Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 '''
 import sys
-sys.path.append('C:/DECODE/Decode/code/bcnnow/')
+
 
 from apps.backend.data.collectors.pull.OHBCollector.Config import Config as collectorConfig
 collectorCfg = collectorConfig().get()
@@ -46,13 +46,13 @@ class OHBCollector:
         print(str(datetime.datetime.now()) + ' ' + 'Start collection')
         total = 0
         for rindex, rID in enumerate(resourceIDs):
-            print(str(datetime.datetime.now()) + ' ' + '    Collecting collection for ' + rID)
+          #  print(str(datetime.datetime.now()) + ' ' + '    Collecting collection for ' + rID)
             url = base + str(rID)
-            print(str(datetime.datetime.now()) + ' ' + '        ' + ' Access to URL: ' + url)
+           # print(str(datetime.datetime.now()) + ' ' + '        ' + ' Access to URL: ' + url)
             data = self.sendRequest(url)
             self.saveData(data, rID)
             total += len(data.index)
-            print(str(datetime.datetime.now()) + ' ' + '         Total: ' + str("{0:0>9}".format(total)))
+            #print(str(datetime.datetime.now()) + ' ' + '         Total: ' + str("{0:0>9}".format(total)))
         print(str(datetime.datetime.now()) + ' ' + 'End collection')
 
     # This method sends a request to get OHB data

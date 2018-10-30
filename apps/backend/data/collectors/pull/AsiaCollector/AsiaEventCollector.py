@@ -1,6 +1,4 @@
 import sys
-sys.path.append('/home/rohit.kumar/Documents/Projects/Decode/code/bcnnow')
-
 from apps.backend.data.collectors.pull.AsiaCollector.Config import Config as collectorConfig
 collectorCfg = collectorConfig().get()
 from config.Config import Config as globalConfig

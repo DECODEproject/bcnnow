@@ -17,7 +17,6 @@
 '''
 
 import sys
-sys.path.append('/home/code/projects/decode-bcnnow/')
 
 
 
