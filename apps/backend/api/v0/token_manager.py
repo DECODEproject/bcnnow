@@ -14,6 +14,7 @@ class TokenManager:
         dbname=cfg["storage"]["sqllitedb"]
         try:
             conn = sqlite3.connect(dbname)
+
             return conn
         except sqlite3.Error as e:
             print(e)
@@ -30,6 +31,38 @@ class TokenManager:
         # Save (commit) the changes
         conn.commit()
 
+    def validate_token(self,token_id):
+        try:
+            print(token_id)
+            conn =self.create_connection()
+
+            c = conn.cursor()
+
+        # Create table
+            sql="select status from iot_token where token=?"
+            c.execute(sql,(token_id,))
+            result=c.fetchone()
+
+            if result:
+                if(result[0]==0):
+                    sql="update iot_token set status=1,updatedat=julianday('now') where token=?"
+                    c.execute(sql, (token_id,))
+                    conn.commit()
+                    return '1'
+                else:
+                    return 'Used Token'
+            else:
+                return 'Invalid Token'
+
+
+
+        # We can also close the connection if we are done with it.
+        # Just be sure any changes have been committed or they will be lost.
+            conn.close()
+
+        except sqlite3.Error as e:
+            print(e)
+            return "error!!"
 
     def insert_token(self,token_id):
 

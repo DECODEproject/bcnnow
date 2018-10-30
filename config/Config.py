@@ -22,11 +22,11 @@ class Config:
                   "dbname": "decode",
                   "clname": "bcnnow",
                   "topic": "decode-bcnnow",
-                 "sqllitedb": "decodebcn"
+                 "sqllitedb": "decodebcn.sqlite"
             },
             "iotconfig": {
                 "header": "{predicate:'schema:iotCommunity'}",
-                "callbackurl": "decodeurl"
+                "callbackurl": "http://bcnnow.decodeproject.eu/"
             },
             "project": {
                   "base_url": "/home/rohit.kumar/Documents/Projects/Decode/code/bcnnow/",
