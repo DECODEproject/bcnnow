@@ -37,9 +37,12 @@ class IoTWalletLoginManager(Resource):
             return self.get_link()
         elif (source == 'validate'):
             try:
-                basic_parameters = json.loads(request.args['attribute'])
-                token = basic_parameters['sessionId']
-                return self.validateLogin(token,basic_parameters)
+                if(request.is_json):
+                    basic_parameters = request.json
+                    token = basic_parameters['sessionId']
+                    return self.validateLogin(token,basic_parameters['attribute'])
+                else:
+                    return ("Content Type not Json!! That was the deal please !!")
             except:
                 print("Unexpected error:", sys.exc_info()[0])
                 return "Value Error 1 "
