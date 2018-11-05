@@ -370,6 +370,7 @@ function getDashboards() {
 	
 	
 	
+	
 
     return jQuery.extend(true, {}, pages);
 }
