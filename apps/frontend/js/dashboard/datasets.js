@@ -165,7 +165,7 @@ function getDatasets() {
         "start": "2005-01-01T00:00:00Z",
         "end": null,
         "language": "English",
-        "labels": "Index [€ m2/month]",
+        "labels": "€ m2/month",
         "targetvalue": "value",
         "aggregator": "avg",
         "radius": 20,
