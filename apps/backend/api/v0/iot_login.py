@@ -16,6 +16,7 @@ from os import urandom
 import json
 from flask import request
 from config.Config import Config
+
 cfg = Config().get()
 
 class IoTWalletLoginManager(Resource):

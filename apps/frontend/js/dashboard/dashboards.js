@@ -238,7 +238,7 @@ function getDashboards() {
             "widgets": [
                 {
                     "id": "widget-879",
-                    "title": "Explore touristic house offer together with Airbnb data",
+                    "title": "Explore touristic housing usage per 1,000 inhabitants together with Airbnb offer",
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
@@ -276,7 +276,7 @@ function getDashboards() {
                 },
                 {
                     "id": "widget-0683",
-                    "title": "Explore monthly rent price over years",
+                    "title": "Explore average contract rental income per m2 over years",
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
@@ -302,7 +302,7 @@ function getDashboards() {
                 },
                 {
                     "id": "widget-0295",
-                    "title": "Explore hotels",
+                    "title": "Explore room offer in hotels per 1,000 inhabitants",
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
@@ -328,7 +328,7 @@ function getDashboards() {
                 },
                 {
                     "id": "widget-5363",
-                    "title": "Explore hotels together with Airbnb data",
+                    "title": "Explore room offer in hotels per 1,000 inhabitants together with Airbnb offer",
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
@@ -367,6 +367,10 @@ function getDashboards() {
             ]
         }
     };
+	
+	
+	
+	
 
     return jQuery.extend(true, {}, pages);
 }
