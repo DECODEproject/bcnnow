@@ -17,14 +17,17 @@
 '''
 
 import sys
-sys.path.append('/home/code/projects/decode-bcnnow/')
 
-from apps.backend.data.collectors.pull.CityOsCollector.Config import Config as collectorConfig
-collectorCfg = collectorConfig().get()
 
+
+import pymongo
+from pymongo import MongoClient
 from config.Config import Config as globalConfig
 globalCfg = globalConfig().get()
 
+#from apps.backend.data.collectors.pull.CityOsCollector.Config import Config as collectorConfig
+
+#collectorCfg = collectorConfig().get()
 
 from apps.backend.data.collectors.pull.CityOsCollector.CityOSBikeLinesPayload import CityOSBikeLinesPayload
 from apps.backend.data.collectors.pull.CityOsCollector.CityOSPVPotentialPayload import CityOSPVPotentialPayload
@@ -49,45 +52,82 @@ class CityOSCollector:
         return
 
     # This method starts the collection process
-    def start(self, base, resourceIDs=[]):
+    def start(self):
+
         print(str(datetime.datetime.now()) + ' ' + 'Start collection')
-        max_features = 1000
-        for rindex, rID in enumerate(resourceIDs):
-            print(str(datetime.datetime.now()) + ' ' + '    Collecting collection for ' + rID)
-            rurl = base + '&typeName=' + str(rID) + '&maxFeatures=' + str(max_features)
-            flag = True
-            total = 90048
-            while flag:
-                url = rurl + '&startIndex=' + str(total)
-                print(str(datetime.datetime.now()) + ' ' + '        ' + ' Access to URL: ' + url)
-                data = self.sendRequest(url)
-                self.saveData(data, rID)
-                flag = len(data['features']) == max_features
-                total += len(data['features'])
-                print(str(datetime.datetime.now()) + ' ' + '         Total: ' + str("{0:0>9}".format(total)))
-                print(str(datetime.datetime.now()) + ' ' + 'End collection')
+        print('Get Config Details from mongodb')
+        try:
+            client = MongoClient(globalCfg['storage']['ipaddress'], globalCfg['storage']['port'])
+            db = client[globalCfg['storage']['dbname']]
+            collection = db[globalCfg["collectors"]["common"]["collection"]]
+            query = {"source_name":"cityos"}
+            result=collection.find(query)
+            if(result.count()==0):
+                print("no config found!!")
+                sys.exit(-1)
+            else:
+                print('Done reading config')
+                collectorCfg=result[0]
+                max_features = 1000
+                resourceIDs=collectorCfg['config']['datasets']
+                base=collectorCfg['config']['base_url']
+                for rindex, rID in enumerate(resourceIDs):
+                    print(str(datetime.datetime.now()) + ' ' + '    Collecting collection for ' + rID)
+                    rurl = base + '&typeName=' + str(rID) + '&maxFeatures=' + str(max_features)
+                    flag = True
+                    total = 90048
+                    while flag:
+                        url = rurl + '&startIndex=' + str(total)
+                        print(str(datetime.datetime.now()) + ' ' + '        ' + ' Access to URL: ' + url)
+                        data = self.sendRequest(url,collectorCfg)
+                        self.saveData(data, rID)
+                        flag = len(data['features']) == max_features
+                        total += len(data['features'])
+                    print(str(datetime.datetime.now()) + ' ' + '         Total: ' + str("{0:0>9}".format(total)))
+                    print(str(datetime.datetime.now()) + ' ' + 'End collection')
+
+        except:
+            print
+            "Unexpected error:", sys.exc_info()[0]
+            raise
+
+
 
     # This method sends a request to get CityOS data
-    def sendRequest(self, url):
+    def sendRequest(self, url,collectorCfg):
         flag = True
+        request_count=0
         while flag:
             try:
                 flag = False
-                token_response = requests.post(collectorCfg['collectors']['cityos']['token_url'],
-                                         data=collectorCfg['tokens']['cityos']['data'],
+                token_response = requests.post(collectorCfg['config']['token_url'],
+                                         data=collectorCfg['config']['data'],
                                          verify=False,
                                          allow_redirects=False,
-                                         auth=(collectorCfg['tokens']['cityos']['credentials']['client_id'],
-                                               collectorCfg['tokens']['cityos']['credentials']['client_secret']))
-                token = json.loads(token_response.text)['access_token']
-                headers = collectorCfg['tokens']['cityos']['headers']
-                headers['Authorization'] = 'Bearer ' + token
-                data_response = requests.get(url, headers=headers, verify=False)
-                data = data_response.json()
-                return data
+                                         auth=(collectorCfg['config']['credentials']['client_id'],
+                                               collectorCfg['config']['credentials']['client_secret']))
+
+                if(token_response.status_code==200):
+                    token = json.loads(token_response.text)['access_token']
+                    headers = collectorCfg['config']['headers']
+                    headers['Authorization'] = 'Bearer ' + token
+                    data_response = requests.get(url, headers=headers, verify=False)
+                    data = data_response.json()
+                    return data
+                else:
+                    print(token_response.text)
+                    sys.exit(-1)
+
+
             except:
+                print
+                "Unable to connect:", sys.exc_info()[0]
                 print(str(datetime.datetime.now()) + ' ' + '         Reconnecting...')
-                flag = True
+                request_count+=1
+                if(request_count==10):
+                    raise
+                else:
+                    flag=True
 
     # This method builds a CityOS BaseRecord
     def buildRecord(self, item, type):
@@ -143,6 +183,4 @@ class CityOSCollector:
                 StorageHelper().store(self.buildRecord(item, type).toJSON())
 
 if __name__ == "__main__":
-    base = collectorCfg['collectors']['cityos']['base_url']
-    CityOSCollector().start(collectorCfg['collectors']['cityos']['base_url'],
-                            collectorCfg['collectors']['cityos']['datasets'])
+    CityOSCollector().start()

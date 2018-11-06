@@ -17,7 +17,7 @@
 '''
 
 import sys
-sys.path.append('/home/code/projects/decode-bcnnow/')
+
 
 from apps.backend.data.collectors.pull.TouristicHouse.Config import Config as collectorConfig
 collectorCfg = collectorConfig().get()

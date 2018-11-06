@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/home/code/projects/decode-bcnnow/')
-
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
@@ -14,6 +11,7 @@ import json
 import re
 import ast
 from flask_compress import Compress
+from apps.backend.api.v0.iot_login import IoTWalletLoginManager
 
 cfg = Config().get()
 
@@ -153,4 +151,5 @@ if __name__ == '__main__':
     CORS(app)
     api = Api(app)
     api.add_resource(BasicDataAccess, '/api/v0/<source>')
+    api.add_resource(IoTWalletLoginManager,'/iotlogin/<string:source>')
     app.run(host='0.0.0.0', port=cfg['api']['v0']['port'], threaded=True, debug=False)
