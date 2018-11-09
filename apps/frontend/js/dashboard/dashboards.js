@@ -365,7 +365,64 @@ function getDashboards() {
                     "type": "dynamic"
                 }
             ]
-        }
+        },
+        "page-6": {
+            "name": "Decidim (beta)",
+            "widgets": [
+                {
+                    "id": "widget-363",
+                    "title": "Proposals for the Municipal Action Plan",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "11",
+                        "aggregation": "district",
+                        "chart": "map-points",
+                        "type": "points",
+                        "granularity": "cumulative",
+                        "keyword": "",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2019-01-01T00:00:00Z",
+                        "dataset": null,
+                        "markers": null
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type": "dynamic"
+                },
+                {
+                    "id": "widget-2125",
+                    "title": "Meetings for the Municipal Action Plan",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "12",
+                        "aggregation": "none",
+                        "chart": "map-points",
+                        "type": "points",
+                        "granularity": "cumulative",
+                        "keyword": "",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2019-01-01T00:00:00Z",
+                        "dataset": null,
+                        "markers": null
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type": "dynamic"
+                }
+            ]
+         }
     };
 	
 	

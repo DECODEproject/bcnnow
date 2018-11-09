@@ -689,6 +689,26 @@ $(document).ready(function() {
             });
         }
 
+        if(dataset['name'] == 'pam_meeting') {
+            $("#" + windex + "-time-series-title").text("MEETING ID " + markerid);
+            $.each(output.records, function(index, element) {
+                if(widget['sources'][sindex]['aggregation'] == 'none') {
+                         $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Title:</span> ' + element.doc[0].title + '</div>');
+                         $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Address:</span> ' + element.doc[0].address + '</div>');
+                     $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Start Date:</span> ' + moment(element.doc[0].startTime).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
+                     $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">End Date:</span> ' + moment(element.doc[0].endTime).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
+                         $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Attendees:</span> ' + element.doc[0].attendeeCount + '</div>');                     
+                         $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name">');
+			 for (i = 0; i < element.doc[0].attachments.length; i++) { 
+			     $("#" + widget['id'] + "-dashboard-line").append('<img vspace="1" hspace="1" width="150" src="' + element.doc[0].attachments[i] + '"/>');
+                         }
+                         $("#" + widget['id'] + "-dashboard-line").append('</div">');
+                }
+                else {
+                }
+            });
+        }
+
         if(dataset['name'] == 'iris') {
             $("#" + windex + "-time-series-title").text("IRIS ID " + markerid);
             $.each(output.records, function(index, element) {
