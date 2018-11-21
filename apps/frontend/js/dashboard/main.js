@@ -2,7 +2,8 @@
                                                     GLOBAL VARIABLES 
 **********************************************************************************************************************/
 
-var url_api = 'http://127.0.0.1:9530/api/v0/'; // Get the endpoint url of BarcelonaNow API
+var url_api = 'http://b3d4739d.ngrok.io/api/v0/'; // Get the endpoint url of BarcelonaNow API
+//var url_api = 'http://127.0.0.1:9530/api/v0/'; // Get the endpoint url of BarcelonaNow API
 var datasets = getDatasets(); // Get the available datasets from datasets.js file
 var dashboards = getDashboards(); // Get the available dashboards from dashboards.js file
 var page = 'page-5';// + (Object.keys(dashboards).length - 1); // Get the current dashboard to show (the last by default)
@@ -890,6 +891,7 @@ $(document).ready(function() {
                       style: function(feature) {
                         return getAreaColor(feature, dataset, obs);
                       },
+                      pane: 'boundaries',
                       onEachFeature: function(feature, layer) {
                           var element = getLabel(feature, dataset, obs);
                           if(element) {
@@ -964,10 +966,10 @@ $(document).ready(function() {
                           });
                       }
                 });
-                widget['sources'][sindex]['markers'] = new L.LayerGroup();
-                widget['sources'][sindex]['markers'].clearLayers();
-                widget['sources'][sindex]['markers'].addLayer(geo_boundary);
-                widget['map'].addLayer(widget['sources'][sindex]['markers']);
+                
+                widget['map'].createPane('boundaries');
+                widget['map'].getPane('boundaries').style.zIndex = 4;
+                widget['map'].addLayer(geo_boundary);
             },
             error: function() {
 
