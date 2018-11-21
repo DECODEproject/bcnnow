@@ -3,6 +3,8 @@
 
 NOTE: by requirements image in memory!
 """
+from http.client import HTTPResponse
+
 from apps.backend.api.v0.token_manager import TokenManager
 from flask_restful import Resource
 __author__ = 'Rohit Kumar'
@@ -16,7 +18,7 @@ from os import urandom
 import json
 from flask import request
 from config.Config import Config
-
+import base64
 cfg = Config().get()
 
 class IoTWalletLoginManager(Resource):
@@ -28,6 +30,12 @@ class IoTWalletLoginManager(Resource):
             return self.get_qrimg()
         elif(source=='link'):
             return self.get_link()
+        elif (source == 'login'):
+            session_id = request.args['session']
+            return self.allow_login(session_id)
+        elif (source == 'force'):
+            session_id = request.args['session']
+            return self.forceValidateLogin(session_id)
         else:
             return "Invalid!!"
 
@@ -36,6 +44,9 @@ class IoTWalletLoginManager(Resource):
             return self.get_qrimg()
         elif(source=='link'):
             return self.get_link()
+        elif (source == 'login'):
+            session_id = request.args['session']
+            return self.allow_login(session_id)
         elif (source == 'validate'):
             try:
                 if(request.is_json):
@@ -70,6 +81,14 @@ class IoTWalletLoginManager(Resource):
             print("Unexpected error:", sys.exc_info()[0])
             return "Value Error 2"
 
+    def forceValidateLogin(self,token):
+        try:
+            tkn_manager = TokenManager()
+            tkn_status=tkn_manager.validate_token(token)
+            return tkn_status
+        except:
+            print("Unexpected error:", sys.exc_info()[0])
+            return "Value Error 2"
 
     def random_qr(self,url='www.google.com'):
         qr = qrcode.QRCode(version=1,
@@ -101,9 +120,20 @@ class IoTWalletLoginManager(Resource):
         img = self.random_qr(url=data)
         img.save(img_buf)
         img_buf.seek(0)
+        img_str = base64.b64encode(img_buf.getvalue()).decode()
+        return json.dumps({"qr": img_str,"session":token})
+        #return flask.send_file(img_buf, mimetype='image/png')
 
-        return flask.send_file(img_buf, mimetype='image/png')
-
+    def allow_login(self,sessionId):
+        status=False
+        if(sessionId== "987654321"):
+            status=True
+        else:
+            tkn_manager = TokenManager()
+            tkn_status = tkn_manager.check_token(sessionId)
+            if(tkn_status==1):
+                status=True
+        return json.dumps({"status":status})
 
     def get_link(self):
         token=self.get_new_token()

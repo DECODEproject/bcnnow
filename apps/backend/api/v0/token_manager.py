@@ -31,10 +31,35 @@ class TokenManager:
         # Save (commit) the changes
         conn.commit()
 
-    def validate_token(self,token_id):
+    def check_token(self, token_id):
+        conn = self.create_connection()
         try:
             print(token_id)
-            conn =self.create_connection()
+
+
+            c = conn.cursor()
+
+            # Create table
+            sql = "select status from iot_token where token=?"
+            c.execute(sql, (token_id,))
+            result = c.fetchone()
+
+            if result:
+                return result[0]
+            else:
+                return -1
+        except sqlite3.Error as e:
+            print(e)
+            return "error!!"
+        finally:
+            conn.close()
+
+
+    def validate_token(self,token_id):
+        conn = self.create_connection()
+        try:
+            print(token_id)
+
 
             c = conn.cursor()
 
@@ -55,14 +80,11 @@ class TokenManager:
                 return 'Invalid Token'
 
 
-
-        # We can also close the connection if we are done with it.
-        # Just be sure any changes have been committed or they will be lost.
-            conn.close()
-
         except sqlite3.Error as e:
             print(e)
             return "error!!"
+        finally:
+            conn.close()
 
     def insert_token(self,token_id):
 

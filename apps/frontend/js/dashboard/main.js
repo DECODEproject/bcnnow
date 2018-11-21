@@ -2,7 +2,7 @@
                                                     GLOBAL VARIABLES 
 **********************************************************************************************************************/
 
-var url_api = 'http://b3d4739d.ngrok.io/api/v0/'; // Get the endpoint url of BarcelonaNow API
+var url_api = 'http://93ff8837.ngrok.io/api/v0/'; // Get the endpoint url of BarcelonaNow API
 //var url_api = 'http://127.0.0.1:9530/api/v0/'; // Get the endpoint url of BarcelonaNow API
 var datasets = getDatasets(); // Get the available datasets from datasets.js file
 var dashboards = getDashboards(); // Get the available dashboards from dashboards.js file
