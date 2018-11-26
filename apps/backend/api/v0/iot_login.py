@@ -11,7 +11,6 @@ __author__ = 'Rohit Kumar'
 __version__ = (0, 0, 1)
 
 import sys
-import flask
 import qrcode
 import io
 from os import urandom
@@ -21,26 +20,27 @@ from config.Config import Config
 import base64
 cfg = Config().get()
 
+
 class IoTWalletLoginManager(Resource):
     def __init__(self, ):
         return
 
     def get(self, source):
-        if(source=='qrcode'):
+        if source == 'qrcode':
             return self.get_qrimg()
-        elif(source=='link'):
+        elif source == 'link':
             return self.get_link()
-        elif (source == 'login'):
+        elif source == 'login':
             session_id = request.args['session']
             return self.allow_login(session_id)
-        elif (source == 'force'):
+        elif source == 'force':
             session_id = request.args['session']
             return self.forceValidateLogin(session_id)
         else:
             return "Invalid!!"
 
     def post(self, source):
-        if(source=='qrcode'):
+        if source == 'qrcode':
             return self.get_qrimg()
         elif(source=='link'):
             return self.get_link()
@@ -61,13 +61,12 @@ class IoTWalletLoginManager(Resource):
         else:
             return "Invalid!!"
 
-
-    def validateLogin(self,token,basic_parameters):
+    def validateLogin(self, token, basic_parameters):
         try:
             tkn_manager = TokenManager()
             tkn_status=tkn_manager.validate_token(token)
 
-            if(tkn_status=='1'):
+            if tkn_status == '1':
                 predicate = basic_parameters['attribute']['predicate']
                 if (predicate == 'schema:iotCommunity'):
                     credential_x = basic_parameters['attribute']['provenance']['credential']['x']
@@ -81,10 +80,10 @@ class IoTWalletLoginManager(Resource):
             print("Unexpected error:", sys.exc_info()[0])
             return "Value Error 2"
 
-    def forceValidateLogin(self,token):
+    def forceValidateLogin(self, token):
         try:
             tkn_manager = TokenManager()
-            tkn_status=tkn_manager.validate_token(token)
+            tkn_status = tkn_manager.validate_token(token)
             return tkn_status
         except:
             print("Unexpected error:", sys.exc_info()[0])
@@ -103,37 +102,37 @@ class IoTWalletLoginManager(Resource):
 
     def get_new_token(self):
         #generate new token
-        tkn=urandom(12).hex()
-        tkn_manager=TokenManager()
-        if(tkn_manager.insert_token(tkn)):
-            return  tkn
+        tkn = urandom(12).hex()
+        tkn_manager = TokenManager()
+        if tkn_manager.insert_token(tkn):
+            return tkn
         else:
             return None
 
-
     def get_qrimg(self):
-        token=self.get_new_token()
-        header=cfg['iotconfig']['header']
-        callback=cfg['iotconfig']['callbackurl']
+        token = self.get_new_token()
+        header = cfg['iotconfig']['header']
+        callback = cfg['iotconfig']['callbackurl']
         data = 'decodewallet://?action=login&header =%s&sessionId=%s&callback=%s' % (header, token, callback)
         img_buf = io.BytesIO()
         img = self.random_qr(url=data)
         img.save(img_buf)
         img_buf.seek(0)
         img_str = base64.b64encode(img_buf.getvalue()).decode()
-        return json.dumps({"qr": img_str,"session":token})
+        #return json.dumps({"qr": img_str, "session":token})
+        return {"qr": img_str, "session": token}
         #return flask.send_file(img_buf, mimetype='image/png')
 
-    def allow_login(self,sessionId):
-        status=False
-        if(sessionId== "987654321"):
-            status=True
+    def allow_login(self, sessionId):
+        status = False
+        if sessionId == "987654321":
+            status = True
         else:
             tkn_manager = TokenManager()
             tkn_status = tkn_manager.check_token(sessionId)
-            if(tkn_status==1):
-                status=True
-        return json.dumps({"status":status})
+            if tkn_status == 1:
+                status = True
+        return {"status" :status}
 
     def get_link(self):
         token=self.get_new_token()

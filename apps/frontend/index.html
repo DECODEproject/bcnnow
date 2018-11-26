@@ -133,7 +133,7 @@
                     <!-- SEARCH -->
                     <!-- END SEARCH -->
                     <!-- SIGN OUT -->
-                    <li class="xn-icon-button pull-right">
+                    <li class="xn-icon-button pull-right sign-in">
                         <a class="sign-in-link" href="login.html"><span class="sign-in-text">Sign In</span><span class="fa fa-sign-in"></span></a>
                     </li>
                     <!-- END SIGN OUT -->
@@ -169,7 +169,7 @@
                     <div class="mb-title"><span class="fa fa-sign-out"></span> Log <strong>Out</strong> ?</div>
                     <div class="mb-content">
                         <p>Are you sure you want to log out?</p>                    
-                        <p>Press No if you want to continue work. Press Yes to logout Carme.</p>
+                        <p>Press No if you want to continue work. Press Yes to logout.</p>
                     </div>
                     <div class="mb-footer">
                         <div class="pull-right">
@@ -209,6 +209,67 @@
             <!-- END TEMPLATE -->
 
         <!-- END SCRIPTS -->
+
+        <script>
+            
+            /*
+                Get cookie value
+            */
+            function getCookie(name) {
+                var nameEQ = name + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0;i < ca.length;i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+                }
+                return null;
+            }
+
+            // if there is session id show hardcoded profile info
+            cookieValue = getCookie("session-id");
+            if (cookieValue != null) {
+                $(".xn-profile").html(
+                    '<a href="#" class="profile-mini">' + 
+                            '<img src="img\\users\\jordi.jpg" alt="Jordi Allué"/>' + 
+                        '</a>' + 
+                        '<div class="profile">' + 
+                            '<div class="profile-image">' + 
+                                '<img src="img\\users\\jordi.jpg" alt="Jordi Allué"/>' + 
+                            '</div>' + 
+                            '<div class="profile-data">' + 
+                                '<div class="profile-data-name">Jordi Allué</div>' + 
+                                '<div class="profile-data-title">Software developer</div>' + 
+                                '<div class="profile-data-age extra-info hidden">36</div>' + 
+                                '<div class="profile-data-area extra-info hidden">Barcelona</div>' + 
+                                '<div class="profile-data-community extra-info hidden">IOT Community</div>' + 
+                                '<div class="icon-action-circular">' +
+									'<span id="string-btn-expand" class="glyphicon glyphicon-plus"></span>' +
+								'</div>' +
+                            '</div>' + 
+                        '</div>'
+                );
+
+                $(".sign-in").html(
+                    '<a href="index.html" class="sign-in-link" id="sign-out-btn"><span class="sign-out-text">Sign Out</span><span class="fa fa-sign-out"></span></a>'
+                );
+            }
+
+
+            $("#string-btn-expand").on("click", function() {
+                $(".extra-info").toggleClass("hidden");
+                $("#string-btn-expand").toggleClass("glyphicon-minus");
+                $("#string-btn-expand").toggleClass("glyphicon-plus");
+            });
+
+            $("#sign-out-btn").on("click", function() {
+                // delete cookie
+                document.cookie = 'session-id=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            });
+
+            
+            
+        </script>
 
     </body>
 </html>

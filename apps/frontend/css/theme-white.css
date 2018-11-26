@@ -1645,6 +1645,10 @@ span.sign-in-text {
     margin-right: 10px;
     font-size: 15px;
 }
+span.sign-out-text {
+  margin-right: 8px;
+  font-size: 15px;
+}
 .x-navigation.x-navigation-horizontal .xn-icon-button > a.sign-in-link {
     width: 115px;
 }
