@@ -181,12 +181,17 @@
         }
 
         function forceLogin(userSessionId) {
-            var ret = $.ajax({
-                    type: "GET",
-                    async: false,
-                    dataType: 'json',
-                    url: url_root + "iotlogin/force?session=" + userSessionId
-                });
+
+            $('#login-loader').show();            
+            
+            setInterval(function() { 
+                var ret = $.ajax({
+                        type: "GET",
+                        dataType: 'json',
+                        url: url_root + "iotlogin/force?session=" + userSessionId
+                    });
+            }, 2000);
+            //$('#login-loader').show();
         }
 
         var loginTimeout = 60;
@@ -208,11 +213,16 @@
                 userSessionId = responseJson['session'];
                 qrImage = "data:image/jpeg;base64, " + responseJson['qr'];
 
-                $('.qrcode').append('<img class="login-body" src="' + qrImage + '" />');
+                //$('.qrcode').append();
+                $('.qrcode').append('<div class="panel panel-body">' + 
+                    '<img class="login-body" src="' + qrImage + '" />' + 
+                    '<div id="login-loader" class="loader-container"><img class="loader" width="80" height="80" src="img/lg.azure-round-loader.gif" /></div>' +
+                    '</div>');
                 $('.qrcode').append('<button class="btn btn-info btn-block" onClick="forceLogin(\'' + userSessionId + '\');"><span class="sign-out-text">Log In</span></button>');
                 $('#form-login').hide();
                 $('#form-login-iot').hide();
                 $('.login-title').hide();
+                $('#login-loader').hide();
 
                 setInterval(function() { 
                    checkSessionToken(userSessionId);
