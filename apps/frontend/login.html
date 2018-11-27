@@ -60,12 +60,13 @@
                     <form id="form-login-iot" class="form-horizontal" method="post" onsubmit="return getIOTLink()" >
                         <div class="form-group" style="padding:10px 0 0 0">
                             <div class="col-md-12">
-                                <button class="btn btn-info btn-block">Log with IOT</button>
+                                <button class="btn btn-info btn-block">Log in with DECODE App</button>
                             </div>
                         </div>
                     </form>
 
                     <div class="qrcode">
+
                     </div>
 
                 </div>
@@ -213,11 +214,12 @@
                 qrImage = "data:image/jpeg;base64, " + responseJson['qr'];
 
                 //$('.qrcode').append();
-                $('.qrcode').append('<div class="panel panel-body">' + 
-                    '<img class="login-body" src="' + qrImage + '" />' + 
+                $('.qrcode').append('<div class="panel panel-body">' +
+                '<strong>To use DECODE credentials</strong>, scan the QR code or click on Login.'+
+                    '<img class="login-body" src="' + qrImage + '" />' +
                     '<div id="login-loader">' +
                     '<div class="loader-container"><img class="loader" width="80" height="80" src="img/lg.azure-round-loader.gif" /></div>' +
-                    '<span style="position: relative; color: white; top: 0; left: 40%; z-index: 1040; width: 100%; height: 100%; font-size: 15px; font-weight: bold;">Logging in</span></div>' + 
+                    '<span style="position: relative; color: white; top: 0; left: 2%; z-index: 1040; width: 100%; height: 100%; font-size: 15px; font-weight: bold;">Verifying credentials with Decode App</span></div>' +
                     '</div>');
                 $('.qrcode').append('<button class="btn btn-info btn-block" onClick="forceLogin(\'' + userSessionId + '\');"><span class="sign-out-text">Log In</span></button>');
                 $('#form-login').hide();
