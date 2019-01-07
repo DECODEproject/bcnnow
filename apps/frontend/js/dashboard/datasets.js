@@ -195,7 +195,47 @@ function getDatasets() {
         "filter_field": "",
         "details": "",
         "allowed_visual_models": ["points-map", "heat-map"]
-        }
+        },
+        "11": {
+        "id": "11",
+        "type": "time-series",
+        "name": "pam_proposal",
+        "description": "Decidim PAM Proposals",
+        "provider": "pam_proposal",
+        "start": "2018-01-01T00:00:00Z",
+        "end": null,
+        "language": "English",
+        "labels": "Votes",
+        "targetvalue": "voteCount",
+        "aggregator": "sum",
+        "radius": 20,
+        "colors": ['#ffffe0','#ffe6b2','#ffcb91','#ffae79','#fe906a','#f47461','#e75758','#d53c4c','#c0223b','#a70b24','#8b0000'],
+        "cuts": [-1, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+        "parameters": "",
+        "filter_field": "",
+        "details": "",
+        "allowed_visual_models": ["points-map", "heat-map"]
+        },
+        "12": {
+        "id": "12",
+        "type": "time-series",
+        "name": "pam_meeting",
+        "description": "Decidim PAM Meetings",
+        "provider": "pam_meeting",
+        "start": "2018-01-01T00:00:00Z",
+        "end": null,
+        "language": "English",
+        "labels": "Attendees",
+        "targetvalue": "attendeeCount",
+        "aggregator": "avg",
+        "radius": 20,
+        "colors": ['#004304', '#116416', '#51A759', '#86C98A', '#FFF592', '#FFE256', '#FFDB2B', '#FF6A0E', '#F55E00', '#FF1300', '#801515'],
+        "cuts": [-1, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0],
+        "filter_field": "",
+        "parameters": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
+        "details": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
+        "allowed_visual_models": ["points-map", "heat-map"]
+         }
     };
 
     return jQuery.extend(true, {}, datasets);
