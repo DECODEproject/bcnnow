@@ -55,7 +55,7 @@ class DecidimMeetingCollector:
                 print(str(datetime.datetime.now()) + ' ' + '        ' + ' Access to URL: ' + url  + '        ' + ' endCursor: ' + endCursor )
                 data = self.sendRequest(url, rID.replace('""','"'+endCursor+'"'))
                 total += self.saveData(data)
-                endCursor = data['data']['participatoryProcess']['components'][1]['meetings']['pageInfo']['endCursor']
+                endCursor = data['data']['participatoryProcess']['components'][0]['meetings']['pageInfo']['endCursor']
                 flag = endCursor != None               
                 print(str(datetime.datetime.now()) + ' ' + '         Total: ' + str("{0:0>9}".format(total)))
                 print(str(datetime.datetime.now()) + ' ' + 'End collection')
@@ -91,7 +91,7 @@ class DecidimMeetingCollector:
 
         payload.setId(GeneralHelper().default(item['reference']))
         payload.setAttendeeCount(GeneralHelper().default(item['attendeeCount']))
-        payload.setTitle(GeneralHelper().default(item['title']['translations'][0]['text']))
+        payload.setTitle(GeneralHelper().default(item['title']['translations'][1]['text']))
         payload.setStartTime(GeneralHelper().default(item['startTime']))
         payload.setEndTime(GeneralHelper().default(item['endTime']))
         payload.setAddress(GeneralHelper().default(item['address']))
@@ -101,10 +101,10 @@ class DecidimMeetingCollector:
         payload.setAttachments(GeneralHelper().default(attachments))
 
         record.setId(GeneralHelper().default(item['reference']))
-        record.setSource(collectorCfg['collectors']['decidim']['pam_meeting']['source_name'])
+        record.setSource(collectorCfg['collectors']['decidim']['dddc_meeting']['source_name'])
         record.setProvider('decidim')
         record.setPublisher('bcnnow')
-        record.setType(collectorCfg['collectors']['decidim']['pam_meeting']['source_name'])
+        record.setType(collectorCfg['collectors']['decidim']['dddc_meeting']['source_name'])
         record.setTimestamp(item['startTime'])
         record.setLocation(location)
         record.setPayload(payload)
@@ -115,7 +115,7 @@ class DecidimMeetingCollector:
     # This method saves a DecidimMeeting BaseRecord
     def saveData(self, data):
         total = 0
-        items = data['data']['participatoryProcess']['components'][1]['meetings']['edges']
+        items = data['data']['participatoryProcess']['components'][0]['meetings']['edges']
         if len(items) >= 0:
             for index, item in enumerate(items):
                 if item['node'] != None:
@@ -124,7 +124,7 @@ class DecidimMeetingCollector:
         return total
 
 if __name__ == "__main__":
-    base = collectorCfg['collectors']['decidim']['pam_meeting']['base_url']
-    resourceIDs = collectorCfg['collectors']['decidim']['pam_meeting']['query']
+    base = collectorCfg['collectors']['decidim']['dddc_meeting']['base_url']
+    resourceIDs = collectorCfg['collectors']['decidim']['dddc_meeting']['query']
     DecidimMeetingCollector().start(base, resourceIDs)
 

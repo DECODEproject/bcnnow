@@ -367,16 +367,16 @@ function getDashboards() {
             ]
         },
         "page-6": {
-            "name": "Decidim (beta)",
+            "name": "Digital Democracy and Data Commons",
             "widgets": [
                 {
-                    "id": "widget-363",
-                    "title": "Proposals for the Municipal Action Plan",
+                    "id": "widget-2125",
+                    "title": "Meetings for the Municipal Action Plan",
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
-                        "id": "11",
-                        "aggregation": "district",
+                        "id": "12",
+                        "aggregation": "none",
                         "chart": "map-points",
                         "type": "points",
                         "granularity": "cumulative",
@@ -396,19 +396,19 @@ function getDashboards() {
                     "type": "dynamic"
                 },
                 {
-                    "id": "widget-2125",
-                    "title": "Meetings for the Municipal Action Plan",
+                    "id": "widget-363",
+                    "title": "Meetings for DECODE pilot",
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
-                        "id": "12",
+                        "id": "13",
                         "aggregation": "none",
                         "chart": "map-points",
                         "type": "points",
                         "granularity": "cumulative",
                         "keyword": "",
                         "start": "2010-01-01T00:00:00Z",
-                        "end": "2019-01-01T00:00:00Z",
+                        "end": "2020-01-01T00:00:00Z",
                         "dataset": null,
                         "markers": null
                     }

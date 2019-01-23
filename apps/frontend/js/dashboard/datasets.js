@@ -235,6 +235,26 @@ function getDatasets() {
         "parameters": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
         "details": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
         "allowed_visual_models": ["points-map", "heat-map"]
+         },
+        "13": {
+        "id": "13",
+        "type": "time-series",
+        "name": "dddc_meeting",
+        "description": "DDCC Meetings",
+        "provider": "dddc_meeting",
+        "start": "2018-01-01T00:00:00Z",
+        "end": null,
+        "language": "English",
+        "labels": "Attendees",
+        "targetvalue": "attendeeCount",
+        "aggregator": "avg",
+        "radius": 20,
+        "colors": ['#004304', '#51A759', '#FFF592', '#FFDB2B', '#F55E00', '#801515'],
+        "cuts": [-1, 5.0, 10.0, 15.0, 20.0, 25.0],
+        "filter_field": "",
+        "parameters": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
+        "details": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
+        "allowed_visual_models": ["points-map", "heat-map"]
          }
     };
 
