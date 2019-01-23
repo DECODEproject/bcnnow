@@ -17,7 +17,6 @@
 '''
 
 import sys
-sys.path.append('/home/pablo.aragon/Escritorio/bcnnow/')
 
 from apps.backend.data.collectors.pull.DecidimCollector.Config import Config as collectorConfig
 collectorCfg = collectorConfig().get()
