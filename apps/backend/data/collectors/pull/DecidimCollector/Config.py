@@ -34,7 +34,14 @@ class Config:
                         "source_name": "pam_meeting",
                         "base_url": "https://www.decidim.barcelona/api",
                         "query" : [
-                            "{ participatoryProcess(id: 1) { id title { translations { locale text } } components { id name { translations { text } } ... on Meetings { meetings(after: \"\") { pageInfo { endCursor startCursor } edges { node { id startTime endTime attachments { url } reference                            reference attendeeCount scope { id name { translations { text } } } title { translations { text } } coordinates { longitude latitude } address } } } } } } }"
+                            "{ participatoryProcess(id: 1) { id title { translations { locale text } } components { id name { translations { text } } ... on Meetings { meetings(after: \"\") { pageInfo { endCursor startCursor } edges { node { id startTime endTime attachments { url } reference attendeeCount scope { id name { translations { text } } } title { translations { text } } coordinates { longitude latitude } address } } } } } } }"
+                            ]
+                    },
+                    "dddc_meeting": {
+                        "source_name": "dddc_meeting",
+                        "base_url": "https://dddc.decodeproject.eu/api",
+                        "query" : [
+                            "{ participatoryProcess(id: 1) { id title { translations { locale text } } components { id name { translations { text } } ... on Meetings { meetings(after: \"\") { pageInfo { endCursor startCursor } edges { node { id title { translations { text } } address coordinates { longitude latitude } reference startTime endTime attachments { url } attendeeCount } } } } } } }"
                             ]
                     }
                 }

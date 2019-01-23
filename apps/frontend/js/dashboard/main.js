@@ -5,7 +5,7 @@
 var url_api = 'http://127.0.0.1:9530/api/v0/'; // Get the endpoint url of BarcelonaNow API
 var datasets = getDatasets(); // Get the available datasets from datasets.js file
 var dashboards = getDashboards(); // Get the available dashboards from dashboards.js file
-var page = 'page-5';// + (Object.keys(dashboards).length - 1); // Get the current dashboard to show (the last by default)
+var page = 'page-6';// + (Object.keys(dashboards).length - 1); // Get the current dashboard to show (the last by default)
 var color_palette = ['#4D9DE0', '#E15554', '#E1BC29', '#3BB273', '#7768AE']; // Default color palette for time series
 var start_date = moment().subtract('days', 6).toISOString();
 var end_date = moment().toISOString();
@@ -689,20 +689,25 @@ $(document).ready(function() {
             });
         }
 
-        if(dataset['name'] == 'pam_meeting') {
+        if(dataset['name'] == 'pam_meeting' || dataset['name'] == 'dddc_meeting') {
             $("#" + windex + "-time-series-title").text("MEETING ID " + markerid);
             $.each(output.records, function(index, element) {
                 if(widget['sources'][sindex]['aggregation'] == 'none') {
-                         $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Title:</span> ' + element.doc[0].title + '</div>');
+                         id = element.doc[0].id.split("-")
+                         id = id[id.length-1]
+                         if(dataset['name'] == 'pam_meeting') $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Title:</span> <a target="_blank" href="https://www.decidim.barcelona/processes/pam/f/11/meetings/'+id+'">' + element.doc[0].title + '</a></div>');
+                         else if(dataset['name'] == 'dddc_meeting') $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Title:</span> <a target="_blank" href="https://dddc.decodeproject.eu/processes/main/f/4/meetings/'+id+'">' + element.doc[0].title + '</a></div>');
                          $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Address:</span> ' + element.doc[0].address + '</div>');
                      $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Start Date:</span> ' + moment(element.doc[0].startTime).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
                      $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">End Date:</span> ' + moment(element.doc[0].endTime).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
                          $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Attendees:</span> ' + element.doc[0].attendeeCount + '</div>');                     
-                         $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name">');
-			 for (i = 0; i < element.doc[0].attachments.length; i++) { 
-			     $("#" + widget['id'] + "-dashboard-line").append('<img vspace="1" hspace="1" width="150" src="' + element.doc[0].attachments[i] + '"/>');
+			 if(dataset['name'] == 'pam_meeting') {			 
+		                 $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name">');
+				 for (i = 0; i < element.doc[0].attachments.length; i++) { 
+				     $("#" + widget['id'] + "-dashboard-line").append('<img vspace="1" hspace="1" width="150" src="' + element.doc[0].attachments[i] + '"/>');
+		                 }
+		                 $("#" + widget['id'] + "-dashboard-line").append('</div">');
                          }
-                         $("#" + widget['id'] + "-dashboard-line").append('</div">');
                 }
                 else {
                 }
