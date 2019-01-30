@@ -131,8 +131,9 @@ class BasicDataAccess(Resource):
                     results = list(collection.aggregate((query), allowDiskUse=True))
                 else:
                     query.append({"$match": parameters})
-                    query.append({"$group": {"_id": {field.split('@')[0]: '$' + field.split('@')[1] for field in group.split(',')}, "doc": {"$last": "$$ROOT"}}})
+                    query.append({"$group": {"_id": {field.split('@')[0]: '$' + field.split('@')[1] for field in group.split(',')}, "count":{"$sum":1}, "doc": {"$last": "$$ROOT"}}})
                     query.append({"$sort": { "_id": 1 }})
+                    
                     results = list(collection.aggregate((query), allowDiskUse=True))
 
         # Build query results
