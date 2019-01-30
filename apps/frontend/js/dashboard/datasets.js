@@ -18,7 +18,8 @@ function getDatasets() {
         "parameters": "",
         "filter_field": "",
         "details": "",
-        "allowed_visual_models": ["points-map", "heat-map"]
+        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_bar_chart_dimensions": []
         },
         "2": {
         "id": "2",
@@ -38,7 +39,8 @@ function getDatasets() {
         "parameters": "name@payload.name,enddate@payload.enddate,startdate@payload.startdate,categories@payload.categories,",
         "details": 'name@payload.name,enddate@payload.enddate,startdate@payload.startdate,categories@payload.categories,',
         "filter_field": "payload.name",
-        "allowed_visual_models": ["points-map", "heat-map"]
+        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_bar_chart_dimensions": ["eventtype"]
         },
         "3": {
         "id": "3",
@@ -58,7 +60,8 @@ function getDatasets() {
         "parameters": "element@payload.element,detail@payload.detail,area@payload.area,support@payload.support,channel@payload.channel,type@type,enddate@payload.enddate,startdate@payload.startdate,",
         "details": 'element@payload.element,detail@payload.detail,area@payload.area,support@payload.support,channel@payload.channel,type@type,enddate@payload.enddate,startdate@payload.startdate,',
         "filter_field": "payload.element",
-        "allowed_visual_models": ["points-map", "heat-map"]
+        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_bar_chart_dimensions": []
         },
         "4": {
         "id": "4",
@@ -77,7 +80,8 @@ function getDatasets() {
         "cuts": [-1, 3, 6, 9, 12, 15, 18, 21, 24, 27],
         "parameters": "",
         "filter_field": "",
-        "allowed_visual_models": ["points-map", "heat-map"]
+        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_bar_chart_dimensions": []
         },
         "5": {
         "id": "5",
@@ -96,7 +100,8 @@ function getDatasets() {
         "cuts": [-1],
         "parameters": "",
         "filter_field": "",
-        "allowed_visual_models": ["points-map", "heat-map"]
+        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_bar_chart_dimensions": []
         },
         "6": {
         "id": "6",
@@ -115,7 +120,8 @@ function getDatasets() {
         "cuts": [-1],
         "parameters": "line@payload.line,",
         "filter_field": "",
-        "allowed_visual_models": ["points-map", "map-lines"]
+        "allowed_visual_models": ["points-map", "map-lines"],
+        "allowed_bar_chart_dimensions": []
         },
         "7": {
         "id": "7",
@@ -134,7 +140,8 @@ function getDatasets() {
         "cuts": [-1, 500, 550, 600, 650, 700, 750],
         "parameters": "polygon@payload.polygon,",
         "filter_field": "",
-        "allowed_visual_models": ["points-map", "map-polygons"]
+        "allowed_visual_models": ["points-map", "map-polygons"],
+        "allowed_bar_chart_dimensions": []
         },
         "8": {
         "id": "8",
@@ -154,7 +161,8 @@ function getDatasets() {
         "parameters": "",
         "filter_field": "",
         "details": "",
-        "allowed_visual_models": ["points-map", "heat-map"]
+        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_bar_chart_dimensions": []
         },
         "9": {
         "id": "9",
@@ -174,7 +182,8 @@ function getDatasets() {
         "parameters": "",
         "filter_field": "",
         "details": "",
-        "allowed_visual_models": ["points-map", "heat-map"]
+        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_bar_chart_dimensions": []
         },
         "10": {
         "id": "10",
@@ -194,7 +203,8 @@ function getDatasets() {
         "parameters": "",
         "filter_field": "",
         "details": "",
-        "allowed_visual_models": ["points-map", "heat-map"]
+        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_bar_chart_dimensions": []
         },
         "11": {
         "id": "11",
@@ -214,7 +224,8 @@ function getDatasets() {
         "parameters": "",
         "filter_field": "",
         "details": "",
-        "allowed_visual_models": ["points-map", "heat-map"]
+        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_bar_chart_dimensions": []
         },
         "12": {
         "id": "12",
@@ -234,7 +245,8 @@ function getDatasets() {
         "filter_field": "",
         "parameters": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
         "details": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
-        "allowed_visual_models": ["points-map", "heat-map"]
+        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_bar_chart_dimensions": ["attendeeCount"]
          },
         "13": {
         "id": "13",
@@ -254,9 +266,32 @@ function getDatasets() {
         "filter_field": "",
         "parameters": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
         "details": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
-        "allowed_visual_models": ["points-map", "heat-map"]
+        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_bar_chart_dimensions": []
+         },
+        "14": {
+        "id": "14",
+        "type": "time-series",
+        "name": "dddc_survey",
+        "description": "DDCC Surveys",
+        "provider": "dddc_survey",
+        "start": "2019-01-01T00:00:00Z",
+        "end": null,
+        "language": "English",
+        "labels": "",
+        "targetvalue": "",
+        "aggregator": "",
+        "radius": 20,
+        "colors": ['#004304', '#51A759', '#FFF592', '#FFDB2B', '#F55E00', '#801515'],
+        "cuts": [-1, 5.0, 10.0, 15.0, 20.0, 25.0],
+        "filter_field": "",
+        "parameters": "",
+        "details": "",
+        "allowed_visual_models": [],
+        "allowed_bar_chart_dimensions": ["gender", "age", "country", "continent", "education", "workSituation", "organization", "city", "district", "device", "scale", "interest"]
          }
     };
+
 
     return jQuery.extend(true, {}, datasets);
 }
