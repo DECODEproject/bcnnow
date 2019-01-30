@@ -5,7 +5,7 @@ function getDashboards() {
             "name": "Create New Widget",
             "widgets": [
                 {
-                    "id": "widget-45453",
+                    "id": "widget-0",
                     "title": "Empty widget",
                     "authors": ["carmen"],
                     "modified": "2018-01-12T10:00:00Z",
@@ -16,7 +16,8 @@ function getDashboards() {
                     "data": [],
                     "highmarker": [],
                     "highmarkericon": [],
-                    "type": "dynamic"
+                    "type" : null,
+                    "map_data_type": "dynamic"
                 }]
 
         },
@@ -32,7 +33,7 @@ function getDashboards() {
                         "id": "4",
                         "aggregation": "neighbourhood",
                         "chart": "map-points",
-                        "type": "points",
+                        "map_data_type": "points",
                         "granularity": "dynamic",
                         "keyword": "",
                         "start": "2018-06-12T00:00:00Z",
@@ -47,7 +48,8 @@ function getDashboards() {
                     "data": [],
                     "highmarker": [],
                     "highmarkericon": [],
-                    "type": "dynamic"
+                    "type" : "map",
+                    "map_data_type": "dynamic"
                 },
                 {
                     "id": "widget-fdf",
@@ -58,7 +60,7 @@ function getDashboards() {
                         "id": "6",
                         "aggregation": "none",
                         "chart": "map-lines",
-                        "type": "points",
+                        "map_data_type": "points",
                         "granularity": "cumulative",
                         "keyword": "",
                         "start": "2018-01-01T00:00:00Z",
@@ -69,7 +71,7 @@ function getDashboards() {
                         "id": "4",
                         "aggregation": "none",
                         "chart": "map-points",
-                        "type": "points",
+                        "map_data_type": "points",
                         "granularity": "dynamic",
                         "keyword": "",
                         "start": "2018-06-01T00:00:00Z",
@@ -84,7 +86,8 @@ function getDashboards() {
                     "data": [],
                     "highmarker": [],
                     "highmarkericon": [],
-                    "type": "static"
+                    "type" : "map",
+                    "map_data_type": "static"
                 }
                 ]
         },
@@ -100,7 +103,7 @@ function getDashboards() {
                             "id": "2",
                             "aggregation": "none",
                             "chart": "map-points",
-                            "type": "points",
+                            "map_data_type": "points",
                             "granularity": "cumulative",
                             "keyword": "",
                             "start": "2018-05-01T00:00:00Z",
@@ -115,7 +118,8 @@ function getDashboards() {
                         "data": [],
                         "highmarker": [],
                         "highmarkericon": [],
-                        "type": "static"
+                        "type" : "map",
+                        "map_data_type": "static"
                     }
                 ]
         },
@@ -131,7 +135,7 @@ function getDashboards() {
                         "id": "1",
                         "aggregation": "none",
                         "chart": "map-points",
-                        "type": "points",
+                        "map_data_type": "points",
                         "granularity": "dynamic",
                         "keyword": "",
                         "start": "2018-06-11T00:00:00Z",
@@ -146,7 +150,8 @@ function getDashboards() {
                     "data": [],
                     "highmarker": [],
                     "highmarkericon": [],
-                    "type": "dynamic"
+                    "type" : "map",
+                    "map_data_type": "dynamic"
                 },
                 {
                     "id": "widget-657",
@@ -157,7 +162,7 @@ function getDashboards() {
                         "id": "1",
                         "aggregation": "neighbourhood",
                         "chart": "map-points",
-                        "type": "points",
+                        "map_data_type": "points",
                         "granularity": "dynamic",
                         "keyword": "",
                         "start": "2018-06-12T00:00:00Z",
@@ -172,7 +177,8 @@ function getDashboards() {
                     "data": [],
                     "highmarker": [],
                     "highmarkericon": [],
-                    "type": "dynamic"
+                    "type" : "map",
+                    "map_data_type": "dynamic"
                 },
                 {
                     "id": "widget-3553",
@@ -183,7 +189,7 @@ function getDashboards() {
                         "id": "3",
                         "aggregation": "none",
                         "chart": "heat-map",
-                        "type": "points",
+                        "map_data_type": "points",
                         "granularity": "cumulative",
                         "keyword": "soroll",
                         "start": "2017-06-01T00:00:00Z",
@@ -198,7 +204,8 @@ function getDashboards() {
                     "data": [],
                     "highmarker": [],
                     "highmarkericon": [],
-                    "type": "static"
+                    "type" : "map",
+                    "map_data_type": "static"
                 }
             ]
         },
@@ -214,7 +221,7 @@ function getDashboards() {
                         "id": "7",
                         "aggregation": "none",
                         "chart": "map-polygons",
-                        "type": "points",
+                        "map_data_type": "points",
                         "granularity": "cumulative",
                         "keyword": "",
                         "start": "2018-06-11T00:00:00Z",
@@ -229,7 +236,8 @@ function getDashboards() {
                     "data": [],
                     "highmarker": [],
                     "highmarkericon": [],
-                    "type": "dynamic"
+                    "type" : "map",
+                    "map_data_type": "dynamic"
                 }
             ]
         },
@@ -245,7 +253,7 @@ function getDashboards() {
                         "id": "8",
                         "aggregation": "district",
                         "chart": "map-points",
-                        "type": "points",
+                        "map_data_type": "points",
                         "granularity": "cumulative",
                         "keyword": "",
                         "start": "2016-06-11T00:00:00Z",
@@ -257,7 +265,7 @@ function getDashboards() {
                         "id": "5",
                         "aggregation": "none",
                         "chart": "heat-map",
-                        "type": "points",
+                        "map_data_type": "points",
                         "granularity": "cumulative",
                         "keyword": "",
                         "start": "2016-06-11T00:00:00Z",
@@ -272,7 +280,8 @@ function getDashboards() {
                     "data": [],
                     "highmarker": [],
                     "highmarkericon": [],
-                    "type": "dynamic"
+                    "type" : "map",
+                    "map_data_type": "dynamic"
                 },
                 {
                     "id": "widget-0683",
@@ -283,7 +292,7 @@ function getDashboards() {
                         "id": "9",
                         "aggregation": "district",
                         "chart": "map-points",
-                        "type": "points",
+                        "map_data_type": "points",
                         "granularity": "dynamic",
                         "keyword": "",
                         "start": "2004-06-11T00:00:00Z",
@@ -298,7 +307,8 @@ function getDashboards() {
                     "data": [],
                     "highmarker": [],
                     "highmarkericon": [],
-                    "type": "dynamic"
+                    "type" : "map",
+                    "map_data_type": "dynamic"
                 },
                 {
                     "id": "widget-0295",
@@ -309,7 +319,7 @@ function getDashboards() {
                         "id": "10",
                         "aggregation": "district",
                         "chart": "map-points",
-                        "type": "points",
+                        "map_data_type": "points",
                         "granularity": "cumulative",
                         "keyword": "",
                         "start": "2010-06-11T00:00:00Z",
@@ -324,7 +334,8 @@ function getDashboards() {
                     "data": [],
                     "highmarker": [],
                     "highmarkericon": [],
-                    "type": "dynamic"
+                    "type" : "map",
+                    "map_data_type": "dynamic"
                 },
                 {
                     "id": "widget-5363",
@@ -335,7 +346,7 @@ function getDashboards() {
                         "id": "10",
                         "aggregation": "district",
                         "chart": "map-points",
-                        "type": "points",
+                        "map_data_type": "points",
                         "granularity": "cumulative",
                         "keyword": "",
                         "start": "2010-06-11T00:00:00Z",
@@ -347,7 +358,7 @@ function getDashboards() {
                         "id": "5",
                         "aggregation": "none",
                         "chart": "heat-map",
-                        "type": "points",
+                        "map_data_type": "points",
                         "granularity": "cumulative",
                         "keyword": "",
                         "start": "2016-06-11T00:00:00Z",
@@ -362,7 +373,8 @@ function getDashboards() {
                     "data": [],
                     "highmarker": [],
                     "highmarkericon": [],
-                    "type": "dynamic"
+                    "type" : "map",
+                    "map_data_type": "dynamic"
                 }
             ]
         },
@@ -370,7 +382,7 @@ function getDashboards() {
             "name": "Digital Democracy and Data Commons",
             "widgets": [
                 {
-                    "id": "widget-2125",
+                    "id": "widget-2127",
                     "title": "Meetings for the Municipal Action Plan",
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
@@ -378,7 +390,7 @@ function getDashboards() {
                         "id": "12",
                         "aggregation": "none",
                         "chart": "map-points",
-                        "type": "points",
+                        "map_data_type": "points",
                         "granularity": "cumulative",
                         "keyword": "",
                         "start": "2010-01-01T00:00:00Z",
@@ -393,7 +405,8 @@ function getDashboards() {
                     "data": [],
                     "highmarker": [],
                     "highmarkericon": [],
-                    "type": "dynamic"
+                    "type" : "map",
+                    "map_data_type": "dynamic"
                 },
                 {
                     "id": "widget-363",
@@ -404,7 +417,7 @@ function getDashboards() {
                         "id": "13",
                         "aggregation": "none",
                         "chart": "map-points",
-                        "type": "points",
+                        "map_data_type": "points",
                         "granularity": "cumulative",
                         "keyword": "",
                         "start": "2010-01-01T00:00:00Z",
@@ -419,9 +432,249 @@ function getDashboards() {
                     "data": [],
                     "highmarker": [],
                     "highmarkericon": [],
-                    "type": "dynamic"
-                }
-            ]
+                    "type" : "map",
+                    "map_data_type": "dynamic"
+                },
+                {
+                    "id": "widget-364",
+                    "title": "What is your genderr?",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "14",
+                        "dimension": "gender",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2020-01-01T00:00:00Z",
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type" : "bar-chart",
+                },
+                {
+                    "id": "widget-365",
+                    "title": "What is your age?",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "14",
+                        "dimension": "age",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2020-01-01T00:00:00Z",
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type" : "bar-chart",
+                },
+                {
+                    "id": "widget-366",
+                    "title": "Where are you from? (country)",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "14",
+                        "dimension": "country",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2020-01-01T00:00:00Z",
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type" : "bar-chart",
+                },
+                {
+                    "id": "widget-367",
+                    "title": "Where are you from? (continent)",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "14",
+                        "dimension": "continent",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2020-01-01T00:00:00Z",
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type" : "bar-chart",
+                },
+                {
+                    "id": "widget-368",
+                    "title": "What is the highest educational level you have completed?",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "14",
+                        "dimension": "education",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2020-01-01T00:00:00Z",
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type" : "bar-chart",
+                },
+                {
+                    "id": "widget-369",
+                    "title": "What is your job situation?",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "14",
+                        "dimension": "workSituation",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2020-01-01T00:00:00Z",
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type" : "bar-chart",
+                },
+                {
+                    "id": "widget-370",
+                    "title": "If you belong to a group, NGO or organization that deals with issues related to online privacy, data governance and/or technological sovereignty, put here the name of your organization.",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "14",
+                        "dimension": "organization",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2020-01-01T00:00:00Z",
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type" : "bar-chart",
+                },
+                {
+                    "id": "widget-371",
+                    "title": "Where do you live?",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "14",
+                        "dimension": "city",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2020-01-01T00:00:00Z",
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type" : "bar-chart",
+                },
+                {
+                    "id": "widget-372",
+                    "title": "What is your district? [for those who live in Barcelona]",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "14",
+                        "dimension": "district",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2020-01-01T00:00:00Z",
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type" : "bar-chart",
+                },
+                {
+                    "id": "widget-373",
+                    "title": "Which device do you mostly use to connect to the Internet?",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "14",
+                        "dimension": "device",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2020-01-01T00:00:00Z",
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type" : "bar-chart",
+                },
+                {
+                    "id": "widget-374",
+                    "title": "In a scale from 0 to 5, where 0 is “no at all” and 5 is “very much”, how worried are you about the management of your data by internet companies?",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "14",
+                        "dimension": "scale",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2020-01-01T00:00:00Z",
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type" : "bar-chart",
+                },
+                {
+                    "id": "widget-375",
+                    "title": "What are the issues that worry you the most about the current ways in which data is managed?",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "14",
+                        "dimension": "interest",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2020-01-01T00:00:00Z",
+                    }
+                    ],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type" : "bar-chart",
+                }            ]
          }
     };
 	

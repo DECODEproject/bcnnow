@@ -43,6 +43,11 @@ class Config:
                         "query" : [
                             "{ participatoryProcess(id: 1) { id title { translations { locale text } } components { id name { translations { text } } ... on Meetings { meetings(after: \"\") { pageInfo { endCursor startCursor } edges { node { id title { translations { text } } address coordinates { longitude latitude } reference startTime endTime attachments { url } attendeeCount } } } } } } }"
                             ]
+                    },
+                    "dddc_survey": {
+                        "source_name": "dddc_survey",
+                        "base_url": "answers/",
+                        "paths" : ["demographics.json"]
                     }
                 }
             }
