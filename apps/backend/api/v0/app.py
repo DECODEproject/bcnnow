@@ -1,3 +1,4 @@
+from bson import ObjectId
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
@@ -6,20 +7,45 @@ from flask import request
 import pymongo
 from pymongo import MongoClient
 from bson.json_util import dumps
+
 from config.Config import Config
 import json
 import re
 import ast
 from flask_compress import Compress
+from apps.backend.api.v0.oauth2_routes import OAuthManager
 from apps.backend.api.v0.iot_login import IoTWalletLoginManager
+from apps.backend.api.v0.models import db, DataSetCommunity, DataSet
+from apps.backend.api.v0.oauth2 import config_oauth, require_oauth
 
 cfg = Config().get()
 
 app = Flask(__name__)
 
+app.config.update({
+    'SECRET_KEY': 'NyJH84Nh5iTSoYime40ctGPkwN6sPSL8kVpg92YpA2SUhPzU',
+    'OAUTH2_REFRESH_TOKEN_GENERATOR': True,
+    'SQLALCHEMY_TRACK_MODIFICATIONS': False,
+    'SQLALCHEMY_DATABASE_URI': cfg['db']['url'],
+})
+
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
+
+
 # Basic Root API
 class BasicDataAccess(Resource):
+
+    # @require_oauth('profile')
     def get(self, source):
+
+        if source == 'get_available_datasets':
+            return self.get_available_datasets()
+
         # Default values
         default_page_size = 2147483647
         default_limit = 2147483647
@@ -146,10 +172,42 @@ class BasicDataAccess(Resource):
                             '"records": [' + ','.join(records) + '], ' \
                             '"links": {"current": ' + json.dumps(current) + ', "next": ' + json.dumps(next) + '}}')
 
+    @require_oauth('profile')
+    def get_available_datasets(self):
+        user = OAuthManager.get_current_user()
+        data_sets_community = DataSetCommunity.query.filter_by(community_id=user.community_id).all()
+
+        # get dataset json contents from MongoDB
+        client = MongoClient(cfg['storage']['ipaddress'], cfg['storage']['port'])
+        db = client[cfg['storage']['dbname']]
+        collection = db["datasets"]
+
+        return_dict = {}
+        i = 1
+
+        for data_set in data_sets_community:
+
+            query_cursor = collection.find({"id": str(data_set.dataset_id)})
+            # if query_cursor.count() == 1:
+            #     return_json_obj = query_cursor[0]
+
+            for cursor in query_cursor:
+                return_dict[str(i)] = cursor
+                i = i + 1
+
+        # return_dict = {'1': return_json_obj}
+        ret = JSONEncoder().encode(return_dict)
+        # ret = '{ "1": ' + ret + '}'
+        return json.loads(ret)
+
+
 if __name__ == '__main__':
     Compress(app)
     CORS(app)
     api = Api(app)
+    db.init_app(app)
+    config_oauth(app)
     api.add_resource(BasicDataAccess, '/api/v0/<source>')
-    api.add_resource(IoTWalletLoginManager,'/iotlogin/<string:source>')
+    api.add_resource(IoTWalletLoginManager, '/iotlogin/<string:source>')
+    api.add_resource(OAuthManager, '/oauth/<string:source>')
     app.run(host='0.0.0.0', port=cfg['api']['v0']['port'], threaded=True, debug=False)

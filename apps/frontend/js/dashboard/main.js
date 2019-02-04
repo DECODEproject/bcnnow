@@ -2,10 +2,11 @@
                                                     GLOBAL VARIABLES 
 **********************************************************************************************************************/
 
-var url_api = 'http://93ff8837.ngrok.io/api/v0/'; // Get the endpoint url of BarcelonaNow API
-//var url_api = 'http://127.0.0.1:9530/api/v0/'; // Get the endpoint url of BarcelonaNow API
+//var url_api = 'http://93ff8837.ngrok.io/api/v0/'; // Get the endpoint url of BarcelonaNow API
+var url_api = 'http://127.0.0.1:9530/api/v0/'; // Get the endpoint url of BarcelonaNow API
 var url_root = 'http://127.0.0.1:9530/';
 var datasets = getDatasets(); // Get the available datasets from datasets.js file
+var datasetsForUSer = getDatasetsForUser(); // Get the available datasets from datasets.js file
 var dashboards = getDashboards(); // Get the available dashboards from dashboards.js file
 var page = 'page-5';// + (Object.keys(dashboards).length - 1); // Get the current dashboard to show (the last by default)
 var color_palette = ['#4D9DE0', '#E15554', '#E1BC29', '#3BB273', '#7768AE']; // Default color palette for time series
@@ -458,6 +459,21 @@ $(document).ready(function() {
         return result;
     }
 
+            
+    /*
+        Get cookie value
+    */
+    function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
     /*****************************************************************************************************************
                                                         WIDGETS
     ******************************************************************************************************************/
@@ -610,8 +626,14 @@ $(document).ready(function() {
         var conditions = '$timestamp=gte@' + widget['sources'][sindex]['start'] + ',lt@' + widget['sources'][sindex]['end'] + '&';
         $('#' + widget['id'] + '-loader').show();
         console.log(url_api + dataset['name'] + '?' + operators  + aggregation + parameters + sort + is_observation + conditions + filters)
+
+
         $.ajax({
             url: url_api + dataset['name'] + '?' + operators  + aggregation + parameters + sort + is_observation + conditions + filters,
+            //beforeSend: function (xhr) {
+                // authenticate the call 
+            //    xhr.setRequestHeader ("Authorization", "Bearer " + getCookie("session-token"));
+            //},
             success: function(data) {
                 widget['sources'][sindex]['dataset'] = getPreparedData(widget['sources'][sindex]['aggregation'], data, windex, sindex);
                 addSlider(widget, windex, sindex);
@@ -1062,7 +1084,7 @@ $(document).ready(function() {
                                           '<div class="form-group">' +
                                           '<label for="dataset">Select dataset:</label>' +
                                           '<select class="form-control" id="' + windex + '-' + sindex + '-edit-dataset">';
-            jQuery.each(datasets, function(sindex, dataset){
+            jQuery.each(datasetsForUSer, function(sindex, dataset){
                   sources +=                   '<option value="' + sindex + '" >' + dataset['description'] + '</option>';
             });
             sources +=                       '</select>' +
@@ -1102,7 +1124,7 @@ $(document).ready(function() {
         });
 
         options = ''
-        jQuery.each(datasets, function(sindex, dataset){
+        jQuery.each(datasetsForUSer, function(sindex, dataset){
               options +=                           '<option value="' + sindex + '">' + dataset['description'] + '</option>';
         });
 

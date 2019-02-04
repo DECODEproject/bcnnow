@@ -26,10 +26,18 @@ class Config:
             },
             "iotconfig": {
                 "header": "{predicate:'schema:iotCommunity'}",
-                "callbackurl": "http://bcnnow.decodeproject.eu/"
+                "callbackurl": "http://bcnnow.decodeproject.eu/oauth/iot_login_callback",
+                "schema": "decodewallet"
             },
             "project": {
                   "base_url": "/home/rohit.kumar/Documents/Projects/Decode/code/bcnnow/",
+            },
+            "db": {
+                "url": "mysql://root:Capitan2014@127.0.0.1:3306/bcnnow"
+            },
+            "oauth": {
+                "client_username": "AzrWLH8xw1xGYoPBBt1lP4xl",
+                "client_password": "V2CQt67jOXTpeV4BrDMumQOcka1HEpQmDWp72l1mnutz52j8"
             }
         }
 

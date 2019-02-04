@@ -14,10 +14,10 @@ import sys
 import qrcode
 import io
 from os import urandom
-import json
 from flask import request
 from config.Config import Config
 import base64
+
 cfg = Config().get()
 
 
@@ -42,14 +42,14 @@ class IoTWalletLoginManager(Resource):
     def post(self, source):
         if source == 'qrcode':
             return self.get_qrimg()
-        elif(source=='link'):
+        elif source == 'link':
             return self.get_link()
-        elif (source == 'login'):
+        elif source == 'login':
             session_id = request.args['session']
             return self.allow_login(session_id)
-        elif (source == 'validate'):
+        elif source == 'validate':
             try:
-                if(request.is_json):
+                if request.is_json:
                     basic_parameters = request.json
                     token = basic_parameters['sessionId']
                     return self.validateLogin(token,basic_parameters['attribute'])
@@ -89,7 +89,8 @@ class IoTWalletLoginManager(Resource):
             print("Unexpected error:", sys.exc_info()[0])
             return "Value Error 2"
 
-    def random_qr(self,url='www.google.com'):
+    @staticmethod
+    def random_qr(url='www.google.com'):
         qr = qrcode.QRCode(version=1,
                            error_correction=qrcode.constants.ERROR_CORRECT_L,
                            box_size=10,
@@ -100,7 +101,8 @@ class IoTWalletLoginManager(Resource):
         img = qr.make_image()
         return img
 
-    def get_new_token(self):
+    @staticmethod
+    def get_new_token():
         #generate new token
         tkn = urandom(12).hex()
         tkn_manager = TokenManager()
@@ -109,19 +111,19 @@ class IoTWalletLoginManager(Resource):
         else:
             return None
 
-    def get_qrimg(self):
-        token = self.get_new_token()
+    @staticmethod
+    def get_qrimg():
+        token = IoTWalletLoginManager.get_new_token()
+        schema = cfg['iotconfig']['schema']
         header = cfg['iotconfig']['header']
         callback = cfg['iotconfig']['callbackurl']
-        data = 'decodewallet://?action=login&header =%s&sessionId=%s&callback=%s' % (header, token, callback)
+        data = '%s://?action=login&header =%s&sessionId=%s&callback=%s' % (schema, header, token, callback)
         img_buf = io.BytesIO()
-        img = self.random_qr(url=data)
+        img = IoTWalletLoginManager.random_qr(url=data)
         img.save(img_buf)
         img_buf.seek(0)
         img_str = base64.b64encode(img_buf.getvalue()).decode()
-        #return json.dumps({"qr": img_str, "session":token})
-        return {"qr": img_str, "session": token}
-        #return flask.send_file(img_buf, mimetype='image/png')
+        return {"qr": img_str, "session": token, "url_app": data, "url": data}
 
     def allow_login(self, sessionId):
         status = False
@@ -132,7 +134,7 @@ class IoTWalletLoginManager(Resource):
             tkn_status = tkn_manager.check_token(sessionId)
             if tkn_status == 1:
                 status = True
-        return {"status" :status}
+        return {"status": status}
 
     def get_link(self):
         token=self.get_new_token()
