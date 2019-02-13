@@ -106,8 +106,8 @@ function getDashboards() {
                             "map_data_type": "points",
                             "granularity": "cumulative",
                             "keyword": "",
-                            "start": "2018-05-01T00:00:00Z",
-                            "end": "2018-05-02T00:00:00Z",
+                            "start": "2019-01-01T00:00:00Z",
+                            "end": "2020-01-01T00:00:00Z",
                             "dataset": null,
                             "markers": null
                         }
@@ -382,7 +382,7 @@ function getDashboards() {
             "name": "Digital Democracy and Data Commons",
             "widgets": [
                 {
-                    "id": "widget-2127",
+                    "id": "widget-360",
                     "title": "Meetings for the Municipal Action Plan",
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
@@ -409,12 +409,12 @@ function getDashboards() {
                     "map_data_type": "dynamic"
                 },
                 {
-                    "id": "widget-363",
+                    "id": "widget-361",
                     "title": "Meetings for DECODE pilot",
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
-                        "id": "13",
+                        "id": "14",
                         "aggregation": "none",
                         "chart": "map-points",
                         "map_data_type": "points",
@@ -436,12 +436,56 @@ function getDashboards() {
                     "map_data_type": "dynamic"
                 },
                 {
-                    "id": "widget-364",
-                    "title": "What is your genderr?",
+                    "id": "widget-362",
+                    "title": "Proposals for the Municipal Action Plan",
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
-                        "id": "14",
+                        "id": "11",
+                        "xDim": "totalCommentsCount",
+                        "yDim": "voteCount",
+                        "colorDim": "category",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2020-01-01T00:00:00Z",
+                        "scale": "sqrt"
+                    }],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type" : "scatter"
+                },
+                {
+                    "id": "widget-363",
+                    "title": "Proposals for DECODE pilot",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "13",
+                        "xDim": "totalCommentsCount",
+                        "yDim": "voteCount",
+                        "colorDim": "category",
+                        "start": "2010-01-01T00:00:00Z",
+                        "end": "2020-01-01T00:00:00Z",
+                        "scale": "linear"
+                    }],
+                    "timeinterval": null,
+                    "map": null,
+                    "refreshIntervalId": [],
+                    "data": [],
+                    "highmarker": [],
+                    "highmarkericon": [],
+                    "type" : "scatter"
+                },
+                {
+                    "id": "widget-364",
+                    "title": "What is your gender?",
+                    "authors": ["carmen"],
+                    "modified": "2018-01-12T12:00:00Z",
+                    "sources": [{
+                        "id": "15",
                         "dimension": "gender",
                         "start": "2010-01-01T00:00:00Z",
                         "end": "2020-01-01T00:00:00Z",
@@ -461,7 +505,7 @@ function getDashboards() {
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
-                        "id": "14",
+                        "id": "15",
                         "dimension": "age",
                         "start": "2010-01-01T00:00:00Z",
                         "end": "2020-01-01T00:00:00Z",
@@ -481,7 +525,7 @@ function getDashboards() {
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
-                        "id": "14",
+                        "id": "15",
                         "dimension": "country",
                         "start": "2010-01-01T00:00:00Z",
                         "end": "2020-01-01T00:00:00Z",
@@ -501,7 +545,7 @@ function getDashboards() {
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
-                        "id": "14",
+                        "id": "15",
                         "dimension": "continent",
                         "start": "2010-01-01T00:00:00Z",
                         "end": "2020-01-01T00:00:00Z",
@@ -521,7 +565,7 @@ function getDashboards() {
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
-                        "id": "14",
+                        "id": "15",
                         "dimension": "education",
                         "start": "2010-01-01T00:00:00Z",
                         "end": "2020-01-01T00:00:00Z",
@@ -541,7 +585,7 @@ function getDashboards() {
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
-                        "id": "14",
+                        "id": "15",
                         "dimension": "workSituation",
                         "start": "2010-01-01T00:00:00Z",
                         "end": "2020-01-01T00:00:00Z",
@@ -561,7 +605,7 @@ function getDashboards() {
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
-                        "id": "14",
+                        "id": "15",
                         "dimension": "organization",
                         "start": "2010-01-01T00:00:00Z",
                         "end": "2020-01-01T00:00:00Z",
@@ -581,7 +625,7 @@ function getDashboards() {
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
-                        "id": "14",
+                        "id": "15",
                         "dimension": "city",
                         "start": "2010-01-01T00:00:00Z",
                         "end": "2020-01-01T00:00:00Z",
@@ -601,7 +645,7 @@ function getDashboards() {
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
-                        "id": "14",
+                        "id": "15",
                         "dimension": "district",
                         "start": "2010-01-01T00:00:00Z",
                         "end": "2020-01-01T00:00:00Z",
@@ -621,7 +665,7 @@ function getDashboards() {
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
-                        "id": "14",
+                        "id": "15",
                         "dimension": "device",
                         "start": "2010-01-01T00:00:00Z",
                         "end": "2020-01-01T00:00:00Z",
@@ -641,7 +685,7 @@ function getDashboards() {
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
-                        "id": "14",
+                        "id": "15",
                         "dimension": "scale",
                         "start": "2010-01-01T00:00:00Z",
                         "end": "2020-01-01T00:00:00Z",
@@ -661,7 +705,7 @@ function getDashboards() {
                     "authors": ["carmen"],
                     "modified": "2018-01-12T12:00:00Z",
                     "sources": [{
-                        "id": "14",
+                        "id": "15",
                         "dimension": "interest",
                         "start": "2010-01-01T00:00:00Z",
                         "end": "2020-01-01T00:00:00Z",
@@ -674,7 +718,8 @@ function getDashboards() {
                     "highmarker": [],
                     "highmarkericon": [],
                     "type" : "bar-chart",
-                }            ]
+                }
+            ]
          }
     };
 	

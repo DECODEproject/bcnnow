@@ -554,6 +554,20 @@ $(document).ready(function() {
     }
 
     /*
+        Arranges the original retrieved data to be displayed
+        @aggregation The geographical laggregation level for the current source
+        @data The original data
+        @return The arranged data
+    */
+    function getPreparedDataScatter(aggregation, data, windex, sindex) {
+        filtered = [];
+        data.records.forEach(function(d) {
+            filtered.push(d);
+        });
+        return filtered;
+    }
+
+    /*
         Shows the legend for the current source in the widget
         @widget The widget where the legend will be inserted
         @dataset The source dataset to which build the legend
@@ -635,6 +649,17 @@ $(document).ready(function() {
     }
 
     /*
+        Initializes a bar chart for the current source within the widget
+        @windex The widget index in the current page
+        @sindex The source index in the current widget
+    */
+    function initScatter(windex, sindex) {
+        var widget = dashboards[page]['widgets'][windex];
+        var dataset = datasets[widget['sources'][sindex]['id']];
+        loadScatter(widget, dataset, windex, sindex);
+    }
+
+    /*
         Loads the data for the current source in the widget
         @widget The widget where the data will be loaded
         @dataset The source dataset to insert
@@ -650,6 +675,7 @@ $(document).ready(function() {
         var is_observation = 'isObservation' + '&';
         var conditions = '$timestamp=gte@' + widget['sources'][sindex]['start'] + ',lt@' + widget['sources'][sindex]['end'] + '&';
         $('#' + widget['id'] + '-loader').show();
+        //console.log(url_api + dataset['name'] + '?' + operators + aggregation + parameters + sort + is_observation + conditions + filters);
         $.ajax({
             url: url_api + dataset['name'] + '?' + operators + aggregation + parameters + sort + is_observation + conditions + filters,
             success: function(data) {
@@ -686,6 +712,35 @@ $(document).ready(function() {
                 //addSlider(widget, windex, sindex);
                 //addLegend(widget, dataset);*/
                 updateBarChart(windex, sindex, 0);
+                $("#" + widget['id'] + "-loader").hide();
+            },
+            error: function() {}
+        });
+    }
+
+    /*
+        Loads the data for the current source in the widget
+        @widget The widget where the data will be loaded
+        @dataset The source dataset to insert
+        @windex The widget index in the current page
+        @sindex The source index in the current widget
+    */
+    function loadScatter(widget, dataset, windex, sindex) {
+        /*var filters = (widget['sources'][sindex]['keyword'] != '') ? '$' + dataset['filter_field'] + '=[' + widget['sources'][sindex]['keyword'] + ']' : '';
+        var parameters = 'fields=' + dataset['parameters'] + 'id@id,value@payload.' + dataset['targetvalue'] + ',point@location.point.coordinates' + '&';
+        var aggregation = (widget['sources'][sindex]['aggregation'] != 'none') ? 'group=' + widget['sources'][sindex]['aggregation'] + '@' + 'location.' + widget['sources'][sindex]['aggregation'] + ',timestamp@timestamp' + '&' : 'group=timestamp@timestamp' + '&';
+        var operators = (widget['sources'][sindex]['aggregation'] != 'none') ? 'aggregators=avg@payload.' + dataset['targetvalue'] + '&' : '';
+        var sort = 'sort=a@timestamp' + '&';
+        var is_observation = 'isObservation' + '&';*/
+        var conditions = 'timestamp=gte@' + widget['sources'][sindex]['start'] + ',lt@' + widget['sources'][sindex]['end'] + '&';
+        $('#' + widget['id'] + '-loader').show();
+        $.ajax({
+            url: url_api + dataset['name'] + '?' + conditions, //operators + aggregation + parameters + sort + is_observation + conditions, // + filters,
+            success: function(data) {
+                widget['sources'][sindex]['dataset'] = getPreparedDataScatter(widget['sources'][sindex]['aggregation'], data, windex, sindex);
+                /*addSlider(widget, windex, sindex);
+                addLegend(widget, dataset);*/
+                updateScatter(windex, sindex, 0);
                 $("#" + widget['id'] + "-loader").hide();
             },
             error: function() {}
@@ -1179,7 +1234,6 @@ $(document).ready(function() {
             height = 350 - margin.top - margin.bottom;
         // set the ranges
         var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
-
         var y = d3.scale.linear().range([height, 0]);
 
         // define the axis
@@ -1224,7 +1278,7 @@ $(document).ready(function() {
                 [0, 0],
                 [width, height]
             ]) // tells the tooltip how much area it has to work with
-            .tips(["value", "count"], ["dim: ", "count: "]) // tells the tooltip which properties to display in the tip and what to label thme
+            .tips(["value", "count"], ["value: ", "count: "]) // tells the tooltip which properties to display in the tip and what to label thme
             .fontSize(12) // sets the font size for the tooltip
             .padding([8, 4]) // sets the amount of padding in the tooltip rectangle
             .margin([10, 10]); // set the distance H and V to keep the tooltip from the mouse pointer        
@@ -1248,7 +1302,7 @@ $(document).ready(function() {
             .attr("y", -35)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
-            .text("answers");
+            .text("records");
 
 
         // Add bar chart
@@ -1279,6 +1333,178 @@ $(document).ready(function() {
 
     }
 
+
+    /*
+        Updates the current widget
+        @windex The widget index in the current page
+        @sindex The source index in the current widget
+    */
+    function updateScatter(windex, sindex, dir = 1) {
+        var widget = dashboards[page]['widgets'][windex];
+        //var dataset = datasets[widget['sources'][sindex]['id']];
+
+        $("#" + windex + "-slider-date").html("");
+
+        var margin = {
+                top: 20,
+                right: 50,
+                bottom: 30,
+                left: 40
+            },
+
+            width = $("#" + windex + "-slider-date").width() - margin.left - margin.right,
+            height = 350 - margin.top - margin.bottom;
+
+        /* 
+         * value accessor - returns the value to encode for a given data object.
+         * scale - maps value to a visual display encoding, such as a pixel position.
+         * map function - maps from data value to display value
+         * axis - sets up axis
+         */
+        var xDim = widget.sources[sindex].xDim;
+        var yDim = widget.sources[sindex].yDim;
+        var colorDim = widget.sources[sindex].colorDim;
+        var scale = widget.sources[sindex].scale;
+
+        // setup x 
+        var xValue = function(d) {
+            return d.payload[xDim];
+        }; // data -> value
+        if (scale == 'sqrt') var xScale = d3.scale.sqrt().range([0, width]);
+        else var xScale = d3.scale.linear().range([0, width]);
+        var xMap = function(d) {
+                return xScale(xValue(d));
+            }, // data -> display
+            xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+        // setup y
+        var yValue = function(d) {
+            return d.payload[yDim];
+        }; // data -> value
+        if (scale == 'sqrt') var yScale = d3.scale.sqrt().range([height, 0]);
+        else var yScale = d3.scale.linear().range([height, 0]);
+        var yMap = function(d) {
+                return yScale(yValue(d));
+            }, // data -> display
+            yAxis = d3.svg.axis().scale(yScale).orient("left");
+
+        // setup fill color
+        var cValue = function(d) {
+                return d.payload[colorDim];
+            },
+            color = d3.scale.category10();
+
+        // add the graph canvas to the body of the webpage
+        var svg = d3.select("[id='" + windex + "-slider-date']").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        // add the tooltip area to the webpage
+        var tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        data = [];
+        widget['sources'][sindex]['dataset'].forEach(function(d) {
+            if ((typeof d.payload[xDim] != "undefined") && (typeof d.payload[yDim] != "undefined")) {
+                data.push(d);
+            }
+        });
+
+
+        // don't want dots overlapping axis, so add in buffer to data domain
+        xScale.domain([d3.min(data, xValue) - 1, d3.max(data, xValue) + 1]);
+        yScale.domain([d3.min(data, yValue) - 1, d3.max(data, yValue) + 1]);
+
+        // x-axis
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+            .append("text")
+            .attr("class", "label")
+            .attr("x", width)
+            .attr("y", -6)
+            .style("text-anchor", "end")
+            .text(xDim);
+
+        // y-axis
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text")
+            .attr("class", "label")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text(yDim);
+
+        // draw dots
+        svg.selectAll(".dot")
+            .data(data)
+            .enter().append("circle")
+            .attr("class", "dot")
+            .attr("r", 3.5)
+            .attr("cx", xMap)
+            .attr("cy", yMap)
+            .style("fill", function(d) {
+                return color(cValue(d));
+            })
+            .style("fill", function(d) {
+                return (color.domain().indexOf(d.payload[colorDim]) > 10) ? "#eee" : color(cValue(d));
+            })
+            .on("mouseover", function(d) {
+                tooltip.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                tooltip.html(d.id + "<br/> (" + xValue(d) +
+                        ", " + yValue(d) + ")")
+                    .style("left", (d3.event.pageX + 5) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on("mouseout", function(d) {
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            });
+
+
+        color_domain = color.domain().slice(0, Math.min(10, color.domain().length));
+        color_domain.push("Other");
+
+        // draw legend
+        var legend = svg.selectAll(".legend")
+            .data(color_domain)
+            .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) {
+                return "translate(45," + i * 20 + ")";
+            });
+
+        // draw legend colored rectangles
+        legend.append("rect")
+            .attr("x", width - 18)
+            .attr("width", 18)
+            .attr("height", 18)
+            .style("fill", color)
+            .style("fill", function(d) {
+                if (d == "Other") return "#eee";
+                return color;
+            });
+
+        // draw legend text
+        legend.append("text")
+            .attr("x", width - 24)
+            .attr("y", 9)
+            .attr("dy", ".35em")
+            .style("text-anchor", "end")
+            .text(function(d) {
+                return d;
+            })
+    }
+
     /*
         Draws the HTML widget
         @widget The widget where the data will be loaded
@@ -1294,21 +1520,21 @@ $(document).ready(function() {
         widget['sources'].forEach(function(source, sindex) {
 
 
-                sources += '<div  id="' + windex + '-' + sindex + '-source-item" class="row source-item">' +
-                        '<div class="high-name"><strong>' + datasets[source['id']]['description'] + '</strong></div> ' +
-                        '<div class="high-name"> from <strong>' + moment(source['start']).format('MMMM Do YYYY') + '</strong></div>' +
-                        '<div class="high-name"> to <strong>' + moment(source['end']).format('MMMM Do YYYY') + '</strong></div> '
-                    if (widget.type == "map") {
-                        if (source['keyword'] != '') sources +='<div class="high-name"> by keyword <strong>' + source['keyword'] + '</strong></div> ';
-                        if (source['aggregation'] != 'none') sources +=' <div class="high-name"> by <strong>' + source['aggregation'] + '</strong></div> ';
-                    } 
-                    if (widget.type == "bar-chart") 
-                        if (source['dimension'] != 'none') sources += ' <div class="high-name"> grouped by <strong>' + source['dimension'] + '</strong></div> ';
-                    sources +=  '<div class="high-name"> [' +
-                        '<span data-toggle="modal"  id="' + windex + '-' + sindex + '-modify" data-target="#' + widget['id'] + '-' + datasets[source['id']]['name'] + '-modal" class="modify">Edit</span>' +
-                        '<span id="widget-' + windex + '-source-' + sindex + '-remove" class="remove">Remove</span>]' +
-                        '</div>' +
-                        '</div>';
+            sources += '<div  id="' + windex + '-' + sindex + '-source-item" class="row source-item">' +
+                '<div class="high-name"><strong>' + datasets[source['id']]['description'] + '</strong></div> ' +
+                '<div class="high-name"> from <strong>' + moment(source['start']).format('MMMM Do YYYY') + '</strong></div>' +
+                '<div class="high-name"> to <strong>' + moment(source['end']).format('MMMM Do YYYY') + '</strong></div> '
+            if (widget.type == "map") {
+                if (source['keyword'] != '') sources += '<div class="high-name"> by keyword <strong>' + source['keyword'] + '</strong></div> ';
+                if (source['aggregation'] != 'none') sources += ' <div class="high-name"> by <strong>' + source['aggregation'] + '</strong></div> ';
+            } else if (widget.type == "bar-chart") {
+                if (source['dimension'] != 'none') sources += ' <div class="high-name"> grouped by <strong>' + source['dimension'] + '</strong></div> ';
+            } else if (widget.type == "scatter") {}
+            sources += '<div class="high-name"> [' +
+                '<span data-toggle="modal"  id="' + windex + '-' + sindex + '-modify" data-target="#' + widget['id'] + '-' + datasets[source['id']]['name'] + '-modal" class="modify">Edit</span>' +
+                '<span id="widget-' + windex + '-source-' + sindex + '-remove" class="remove">Remove</span>]' +
+                '</div>' +
+                '</div>';
 
             sources += '<div id="' + widget['id'] + '-' + datasets[source['id']]['name'] + '-modal" class="modal fade" role="dialog">' +
                 '<div class="modal-dialog">' +
@@ -1325,7 +1551,8 @@ $(document).ready(function() {
                 sources += '<label for="dataset">Select dataset:</label>' +
                     '<select class="form-control" id="' + windex + '-' + sindex + '-edit-dataset">';
                 jQuery.each(datasets, function(sindex, dataset) {
-                    sources += '<option value="' + sindex + '" >' + dataset['description'] + '</option>';
+                    if (datasets[dataset['id']].allowed_visual_models.length > 0)
+                        sources += '<option value="' + sindex + '" >' + dataset['description'] + '</option>';
                 });
                 sources += '</select>' +
                     '<div id="' + windex + '-' + sindex + '-edit-info"></div><br/>';
@@ -1359,15 +1586,57 @@ $(document).ready(function() {
                     '<label for="time_interval">Select time interval:</label><br/>' +
                     '<div id="' + windex + '-' + sindex + '-edit-time-interval" class="dtrange">' +
                     '<span></span><b class="caret"></b>' +
-                    '</div><br/><br/><br/>';
-
-                sources += '<div class="form-group">' +
+                    '</div><br/><br/><br/>' +
+                    '<div class="form-group">' +
                     '<label for="dataset">Select dimension:</label>' +
                     '<select class="form-control" id="' + windex + '-' + sindex + '-edit-dimension">';
                 jQuery.each(datasets[source['id']]['allowed_bar_chart_dimensions'], function(vindex, model) {
                     sources += '<option value="' + model + '" ' + (source['chart'] == model ? 'selected' : '') + '>' + model + '</option>';
                 });
                 sources += '</select></div>';
+            } else if (widget.type == 'scatter') {
+                sources += '<div id="' + windex + '-' + sindex + '-edit-info"></div><br/>' +
+                    '<label for="time_interval">Select time interval:</label><br/>' +
+                    '<div id="' + windex + '-' + sindex + '-edit-time-interval" class="dtrange">' +
+                    '<span></span><b class="caret"></b>' +
+                    '</div><br/><br/><br/>';
+
+                sources += '<div class="form-group">' +
+                    '<label for="dataset">Select dimension for X axis:</label>' +
+                    '<select class="form-control" id="' + windex + '-' + sindex + '-edit-xDim">';
+                jQuery.each(datasets[source['id']]['allowed_scatter_xy_dimensions'], function(vindex, model) {
+                    sources += '<option value="' + model + '" ' + (source['chart'] == model ? 'selected' : '') + '>' + model + '</option>';
+                });
+                sources += '</select></div>';
+
+                sources += '<div class="form-group">' +
+                    '<label for="dataset">Select dimension for y axis:</label>' +
+                    '<select class="form-control" id="' + windex + '-' + sindex + '-edit-yDim">';
+                jQuery.each(datasets[source['id']]['allowed_scatter_xy_dimensions'], function(vindex, model) {
+                    sources += '<option value="' + model + '" ' + (source['chart'] == model ? 'selected' : '') + '>' + model + '</option>';
+                });
+                sources += '</select></div>';
+
+                sources += '<div class="form-group">' +
+                    '<label for="dataset">Select category for color:</label>' +
+                    '<select class="form-control" id="' + windex + '-' + sindex + '-edit-colorDim">';
+                jQuery.each(datasets[source['id']]['allowed_scatter_color_dimensions'], function(vindex, model) {
+                    sources += '<option value="' + model + '" ' + (source['chart'] == model ? 'selected' : '') + '>' + model + '</option>';
+                });
+                sources += '</select>';
+                sources += '</select></div>';
+
+                sources += '<div class="form-group">' +
+                    '<label for="dataset">Select category for color:</label>' +
+                    '<select class="form-control" id="' + windex + '-' + sindex + '-edit-scale">';
+                var scales = ["linear", "sqrt"];
+                for (scale of scales) {
+                    sources += '<option value="' + scale + '" ' + (source['chart'] == scale ? 'selected' : '') + '>' + scale + '</option>';
+                }
+                sources += '</select>';
+                sources += '</select></div>';
+
+                sources += '<br/>';
             }
             sources += '</div></div>' +
                 '<div class="modal-footer">' +
@@ -1381,14 +1650,14 @@ $(document).ready(function() {
 
         options = ''
         jQuery.each(datasets, function(sindex, dataset) {
-            if (widget.type=="map") {
-                if (dataset.allowed_visual_models.length>0)
-                options += '<option value="' + sindex + '">' + dataset['description'] + '</option>';
-            }
-            else if (widget.type=="bar-chart") {
-                if (dataset.allowed_bar_chart_dimensions.length>0) options += '<option value="' + sindex + '">' + dataset['description'] + '</option>';            
-            }
-            else options += '<option value="' + sindex + '">' + dataset['description'] + '</option>';            
+            if (widget.type == "map") {
+                if (dataset.allowed_visual_models.length > 0)
+                    options += '<option value="' + sindex + '">' + dataset['description'] + '</option>';
+            } else if (widget.type == "bar-chart") {
+                if (dataset.allowed_bar_chart_dimensions.length > 0) options += '<option value="' + sindex + '">' + dataset['description'] + '</option>';
+            } else if (widget.type == "scatter") {
+                if (dataset.allowed_scatter_xy_dimensions.length > 0) options += '<option value="' + sindex + '">' + dataset['description'] + '</option>';
+            } else options += '<option value="' + sindex + '">' + dataset['description'] + '</option>';
         });
 
         html = '<!-- START SENTILO BLOCK -->' +
@@ -1406,7 +1675,7 @@ $(document).ready(function() {
             '</div>' +
             '<ul class="panel-controls panel-controls-title">';
 
-        if (widget.type != 'bar-chart') {
+        if ((widget.type != 'bar-chart') && (widget.type != 'scatter')) {
             html += '<li class="rounded">' +
                 '<span id="' + windex + '-add-source" class="add-source fa fa-plus" title="Add a source"></span>' +
                 '<div id="' + windex + '-modal" class="modal fade" role="dialog">' +
@@ -1424,13 +1693,14 @@ $(document).ready(function() {
                 options +
                 '</select>' +
                 '<div id="' + windex + '-plus-info"></div><br/>';
-            if (widget.sources.length==0) {
+            if (widget.sources.length == 0) {
                 html += '<label for="type">Select visualization type:</label><br/>' +
-                '<select class="form-control" id="' + windex + '-plus-type">' +
-                '<option value="none">None</option>' +
-                '<option value="map">map</option>' +
-                '<option value="bar-chart">bar-chart</option>' +
-                '</select><br/>';
+                    '<select class="form-control" id="' + windex + '-plus-type">' +
+                    '<option value="none">None</option>' +
+                    '<option value="map">map</option>' +
+                    '<option value="bar-chart">bar-chart</option>' +
+                    '<option value="scatter">scatter</option>' +
+                    '</select><br/>';
             }
             html += '<div id="' + windex + '-plus-settings">';
             if ((widget.id != "widget-0") && (widget.type != null)) {
@@ -1578,16 +1848,11 @@ $(document).ready(function() {
             }).show();
         });
 
+
+
         // Plus new dataset select action
         $('#' + widget['id'] + ' #' + windex + '-plus-dataset').on('change', function() {
             var dataset = datasets[$(this).val()];
-
-            if (($('#' + widget['id'] + ' #' + windex + '-plus-type').val()) == 'map') {
-                $('#' + widget['id'] + ' #' + windex + '-plus-info').html(
-                    '<div class="option-value"> The data is available from ' + moment(dataset['start']).format('MMMM Do YYYY, h:mm:ss a') + ' to ' + (dataset['end'] == null ? 'two days ago' : moment(dataset['end']).format('MMMM Do YYYY, h:mm:ss a')) + ' </div>' +
-                    '<div class="option-value"> The data is available in ' + dataset['language'] + '. </div>'
-                );
-            } else $('#' + widget['id'] + ' #' + windex + '-plus-info').empty();
 
             if ($("#" + windex + "-plus-type").val() == "none") {
                 $("#" + windex + "-plus-type").empty();
@@ -1596,22 +1861,76 @@ $(document).ready(function() {
                     options += '<option value="map">map</option>';
                 if (dataset.allowed_bar_chart_dimensions.length > 0)
                     options += '<option value="bar-chart">bar-chart</option>';
+                if (dataset.allowed_scatter_xy_dimensions.length > 0)
+                    options += '<option value="scatter">scatter</option>';
                 $("#" + windex + "-plus-type").append(options);
             }
 
+            $('#' + widget['id'] + ' #' + windex + '-plus-info').empty();
+            $("#" + windex + "-plus-type-interval").empty();
             $("#" + windex + "-plus-marker").empty();
-            jQuery.each(dataset['allowed_visual_models'], function(vindex, model) {
-                $("#" + windex + "-plus-marker").append('<option value="' + model + '" >' + model + '</option>');
-            });
             $("#" + windex + "-plus-dimension").empty();
-            jQuery.each(dataset['allowed_bar_chart_dimensions'], function(vindex, model) {
-                $("#" + windex + "-plus-dimension").append('<option value="' + model + '" >' + model + '</option>');
-            });
-
+            $("#" + windex + "-plus-xDim").empty();
+            $("#" + windex + "-plus-yDim").empty();
+            $("#" + windex + "-plus-colorDim").empty();
+            $("#" + windex + "-plus-scale").empty();
+            if (dataset != null) {
+                $('#' + widget['id'] + ' #' + windex + '-plus-info').html(
+                    '<div class="option-value"> The data is available from ' + moment(dataset['start']).format('MMMM Do YYYY, h:mm:ss a') + ' to ' + (dataset['end'] == null ? 'two days ago' : moment(dataset['end']).format('MMMM Do YYYY, h:mm:ss a')) + ' </div>' +
+                    '<div class="option-value"> The data is available in ' + dataset['language'] + '. </div>'
+                );
+                jQuery.each(dataset['allowed_visual_models'], function(vindex, model) {
+                    $("#" + windex + "-plus-marker").append('<option value="' + model + '" >' + model + '</option>');
+                });
+                jQuery.each(dataset['allowed_bar_chart_dimensions'], function(vindex, model) {
+                    $("#" + windex + "-plus-dimension").append('<option value="' + model + '" >' + model + '</option>');
+                });
+                jQuery.each(dataset['allowed_scatter_xy_dimensions'], function(vindex, model) {
+                    $("#" + windex + "-plus-xDim").append('<option value="' + model + '" >' + model + '</option>');
+                });
+                jQuery.each(dataset['allowed_scatter_xy_dimensions'], function(vindex, model) {
+                    $("#" + windex + "-plus-yDim").append('<option value="' + model + '" >' + model + '</option>');
+                });
+                jQuery.each(dataset['allowed_scatter_color_dimensions'], function(vindex, model) {
+                    $("#" + windex + "-plus-colorDim").append('<option value="' + model + '" >' + model + '</option>');
+                });
+                for (scale of["linear", "sqrt"]) {
+                    $("#" + windex + "-plus-scale").append('<option value="' + scale + '" >' + scale + '</option>');
+                }
+                start_date = (dataset.start === null) ? moment().subtract(6, 'days').toISOString() : moment(dataset.start).toISOString();
+                end_date = (dataset.end === null) ? moment().toISOString() : moment(dataset.end).toISOString();
+                $("#" + windex + "-plus-time-interval").daterangepicker({
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    },
+                    opens: 'left',
+                    buttonClasses: ['btn btn-default'],
+                    applyClass: 'btn-small btn-primary',
+                    cancelClass: 'btn-small',
+                    format: 'DD.MM.YYYY',
+                    separator: ' to ',
+                    startDate: moment().subtract('days', 6),
+                    endDate: moment()
+                }, function(start, end) {
+                    start_date = start.toISOString();
+                    end_date = end.toISOString();
+                    $("#" + windex + "-plus-time-interval span").html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                });
+                $("#" + windex + "-plus-time-interval span").html(
+                    ((dataset.start === null) ? moment().subtract(6, 'days').format('MMMM D, YYYY') : moment(dataset.start).format('MMMM D, YYYY')) + ' - ' +
+                    ((dataset.end === null) ? moment().format('MMMM D, YYYY') : moment(dataset.end).format('MMMM D, YYYY'))
+                );
+            }
         });
 
         // Plus new visualization type select action
         $('#' + widget['id'] + ' #' + windex + '-plus-type').on('change', function() {
+
             if ($(this).val() == 'map') {
                 $('#' + widget['id'] + ' #' + windex + '-plus-settings').html(
                     '<div class="option-value">' +
@@ -1684,6 +2003,70 @@ $(document).ready(function() {
                     });
                     $("#" + windex + "-plus-dataset").append(options);
                 }
+            } else if ($(this).val() == 'scatter') {
+                //$('#' + widget['id'] + ' #' + windex + '-plus-info').empty();
+                $('#' + widget['id'] + ' #' + windex + '-plus-settings').html(
+                    '<div class="option-value">' +
+                    '<label for="time_interval">Select time interval:</label><br/>' +
+                    '<div id="' + windex + '-plus-time-interval" class="dtrange">' +
+                    '<span></span><b class="caret"></b>' +
+                    '</div><br/><br/><br/>' +
+                    '<div class="option-value">' +
+                    '<label for="type">Select dimension for X axis:</label>' +
+                    '<select class="form-control" id="' + windex + '-plus-xDim">' +
+                    '</select><br/>' +
+                    '</div>' +
+                    '<div class="option-value">' +
+                    '<label for="type">Select dimension for y axis:</label>' +
+                    '<select class="form-control" id="' + windex + '-plus-yDim">' +
+                    '</select><br/>' +
+                    '</div>' +
+                    '<div class="option-value">' +
+                    '<label for="type">Select category for color:</label>' +
+                    '<select class="form-control" id="' + windex + '-plus-colorDim">' +
+                    '</select><br/>' +
+                    '</div>' +
+                    '<div class="option-value">' +
+                    '<label for="type">Select scale:</label>' +
+                    '<select class="form-control" id="' + windex + '-plus-scale">' +
+                    '</select><br/>' +
+                    '</div>' +
+                    '</div>'
+                );
+                var dataset = datasets[$('#' + widget['id'] + ' #' + windex + '-plus-dataset').val()];
+                try {
+                    allowed_scatter_xy_dimensions = dataset['allowed_scatter_xy_dimensions'];
+                    allowed_scatter_color_dimensions = dataset['allowed_scatter_color_dimensions'];
+                } catch (err) {
+                    allowed_scatter_xy_dimensions = [];
+                    allowed_scatter_color_dimensions = [];
+                }
+                if (allowed_scatter_xy_dimensions.length > 0) {
+                    $("#" + windex + "-plus-xDim").empty();
+                    jQuery.each(allowed_scatter_xy_dimensions, function(vindex, model) {
+                        $("#" + windex + "-plus-xDim").append('<option value="' + model + '" >' + model + '</option>');
+                    });
+                    $("#" + windex + "-plus-yDim").empty();
+                    jQuery.each(allowed_scatter_xy_dimensions, function(vindex, model) {
+                        $("#" + windex + "-plus-yDim").append('<option value="' + model + '" >' + model + '</option>');
+                    });
+                    $("#" + windex + "-plus-colorDim").empty();
+                    jQuery.each(allowed_scatter_color_dimensions, function(vindex, model) {
+                        $("#" + windex + "-plus-colorDim").append('<option value="' + model + '" >' + model + '</option>');
+                    });
+                    $("#" + windex + "-plus-scale").empty();
+                    for (scale of["linear", "sqrt"]) {
+                        $("#" + windex + "-plus-scale").append('<option value="' + scale + '" >' + scale + '</option>');
+                    }
+                } else {
+                    $("#" + windex + "-plus-dataset").empty();
+                    options = '<option value="none" >None</option>';
+                    jQuery.each(datasets, function(sindex, dataset) {
+                        if (dataset.allowed_scatter_xy_dimensions.length > 0)
+                            options += '<option value="' + sindex + '">' + dataset['description'] + '</option>';
+                    });
+                    $("#" + windex + "-plus-dataset").append(options);
+                }
             } else if ($(this).val() == 'none') {
                 $("#" + windex + "-plus-dataset").empty();
                 options = '<option value="none">None</option>'
@@ -1695,13 +2078,15 @@ $(document).ready(function() {
                 options = '<option value="none">None</option>';
                 options += '<option value="map">map</option>';
                 options += '<option value="bar-chart">bar-chart</option>';
+                options += '<option value="scatter">scatter</option>';
                 $("#" + windex + "-plus-type").append(options);
                 $('#' + widget['id'] + ' #' + windex + '-plus-settings').empty();
             }
 
-
-
-
+            var dataset = datasets[$('#' + widget['id'] + ' #' + windex + '-plus-dataset').val()];
+            if (dataset != null) {
+                start_date = (dataset.start === null) ? moment().subtract(6, 'days').toISOString() : moment(dataset.start).toISOString();
+                end_date = (dataset.end === null) ? moment().toISOString() : moment(dataset.end).toISOString();
                 $("#" + windex + "-plus-time-interval").daterangepicker({
                     ranges: {
                         'Today': [moment(), moment()],
@@ -1724,10 +2109,11 @@ $(document).ready(function() {
                     end_date = end.toISOString();
                     $("#" + windex + "-plus-time-interval span").html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
                 });
-                $("#" + windex + "-plus-time-interval span").html(moment().subtract('days', 6).format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
-
-
-
+                $("#" + windex + "-plus-time-interval span").html(
+                    ((dataset.start === null) ? moment().subtract(6, 'days').format('MMMM D, YYYY') : moment(dataset.start).format('MMMM D, YYYY')) + ' - ' +
+                    ((dataset.end === null) ? moment().format('MMMM D, YYYY') : moment(dataset.end).format('MMMM D, YYYY'))
+                );
+            }
 
         });
 
@@ -1750,8 +2136,8 @@ $(document).ready(function() {
             startDate: moment().subtract('days', 6),
             endDate: moment()
         }, function(start, end) {
-            start_date = start.toISOString();
-            end_date = end.toISOString();
+            widget['sources'][0]['start'] = start.toISOString();
+            widget['sources'][0]['end'] = end.toISOString();
             $("#" + windex + "-plus-time-interval span").html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         });
         $("#" + windex + "-plus-time-interval span").html(moment().subtract('days', 6).format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
@@ -1761,8 +2147,7 @@ $(document).ready(function() {
             var windex = e.target.id.split('-')[0];
             var dataset = $('#' + widget['id'] + ' #' + windex + '-plus-dataset').val();
             var type = $('#' + widget['id'] + ' #' + windex + '-plus-type').val();
-            widget.type = type;
-
+            if (type != null) widget.type = type;
             if (dataset != 'none') {
                 var windex = $(this).attr('id').split('-')[0];
                 widget['sources'].push({
@@ -1773,6 +2158,10 @@ $(document).ready(function() {
                     "type": "points",
                     "keyword": $("#" + windex + "-plus-keyword").val(),
                     "dimension": $("#" + windex + "-plus-dimension").val(),
+                    "xDim": $("#" + windex + "-plus-xDim").val(),
+                    "yDim": $("#" + windex + "-plus-yDim").val(),
+                    "colorDim": $("#" + windex + "-plus-colorDim").val(),
+                    "scale": $("#" + windex + "-plus-scale").val(),
                     "start": start_date,
                     "end": end_date,
                     "dataset": null,
@@ -1789,20 +2178,20 @@ $(document).ready(function() {
                     if (widget.type == "map") {
                         $('#' + widget['id'] + '-source-list').append(
                             (source['keyword'] != '' ? '<div class="high-name"> by keyword <strong>' + source['keyword'] + '</strong></div> ' : '') +
-                            (source['aggregation'] != 'none' ? ' <div class="high-name"> by <strong>' + source['aggregation'] + '</strong></div> ' : '') 
+                            (source['aggregation'] != 'none' ? ' <div class="high-name"> by <strong>' + source['aggregation'] + '</strong></div> ' : '')
                         );
                     } else if (widget.type == "bar-chart") {
                         $('#' + widget['id'] + '-source-list').append(
-                            (source['dimension'] != 'none' ? ' <div class="high-name"> grouped by <strong>' + source['dimension'] + '</strong></div> ' : '') 
+                            (source['dimension'] != 'none' ? ' <div class="high-name"> grouped by <strong>' + source['dimension'] + '</strong></div> ' : '')
                         );
-                    }
+                    } else if (widget.type == "scatter") {}
                     $('#' + widget['id'] + '-source-list').append(
                         '<div class="high-name"> [' +
                         '<span data-toggle="modal"  id="' + windex + '-' + sindex + '-modify" data-target="#' + widget['id'] + '-' + datasets[source['id']]['name'] + '-modal" class="modify">Edit</span>' +
                         '<span id="widget-' + windex + '-source-' + sindex + '-remove" class="remove">Remove</span>]' +
                         '</div>' +
                         '</div>'
-                    );                    
+                    );
                 });
                 $("#" + windex + "-modal").modal().hide();
                 displayWidgets(dashboards[page]['widgets']);
@@ -1841,11 +2230,9 @@ $(document).ready(function() {
             // Single dataset select action
             $('#' + widget['id'] + ' #' + windex + '-' + sindex + '-edit-dataset').on('change', function() {
                 var dataset = datasets[$(this).val()];
-                if (($('#' + widget['id'] + ' #' + windex + '-plus-type').val()) == 'map') {
-                    $('#' + widget['id'] + ' #' + windex + '-' + sindex + '-edit-info').html(
-                        '<div class="option-value"> The data is available from ' + moment(dataset['start']).format('MMMM Do YYYY') + ' to ' + (dataset['end'] == null ? 'two days ago' : moment(dataset['end']).format('MMMM Do YYYY')) + '. </div>' +
-                        '<div class="option-value"> The data is available in ' + dataset['language'] + '. </div>');
-                } else $('#' + widget['id'] + ' #' + windex + '-plus-info').empty();
+                $('#' + widget['id'] + ' #' + windex + '-' + sindex + '-edit-info').html(
+                    '<div class="option-value"> The data is available from ' + moment(dataset['start']).format('MMMM Do YYYY') + ' to ' + (dataset['end'] == null ? 'two days ago' : moment(dataset['end']).format('MMMM Do YYYY')) + '. </div>' +
+                    '<div class="option-value"> The data is available in ' + dataset['language'] + '. </div>');
             });
 
             // Single time interval select action
@@ -1885,6 +2272,11 @@ $(document).ready(function() {
                 $("#" + windex + "-" + sindex + "-edit-dimension").val(source['dimension']);
                 $("#" + windex + "-" + sindex + "-edit-granularity").val(source['granularity']);
                 $("#" + windex + "-" + sindex + "-edit-aggregation").val(source['aggregation']);
+                $("#" + windex + "-" + sindex + "-edit-dimension").val(source['dimension']);
+                $("#" + windex + "-" + sindex + "-edit-xDim").val(source['xDim']);
+                $("#" + windex + "-" + sindex + "-edit-yDim").val(source['yDim']);
+                $("#" + windex + "-" + sindex + "-edit-colorDim").val(source['colorDim']);
+                $("#" + windex + "-" + sindex + "-edit-scale").val(source['scale']);
 
                 if ($('#' + widget['id'] + ' #' + windex + '-' + sindex + '-edit-type') == 'map') {
                     $('#' + widget['id'] + ' #' + windex + '-' + sindex + '-edit-info').html(
@@ -1912,6 +2304,11 @@ $(document).ready(function() {
                         dashboards[page]['widgets'][windex]['sources'][sindex]['markers'].clearLayers();
                 } else if (widget.type == 'bar-chart') {
                     dashboards[page]['widgets'][windex]['sources'][sindex]['dimension'] = $("#" + windex + "-" + sindex + "-edit-dimension").val();
+                } else if (widget.type == 'scatter') {
+                    dashboards[page]['widgets'][windex]['sources'][sindex]['xDim'] = $("#" + windex + "-" + sindex + "-edit-xDim").val();
+                    dashboards[page]['widgets'][windex]['sources'][sindex]['yDim'] = $("#" + windex + "-" + sindex + "-edit-yDim").val();
+                    dashboards[page]['widgets'][windex]['sources'][sindex]['colorDim'] = $("#" + windex + "-" + sindex + "-edit-colorDim").val();
+                    dashboards[page]['widgets'][windex]['sources'][sindex]['scale'] = $("#" + windex + "-" + sindex + "-edit-scale").val();
                 }
                 displayWidgets(dashboards[page]['widgets']);
             });
@@ -1979,6 +2376,15 @@ $(document).ready(function() {
                         dashboards[page]['widgets'][windex]["highmarker"] = [];
                         dashboards[page]['widgets'][windex]["highmarkericon"] = [];
                         updateBarChart(windex, sindex, +1);
+                    });
+
+                } else if (widget.type == 'scatter') {
+                    initScatter(windex, sindex);
+                    // Single forward step action
+                    $("#" + widget['id'] + "-slider-button-step").click(function() {
+                        dashboards[page]['widgets'][windex]["highmarker"] = [];
+                        dashboards[page]['widgets'][windex]["highmarkericon"] = [];
+                        updateScatter(windex, sindex, +1);
                     });
 
                 } else if (widget.type == 'map') {

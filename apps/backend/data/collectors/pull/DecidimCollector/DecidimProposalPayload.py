@@ -22,9 +22,12 @@ import json
 class DecidimProposalPayload:
 
     def __init__(self):
-        self.id = ''
+        self.id = None
         self.voteCount = 0
-        self.title = ''
+        self.totalCommentsCount = 0
+        self.title = None
+        self.category = None
+        self.district = None
 
     def setId(self, id):
         self.id = id
@@ -38,15 +41,36 @@ class DecidimProposalPayload:
     def getVoteCount(self):
         return self.voteCount
 
+    def setTotalCommentsCount(self, totalCommentsCount):
+        self.totalCommentsCount = totalCommentsCount
+
+    def getTotalCommentsCount(self):
+        return self.totalCommentsCount     
+
     def setTitle(self, title):
         self.title = title
 
     def getTitle(self):
         return self.title
 
+    def setCategory(self, category):
+        self.category = category
+
+    def getCategory(self):
+        return self.category
+
+    def setDistrict(self, district):
+        self.district = district
+
+    def getDistrict(self):
+        return self.district        
+
     def toJSON(self):
         return '{'    +\
                   '"id": ' + json.dumps(self.getId())  +','  +\
                   '"title": ' + json.dumps(self.getTitle())  +','  +\
-                  '"voteCount": ' + json.dumps(self.getVoteCount())  +\
+                  '"category": ' + json.dumps(self.getCategory())  +','  +\
+                  '"district": ' + json.dumps(self.getDistrict())  +','  +\
+                  '"voteCount": ' + json.dumps(self.getVoteCount()) + ',' +\
+                  '"totalCommentsCount": ' + json.dumps(self.getTotalCommentsCount()) +\
                '}'
