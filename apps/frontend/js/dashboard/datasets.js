@@ -19,7 +19,9 @@ function getDatasets() {
         "filter_field": "",
         "details": "",
         "allowed_visual_models": ["points-map", "heat-map"],
-        "allowed_bar_chart_dimensions": []
+        "allowed_bar_chart_dimensions": [],
+        "allowed_scatter_xy_dimensions": [],
+        "allowed_scatter_color_dimensions": []
         },
         "2": {
         "id": "2",
@@ -40,7 +42,9 @@ function getDatasets() {
         "details": 'name@payload.name,enddate@payload.enddate,startdate@payload.startdate,categories@payload.categories,',
         "filter_field": "payload.name",
         "allowed_visual_models": ["points-map", "heat-map"],
-        "allowed_bar_chart_dimensions": ["eventtype"]
+        "allowed_bar_chart_dimensions": ["eventtype"],
+        "allowed_scatter_xy_dimensions": [],
+        "allowed_scatter_color_dimensions": []
         },
         "3": {
         "id": "3",
@@ -61,7 +65,9 @@ function getDatasets() {
         "details": 'element@payload.element,detail@payload.detail,area@payload.area,support@payload.support,channel@payload.channel,type@type,enddate@payload.enddate,startdate@payload.startdate,',
         "filter_field": "payload.element",
         "allowed_visual_models": ["points-map", "heat-map"],
-        "allowed_bar_chart_dimensions": []
+        "allowed_bar_chart_dimensions": [],
+        "allowed_scatter_xy_dimensions": [],
+        "allowed_scatter_color_dimensions": []
         },
         "4": {
         "id": "4",
@@ -81,7 +87,9 @@ function getDatasets() {
         "parameters": "",
         "filter_field": "",
         "allowed_visual_models": ["points-map", "heat-map"],
-        "allowed_bar_chart_dimensions": []
+        "allowed_bar_chart_dimensions": [],
+        "allowed_scatter_xy_dimensions": [],
+        "allowed_scatter_color_dimensions": []
         },
         "5": {
         "id": "5",
@@ -101,7 +109,9 @@ function getDatasets() {
         "parameters": "",
         "filter_field": "",
         "allowed_visual_models": ["points-map", "heat-map"],
-        "allowed_bar_chart_dimensions": []
+        "allowed_bar_chart_dimensions": [],
+        "allowed_scatter_xy_dimensions": [],
+        "allowed_scatter_color_dimensions": []
         },
         "6": {
         "id": "6",
@@ -121,7 +131,9 @@ function getDatasets() {
         "parameters": "line@payload.line,",
         "filter_field": "",
         "allowed_visual_models": ["points-map", "map-lines"],
-        "allowed_bar_chart_dimensions": []
+        "allowed_bar_chart_dimensions": [],
+        "allowed_scatter_xy_dimensions": [],
+        "allowed_scatter_color_dimensions": []
         },
         "7": {
         "id": "7",
@@ -141,7 +153,9 @@ function getDatasets() {
         "parameters": "polygon@payload.polygon,",
         "filter_field": "",
         "allowed_visual_models": ["points-map", "map-polygons"],
-        "allowed_bar_chart_dimensions": []
+        "allowed_bar_chart_dimensions": [],
+        "allowed_scatter_xy_dimensions": [],
+        "allowed_scatter_color_dimensions": []
         },
         "8": {
         "id": "8",
@@ -162,7 +176,9 @@ function getDatasets() {
         "filter_field": "",
         "details": "",
         "allowed_visual_models": ["points-map", "heat-map"],
-        "allowed_bar_chart_dimensions": []
+        "allowed_bar_chart_dimensions": [],
+        "allowed_scatter_xy_dimensions": [],
+        "allowed_scatter_color_dimensions": []
         },
         "9": {
         "id": "9",
@@ -183,7 +199,9 @@ function getDatasets() {
         "filter_field": "",
         "details": "",
         "allowed_visual_models": ["points-map", "heat-map"],
-        "allowed_bar_chart_dimensions": []
+        "allowed_bar_chart_dimensions": [],
+        "allowed_scatter_xy_dimensions": [],
+        "allowed_scatter_color_dimensions": []
         },
         "10": {
         "id": "10",
@@ -204,7 +222,9 @@ function getDatasets() {
         "filter_field": "",
         "details": "",
         "allowed_visual_models": ["points-map", "heat-map"],
-        "allowed_bar_chart_dimensions": []
+        "allowed_bar_chart_dimensions": [],
+        "allowed_scatter_xy_dimensions": [],
+        "allowed_scatter_color_dimensions": []
         },
         "11": {
         "id": "11",
@@ -212,7 +232,7 @@ function getDatasets() {
         "name": "pam_proposal",
         "description": "Decidim PAM Proposals",
         "provider": "pam_proposal",
-        "start": "2018-01-01T00:00:00Z",
+        "start": "2016-01-01T00:00:00Z",
         "end": null,
         "language": "English",
         "labels": "Votes",
@@ -224,8 +244,10 @@ function getDatasets() {
         "parameters": "",
         "filter_field": "",
         "details": "",
-        "allowed_visual_models": ["points-map", "heat-map"],
-        "allowed_bar_chart_dimensions": []
+        "allowed_visual_models": [],
+        "allowed_bar_chart_dimensions": ["category"],
+        "allowed_scatter_xy_dimensions": ["voteCount", "totalCommentsCount"],
+        "allowed_scatter_color_dimensions": ["category"]
         },
         "12": {
         "id": "12",
@@ -233,7 +255,7 @@ function getDatasets() {
         "name": "pam_meeting",
         "description": "Decidim PAM Meetings",
         "provider": "pam_meeting",
-        "start": "2018-01-01T00:00:00Z",
+        "start": "2016-01-01T00:00:00Z",
         "end": null,
         "language": "English",
         "labels": "Attendees",
@@ -246,13 +268,39 @@ function getDatasets() {
         "parameters": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
         "details": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
         "allowed_visual_models": ["points-map", "heat-map"],
-        "allowed_bar_chart_dimensions": ["attendeeCount"]
+        "allowed_bar_chart_dimensions": ["attendeeCount"],
+        "allowed_scatter_xy_dimensions": [],
+        "allowed_scatter_color_dimensions": []
+
          },
         "13": {
         "id": "13",
         "type": "time-series",
+        "name": "dddc_proposal",
+        "description": "DDDC Proposals",
+        "provider": "dddc_proposal",
+        "start": "2018-01-01T00:00:00Z",
+        "end": null,
+        "language": "English",
+        "labels": "Votes",
+        "targetvalue": "voteCount",
+        "aggregator": "sum",
+        "radius": 20,
+        "colors": ['#ffffe0','#ffe6b2','#ffcb91','#ffae79','#fe906a','#f47461','#e75758','#d53c4c','#c0223b','#a70b24','#8b0000'],
+        "cuts": [-1, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+        "parameters": "",
+        "filter_field": "",
+        "details": "",
+        "allowed_visual_models": [],
+        "allowed_bar_chart_dimensions": ["category"],
+        "allowed_scatter_xy_dimensions": ["voteCount", "totalCommentsCount"],
+        "allowed_scatter_color_dimensions": ["category"]
+        },
+        "14": {
+        "id": "14",
+        "type": "time-series",
         "name": "dddc_meeting",
-        "description": "DDCC Meetings",
+        "description": "DDDC Meetings",
         "provider": "dddc_meeting",
         "start": "2018-01-01T00:00:00Z",
         "end": null,
@@ -267,15 +315,17 @@ function getDatasets() {
         "parameters": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
         "details": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
         "allowed_visual_models": ["points-map", "heat-map"],
-        "allowed_bar_chart_dimensions": []
+        "allowed_bar_chart_dimensions": [],
+        "allowed_scatter_xy_dimensions": [],
+        "allowed_scatter_color_dimensions": []
          },
-        "14": {
-        "id": "14",
+        "15": {
+        "id": "15",
         "type": "time-series",
         "name": "dddc_survey",
-        "description": "DDCC Surveys",
+        "description": "DDDC Surveys",
         "provider": "dddc_survey",
-        "start": "2019-01-01T00:00:00Z",
+        "start": "2018-01-01T00:00:00Z",
         "end": null,
         "language": "English",
         "labels": "",
@@ -288,10 +338,11 @@ function getDatasets() {
         "parameters": "",
         "details": "",
         "allowed_visual_models": [],
-        "allowed_bar_chart_dimensions": ["gender", "age", "country", "continent", "education", "workSituation", "organization", "city", "district", "device", "scale", "interest"]
+        "allowed_bar_chart_dimensions": ["gender", "age", "country", "continent", "education", "workSituation", "organization", "city", "district", "device", "scale", "interest"],
+        "allowed_scatter_xy_dimensions": [],
+        "allowed_scatter_color_dimensions": []
          }
     };
-
 
     return jQuery.extend(true, {}, datasets);
 }

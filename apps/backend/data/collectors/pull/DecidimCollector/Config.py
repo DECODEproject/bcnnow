@@ -25,27 +25,39 @@ class Config:
                 "decidim": {
                     "pam_proposal": {
                         "source_name": "pam_proposal",
+                        "component_id": 0,
                         "base_url": "https://www.decidim.barcelona/api",
                         "query" : [
-                            "{ participatoryProcess(id: 1) { id title { translations { locale text } } components { id name { translations { text } } ... on Proposals { proposals(after: \"\") { pageInfo { endCursor startCursor } edges { node { id title reference voteCount publishedAt scope { id name { translations { text } } } } } } } } } }"
+                            "{ participatoryProcess(id: 1) { id title { translations { locale text } } components { id name { translations { text } } ... on Proposals { proposals(after: \"\") { pageInfo { endCursor startCursor } edges { node { id title reference voteCount totalCommentsCount publishedAt category { id name { translations { text } } } scope { id name { translations { text } } } } } } } } } }"
                             ]
                     },
                     "pam_meeting": {
                         "source_name": "pam_meeting",
+                        "component_id": 1,
                         "base_url": "https://www.decidim.barcelona/api",
                         "query" : [
-                            "{ participatoryProcess(id: 1) { id title { translations { locale text } } components { id name { translations { text } } ... on Meetings { meetings(after: \"\") { pageInfo { endCursor startCursor } edges { node { id startTime endTime attachments { url } reference attendeeCount scope { id name { translations { text } } } title { translations { text } } coordinates { longitude latitude } address } } } } } } }"
+                            "{ participatoryProcess(id: 1) { id title { translations { locale text } } components { id name { translations { text } } ... on Meetings { meetings(after: \"\") { pageInfo { endCursor startCursor } edges { node { id startTime endTime attachments { url } reference attendeeCount totalCommentsCount contributionCount scope { id name { translations { text } } } title { translations { text } } coordinates { longitude latitude } address } } } } } } }"
+                            ]
+                    },
+                    "dddc_proposal": {
+                        "source_name": "dddc_proposal",
+                        "component_id": 2,
+                        "base_url": "https://dddc.decodeproject.eu/api",
+                        "query" : [
+                            "{ participatoryProcess(id: 1) { id title { translations { locale text } } components { id name { translations { text } } ... on Proposals { proposals(after: \"\") { pageInfo { endCursor startCursor } edges { node { id title reference voteCount totalCommentsCount publishedAt category { id name { translations { text } } } } } } } } } }"
                             ]
                     },
                     "dddc_meeting": {
                         "source_name": "dddc_meeting",
+                        "component_id": 0,
                         "base_url": "https://dddc.decodeproject.eu/api",
                         "query" : [
-                            "{ participatoryProcess(id: 1) { id title { translations { locale text } } components { id name { translations { text } } ... on Meetings { meetings(after: \"\") { pageInfo { endCursor startCursor } edges { node { id title { translations { text } } address coordinates { longitude latitude } reference startTime endTime attachments { url } attendeeCount } } } } } } }"
+                            "{ participatoryProcess(id: 1) { id title { translations { locale text } } components { id name { translations { text } } ... on Meetings { meetings(after: \"\") { pageInfo { endCursor startCursor } edges { node { id title { translations { text } } address coordinates { longitude latitude } reference startTime endTime attachments { url } attendeeCount totalCommentsCount contributionCount } } } } } } }"
                             ]
                     },
                     "dddc_survey": {
                         "source_name": "dddc_survey",
+                        "component_id": 0,
                         "base_url": "answers/",
                         "paths" : ["demographics.json"]
                     }

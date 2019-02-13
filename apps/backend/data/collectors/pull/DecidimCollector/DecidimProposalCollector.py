@@ -43,7 +43,8 @@ class DecidimProposalCollector:
         return
 
     # This method starts the collection process
-    def start(self, base, resourceIDs=[]):
+    def start(self, base, resourceIDs=[], source_name=None):
+        component_id = collectorCfg['collectors']['decidim'][source_name]['component_id']
         print(str(datetime.datetime.now()) + ' ' + 'Start collection')
         for rindex, rID in enumerate(resourceIDs):
             print(str(datetime.datetime.now()) + ' ' + '    Collecting collection for ' + rID)
@@ -55,8 +56,8 @@ class DecidimProposalCollector:
             while flag:
                 print(str(datetime.datetime.now()) + ' ' + '        ' + ' Access to URL: ' + url  + '        ' + ' endCursor: ' + endCursor )
                 data = self.sendRequest(url, rID.replace('""','"'+endCursor+'"'))
-                total += self.saveData(data)
-                endCursor = data['data']['participatoryProcess']['components'][0]['proposals']['pageInfo']['endCursor']
+                total += self.saveData(data, component_id)
+                endCursor = data['data']['participatoryProcess']['components'][component_id]['proposals']['pageInfo']['endCursor']
                 flag = endCursor != None
                 print(str(datetime.datetime.now()) + ' ' + '         Total: ' + str("{0:0>9}".format(total)))
                 print(str(datetime.datetime.now()) + ' ' + 'End collection')
@@ -83,23 +84,26 @@ class DecidimProposalCollector:
         payload.setId(GeneralHelper().default(item['id']))
         payload.setTitle(GeneralHelper().default(item['title']))
         payload.setVoteCount(GeneralHelper().default(item['voteCount']))
+        payload.setTotalCommentsCount(GeneralHelper().default(item['totalCommentsCount']))
+        if 'category' in item: payload.setCategory(GeneralHelper().default(item['category']['name']['translations'][0]['text']))
 
-        coords = shape(LocationHelper().getAreaGeometry(item['scope']['name']['translations'][0]['text'].replace(' - ','-'), 'neighbourhood_group')).centroid
-        location.setDistrict(GeneralHelper().default(item['scope']['name']['translations'][0]['text'].replace(' - ','-').strip()))
-        location.setNeighbourhood(GeneralHelper().default(''))
-
-        longitude, latitude = coords.x, coords.y
-        location.setPoint(latitude, longitude)
-        location.setAltitude(0.0)
-        location.setCity('Barcelona')
-        location.setStreetName(GeneralHelper().default(''))
-        location.setStreetNumber(GeneralHelper().default(''))
+        if 'scope' in item:
+            coords = shape(LocationHelper().getAreaGeometry(item['scope']['name']['translations'][0]['text'].replace(' - ','-'), 'neighbourhood_group')).centroid
+            location.setDistrict(GeneralHelper().default(item['scope']['name']['translations'][0]['text'].replace(' - ','-').strip()))
+            payload.setDistrict(GeneralHelper().default(item['scope']['name']['translations'][0]['text'].replace(' - ','-').strip()))
+            location.setNeighbourhood(GeneralHelper().default(''))
+            longitude, latitude = coords.x, coords.y
+            location.setPoint(latitude, longitude)
+            location.setAltitude(0.0)
+            location.setCity('Barcelona')
+            location.setStreetName(GeneralHelper().default(''))
+            location.setStreetNumber(GeneralHelper().default(''))
 
         record.setId(GeneralHelper().default(item['reference']))
-        record.setSource(collectorCfg['collectors']['decidim']['pam_proposal']['source_name'])
+        record.setSource(source_name)
         record.setProvider('decidim')
         record.setPublisher('bcnnow')
-        record.setType(collectorCfg['collectors']['decidim']['pam_proposal']['source_name'])
+        record.setType(source_name)
         record.setTimestamp(item['publishedAt'])
         record.setLocation(location)
         record.setPayload(payload)
@@ -107,9 +111,9 @@ class DecidimProposalCollector:
         return record
 
     # This method saves a DecidimProposal BaseRecord
-    def saveData(self, data):
+    def saveData(self, data, component_id=0):
         total = 0
-        items = data['data']['participatoryProcess']['components'][0]['proposals']['edges']
+        items = data['data']['participatoryProcess']['components'][component_id]['proposals']['edges']
         if len(items) >= 0:
             for index, item in enumerate(items):
                 if item['node'] != None:
@@ -118,7 +122,12 @@ class DecidimProposalCollector:
         return total
 
 if __name__ == "__main__":
-    base = collectorCfg['collectors']['decidim']['pam_proposal']['base_url']
-    resourceIDs = collectorCfg['collectors']['decidim']['pam_proposal']['query']
-    DecidimProposalCollector().start(base, resourceIDs)
-
+    source_name = 'dddc_proposal'
+    base = collectorCfg['collectors']['decidim'][source_name]['base_url']
+    resourceIDs = collectorCfg['collectors']['decidim'][source_name]['query']
+    DecidimProposalCollector().start(base, resourceIDs, source_name)
+    
+    source_name = 'pam_proposal'
+    base = collectorCfg['collectors']['decidim'][source_name]['base_url']
+    resourceIDs = collectorCfg['collectors']['decidim'][source_name]['query']
+    DecidimProposalCollector().start(base, resourceIDs, source_name)

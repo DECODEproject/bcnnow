@@ -24,6 +24,8 @@ class DecidimMeetingPayload:
     def __init__(self):
         self.id = ''
         self.attendeeCount = 0
+        self.totalCommentsCount = 0
+        self.contributionCount = 0
         self.title = ''
         self.startTime = ''
         self.endTime = ''
@@ -40,7 +42,19 @@ class DecidimMeetingPayload:
         self.attendeeCount = attendeeCount
 
     def getAttendeeCount(self):
-        return self.attendeeCount
+        return self.attendeeCount        
+
+    def setTotalCommentsCount(self, totalCommentsCount):
+        self.totalCommentsCount = totalCommentsCount
+
+    def getTotalCommentsCount(self):
+        return self.totalCommentsCount        
+
+    def setContributionCount(self, contributionCount):
+        self.contributionCount = contributionCount
+
+    def getContributionCount(self):
+        return self.contributionCount
 
     def setTitle(self, title):
         self.title = title
@@ -76,6 +90,8 @@ class DecidimMeetingPayload:
         return '{'    +\
                   '"id": ' + json.dumps(self.getId())  +','  +\
                   '"attendeeCount": ' + json.dumps(self.getAttendeeCount()) + ',' +\
+                  '"totalCommentsCount": ' + json.dumps(self.getTotalCommentsCount()) + ',' +\
+                  '"contributionCount": ' + json.dumps(self.getContributionCount()) + ',' +\
                   '"title": ' + json.dumps(self.getTitle())  +','  +\
                   '"startTime": ' + json.dumps(self.getStartTime())  +','  +\
                   '"endTime": ' + json.dumps(self.getEndTime())  +','  +\

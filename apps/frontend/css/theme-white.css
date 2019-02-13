@@ -7952,7 +7952,7 @@ span.add-source.fa.fa-plus {
   line-height: 1;
   font-weight: bold;
   padding: 12px;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0);
   color: #fff;
   border-radius: 2px;
 }
@@ -7964,7 +7964,7 @@ span.add-source.fa.fa-plus {
   font-size: 10px;
   width: 100%;
   line-height: 1;
-  color: rgba(0, 0, 0, 0.8);
+  color: rgba(0, 0, 0);
   content: "\25BC";
   position: absolute;
   text-align: center;
@@ -7975,4 +7975,22 @@ span.add-source.fa.fa-plus {
   margin: -1px 0 0 0;
   top: 100%;
   left: 0;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: #000;
+}
+
+.tooltip {
+  position: absolute;
+  width: 200px;
+  height: 28px;
+  pointer-events: none;
 }

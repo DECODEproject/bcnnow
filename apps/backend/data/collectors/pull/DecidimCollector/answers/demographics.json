@@ -192,7 +192,7 @@
     "interest": "data exploitation"
   },
   {
-    "gender": "other",
+    "gender": "other than male/female",
     "age": "35-44",
     "country": "spain",
     "continent": "europe",
@@ -218,7 +218,7 @@
     "interest": "massive persuasion"
   },
   {
-    "gender": "other",
+    "gender": "other than male/female",
     "age": "35-44",
     "country": "spain",
     "continent": "europe",
@@ -259,7 +259,7 @@
     "interest": "surveillance"
   },
   {
-    "gender": "other",
+    "gender": "other than male/female",
     "age": "25-34",
     "country": "spain",
     "continent": "europe",
