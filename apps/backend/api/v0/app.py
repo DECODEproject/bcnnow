@@ -4,6 +4,7 @@ from flask_cors import CORS
 from flask_restful import Api
 from flask_restful import Resource
 from flask import request
+from datetime import datetime
 import pymongo
 from pymongo import MongoClient
 from bson.json_util import dumps
@@ -15,7 +16,7 @@ import ast
 from flask_compress import Compress
 from apps.backend.api.v0.oauth2_routes import OAuthManager
 from apps.backend.api.v0.iot_login import IoTWalletLoginManager
-from apps.backend.api.v0.models import db, DataSetCommunity, DataSet
+from apps.backend.api.v0.models import db, DataSetCommunity, DataSet, Dashboard, DashboardCommunity
 from apps.backend.api.v0.oauth2 import config_oauth, require_oauth
 
 cfg = Config().get()
@@ -40,11 +41,21 @@ class JSONEncoder(json.JSONEncoder):
 # Basic Root API
 class BasicDataAccess(Resource):
 
+    def post(self, source):
+        if source == 'post_new_dashboard':
+            return self.post_new_dashboard()
+
     # @require_oauth('profile')
     def get(self, source):
 
         if source == 'get_available_datasets':
             return self.get_available_datasets()
+
+        if source == 'get_public_dashboards':
+            return self.get_public_dashboards()
+
+        if source == 'get_private_dashboards':
+            return self.get_private_dashboards()
 
         # Default values
         default_page_size = 2147483647
@@ -174,31 +185,160 @@ class BasicDataAccess(Resource):
 
     @require_oauth('profile')
     def get_available_datasets(self):
-        user = OAuthManager.get_current_user()
-        data_sets_community = DataSetCommunity.query.filter_by(community_id=user.community_id).all()
+
+        # connect to Mongo
+        client = MongoClient(cfg['storage']['ipaddress'], cfg['storage']['port'])
+        m_db = client[cfg['storage']['dbname']]
+        collection = m_db["datasets"]
 
         # get dataset json contents from MongoDB
+        return_dict = {}
+
+        # build an array of private dataset ids:
+        user = OAuthManager.get_current_user()
+        data_sets_community = DataSetCommunity.query.filter_by(community_id=user.community_id).all()
+        for data_set in data_sets_community:
+            entry = collection.find_one({"id": str(data_set.dataset_id)})
+            # add type to entry
+            entry["availability"] = 'private'
+            return_dict[entry["id"]] = entry
+
+        # get public datasets
+        data_sets = DataSet.query.filter_by(typeof='public').all()
+        for data_set in data_sets:
+            entry = collection.find_one({"id": str(data_set.id)})
+            # add type to cursor
+            entry["availability"] = 'public'
+            return_dict[entry["id"]] = entry
+
+        ret = JSONEncoder().encode(return_dict)
+        return json.loads(ret)
+
+    @require_oauth('profile')
+    def get_public_dashboards(self):
+
+        # get public dashboards
+        dashboards = Dashboard.query.filter_by(typeof='public').all()
+
+        # get dashboards json contents from MongoDB
         client = MongoClient(cfg['storage']['ipaddress'], cfg['storage']['port'])
-        db = client[cfg['storage']['dbname']]
-        collection = db["datasets"]
+        m_db = client[cfg['storage']['dbname']]
+        collection = m_db["dashboards"]
 
         return_dict = {}
-        i = 1
 
-        for data_set in data_sets_community:
+        for dashboard in dashboards:
 
-            query_cursor = collection.find({"id": str(data_set.dataset_id)})
-            # if query_cursor.count() == 1:
-            #     return_json_obj = query_cursor[0]
+            query_cursor = collection.find({"id": dashboard.id})
 
             for cursor in query_cursor:
-                return_dict[str(i)] = cursor
-                i = i + 1
+                # build dict of format "page-2": {...}
+                head = "page-" + str(cursor["id"]-1)
+                return_dict[head] = cursor
+                # body = cursor[head]
+                # return_dict[head] = body
 
-        # return_dict = {'1': return_json_obj}
         ret = JSONEncoder().encode(return_dict)
-        # ret = '{ "1": ' + ret + '}'
         return json.loads(ret)
+
+    @require_oauth('profile')
+    def get_private_dashboards(self):
+        user = OAuthManager.get_current_user()
+        dashboard_community = DashboardCommunity.query.filter_by(community_id=user.community_id).all()
+
+        # build an array of dashboard ids:
+        dashboard_ids = []
+        for dashboard in dashboard_community:
+            dashboard_ids.append(dashboard.dashboard_id)
+
+        # get dashboard json contents from MongoDB
+        client = MongoClient(cfg['storage']['ipaddress'], cfg['storage']['port'])
+        m_db = client[cfg['storage']['dbname']]
+        collection = m_db["dashboards"]
+
+        return_dict = {}
+        for dashboard_id in dashboard_ids:
+
+            query_cursor = collection.find({"id": dashboard_id})
+
+            for cursor in query_cursor:
+                # build dict of format "page-2": {...}
+                head = "page-" + str(cursor["id"] - 1)
+                return_dict[head] = cursor
+                # body = cursor[head]
+                # return_dict[head] = body
+
+        ret = JSONEncoder().encode(return_dict)
+        return json.loads(ret)
+
+    @require_oauth('profile')
+    def post_new_dashboard(self):
+        user = OAuthManager.get_current_user()
+        dashboard = json.loads(request.data.decode("utf-8"))
+
+        # search if the dashboard already exists in MongoDB
+        # db.getCollection('dashboards').find({"name": "Housing"}).sort({ "id": -1 }).limit(1)
+        client = MongoClient(cfg['storage']['ipaddress'], cfg['storage']['port'])
+        m_db = client[cfg['storage']['dbname']]
+        collection = m_db["dashboards"]
+
+        # calc the type of the dasboard
+        dashboard_type = 'public'
+        # if len(dashboard['widgets']) == 0:
+        #     dashboard_type = 'public'
+        for widget in dashboard['widgets']:
+            #     if len(widget['sources']) == 0:
+            #     dashboard_type = 'public'
+            for source in widget['sources']:
+                dataset = DataSet.query.filter_by(id=source['id']).first()
+                if dataset.typeof == 'private':
+                    dashboard_type = 'private'
+                    break
+
+        if 'id' in dashboard.keys():
+            # get the id from the query
+            entry = collection.find_one({"id": dashboard['id']})
+            dashboard_id = entry["id"]
+            # put the contents of the existing Mongo entry in dashboard_configuration_history table
+            existent_dashboard = collection.find_one({"id": dashboard_id})
+            existent_dashboard['timestamp'] = datetime.now()
+            collection_history = m_db["dashboard_configuration_history"]
+            del existent_dashboard['_id']
+            collection_history.insert_one(existent_dashboard)
+            # update the existing entry in dashboards
+            collection.update_one({"id": dashboard_id}, {"$set": dashboard}, upsert=False)
+
+            # update the mysql to public or private if it changes
+            # get current dashboard type
+            current_dashboard_mysql = Dashboard.query.filter_by(id=existent_dashboard['id']).first()
+            current_dashboard_type = current_dashboard_mysql.typeof
+
+            if current_dashboard_type != dashboard_type:
+                Dashboard.update(existent_dashboard['id'], dashboard_type)
+                # if private to public
+                if dashboard_type == 'public':
+                    # remove entries for dataset in dataset_community
+                    DashboardCommunity.remove_dashboard_from_community(existent_dashboard['id'], user.community_id)
+                # if public to private
+                if dashboard_type == 'private':
+                    # add entries for dataset in dataset_community
+                    DashboardCommunity.add_dashboard_to_community(existent_dashboard['id'], user.community_id)
+
+        else:
+            # insert new
+            # get max id
+            max_id = collection.find({}).sort("id", pymongo.DESCENDING).limit(1)[0]["id"]
+            # save new in mongo with +1 id
+            new_id = max_id+1
+            dashboard['id'] = new_id
+            collection.insert_one(dashboard)
+            # insert dashboard in mysql
+            Dashboard.create(new_id, dashboard_type)
+            # relate to the current user if it's private
+            if dashboard_type == 'private':
+                DashboardCommunity.add_dashboard_to_community(new_id, user.community_id)
+
+        return True
 
 
 if __name__ == '__main__':

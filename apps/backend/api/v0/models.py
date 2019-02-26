@@ -1,3 +1,4 @@
+import datetime
 import time
 import hashlib
 from flask_sqlalchemy import SQLAlchemy
@@ -14,7 +15,7 @@ db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = 'user'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.BigInteger, primary_key=True)
     username = db.Column(db.String(40), unique=True)
     password = db.Column(db.String(65))
     profile_name = db.Column(db.String(45))
@@ -24,8 +25,10 @@ class User(db.Model):
     profile_area = db.Column(db.String(45))
     profile_community = db.Column(db.String(45))
     iot_user_id = db.Column(db.String(45))
-    community_id = db.Column(db.String(45))
+    community_id = db.Column(db.BigInteger)
     login_method = db.Column(db.String(45))
+    created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     def __str__(self):
         return self.username
@@ -34,7 +37,6 @@ class User(db.Model):
         return self.id
 
     def check_password(self, user_password):
-        # password, salt = self.password.split(':')
         return self.password == hashlib.sha256(user_password.encode()).hexdigest()
 
     @staticmethod
@@ -48,15 +50,73 @@ class User(db.Model):
 
 class DataSet(db.Model):
     __tablename__ = 'dataset'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.BigInteger, primary_key=True)
     typeof = db.Column(db.String(45))
+    created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+
+class Community(db.Model):
+    __tablename__ = 'community'
+    id = db.Column(db.BigInteger, primary_key=True)
+    created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    public_key = db.Column(db.String(45))
+    private_key = db.Column(db.String(45))
+    name = db.Column(db.String(45))
+
+
+class Dashboard(db.Model):
+    __tablename__ = 'dashboard'
+    id = db.Column(db.BigInteger, primary_key=True)
+    created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    typeof = db.Column(db.String(45))
+
+    @staticmethod
+    def create(new_id, typeof):
+        dashboard = Dashboard()
+        dashboard.id = new_id
+        dashboard.typeof = typeof
+        db.session.add(dashboard)
+        db.session.commit()
+
+    @staticmethod
+    def update(dashboard_id, typeof):
+        dashboard = Dashboard.query.filter_by(id=dashboard_id).first()
+        dashboard.typeof = typeof
+        db.session.add(dashboard)
+        db.session.commit()
 
 
 class DataSetCommunity(db.Model):
     __tablename__ = 'dataset_community'
-    dataset_id = db.Column('dataset_id', db.Integer, db.ForeignKey("dataset.id"), primary_key=True)
-    community_id = db.Column('community_id', db.String(45), primary_key=True)
+    dataset_id = db.Column('dataset_id', db.BigInteger, db.ForeignKey("dataset.id"), primary_key=True)
+    community_id = db.Column('community_id', db.BigInteger, primary_key=True)
+    created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
+
+class DashboardCommunity(db.Model):
+    __tablename__ = 'dashboard_community'
+    dashboard_id = db.Column('dashboard_id', db.BigInteger, db.ForeignKey("dashboard.id"), primary_key=True)
+    community_id = db.Column('community_id', db.BigInteger, primary_key=True)
+    created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    @staticmethod
+    def add_dashboard_to_community(dashboard_id, community_id):
+        dashboard_community = DashboardCommunity()
+        dashboard_community.dashboard_id = dashboard_id
+        dashboard_community.community_id = community_id
+        db.session.add(dashboard_community)
+        db.session.commit()
+
+    @staticmethod
+    def remove_dashboard_from_community(dashboard_id, community_id):
+        dashboard = DashboardCommunity.query.filter_by(dashboard_id=dashboard_id, community_id=community_id).first()
+        db.session.delete(dashboard)
+        db.session.commit()
 
 class OAuth2Client(db.Model, OAuth2ClientMixin):
     __tablename__ = 'oauth2_client'

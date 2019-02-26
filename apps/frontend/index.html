@@ -43,6 +43,12 @@
         <link href='https://fonts.googleapis.com/css?family=Montserrat:400' rel='stylesheet' type='text/css'>
         <!-- END LEAFLET INCLUDE -->
 
+        <script type="text/javascript" src="js/plugins/moment.min.js"></script>
+
+        <script type="text/javascript" src="js/dashboard/datasets.js"></script>
+        <script type="text/javascript" src="js/dashboard/dashboards.js"></script>
+        <script type="text/javascript" src="js/dashboard/main.js"></script>
+
         <script>
         </script>
     </head>
@@ -77,25 +83,15 @@
                     <li id="page-0" class="editor dashboard-page">
                         Create Map Widget
                     </li>
-                    <li class="dashboard-page-title">
+
+                    <div id="private-dashboards-list">
+                    </div>
+
+                    <li class="dashboard-page-title" id="public-dashboards-title">
                         Dashboards
                     </li>
-                    <li id="page-1" class="dashboard-page">
-                        Mobility with bikes
-                    </li>
-                    <li id="page-2" class="dashboard-page">
-                        Agenda with events
-                    </li>
-                    <li id="page-3" class="dashboard-page">
-                        Awareness on noise
-                    </li>
-                    <li id="page-4" class="dashboard-page">
-                        Photovoltaic Potential (beta)
-                    </li>
-
-					<li id="page-5" class="dashboard-page">
-                        Housing
-                    </li>
+                    <div id="public-dashboards-list">
+                    </div>
 
                     <li class="add">
                         Create Dashboard
@@ -148,6 +144,18 @@
                 </ul>
                 <!-- END BREADCRUMB -->                       
                 
+                <!-- ADD WIDGET BUTTON -->
+                <div class="add-widget-button">
+                    <button id="add-widget-button" class="btn btn-default btn-lg mb-control-close">Add widget</button>
+                </div>
+                <!-- END ADD WIDGET BUTTON -->
+
+                <!-- SAVE DASHBOARD BUTTON -->
+                <div class="save-dashboard-button">
+                    <button id="save-dashboard-button" class="btn btn-default btn-lg mb-control-close">Save dashboard</button>
+                </div>
+                <!-- SAVE DASHBOARD BUTTON -->     
+
                 <!-- PAGE CONTENT WRAPPER -->
                 <div id="sortable" class="page-content-wrap">
                 </div>
@@ -173,7 +181,7 @@
                     </div>
                     <div class="mb-footer">
                         <div class="pull-right">
-                            <a href="index.html" class="btn btn-success btn-lg">Yes</a>
+                            <a href="login.html" class="btn btn-success btn-lg">Yes</a>
                             <button class="btn btn-default btn-lg mb-control-close">No</button>
                         </div>
                     </div>
@@ -191,7 +199,6 @@
 
             <!-- START THIS PAGE PLUGINS-->
             <script type='text/javascript' src='js/plugins/owl/owl.carousel.min.js'></script>
-            <script type="text/javascript" src="js/plugins/moment.min.js"></script>
             <script type='text/javascript' src='js/plugins/bootstrap/bootstrap-datepicker.js'></script>
             <script type="text/javascript" src="js/plugins/daterangepicker/daterangepicker.js"></script>
             <script type="text/javascript" src="js/plugins/morris/raphael-min.js"></script>
@@ -203,28 +210,11 @@
             <!-- START TEMPLATE -->
             <script type="text/javascript" src="js/plugins.js"></script>
             <script type="text/javascript" src="js/actions.js"></script>
-            <script type="text/javascript" src="js/dashboard/datasets.js"></script>
-            <script type="text/javascript" src="js/dashboard/dashboards.js"></script>
-            <script type="text/javascript" src="js/dashboard/main.js"></script>
             <!-- END TEMPLATE -->
 
         <!-- END SCRIPTS -->
 
         <script>
-            
-            /*
-                Get cookie value
-            */
-            function getCookie(name) {
-                var nameEQ = name + "=";
-                var ca = document.cookie.split(';');
-                for(var i=0;i < ca.length;i++) {
-                    var c = ca[i];
-                    while (c.charAt(0)==' ') c = c.substring(1,c.length);
-                    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-                }
-                return null;
-            }
             
             // if there is session id show hardcoded profile info
             cookieValue = getCookie("session-id");
@@ -251,7 +241,7 @@
                 );
 
                 $(".sign-in").html(
-                    '<a href="index.html" class="sign-in-link" id="sign-out-btn"><span class="sign-out-text">Sign Out</span><span class="fa fa-sign-out"></span></a>'
+                    '<a href="login.html" class="sign-in-link" id="sign-out-btn"><span class="sign-out-text">Sign Out</span><span class="fa fa-sign-out"></span></a>'
                 );
 
                 $("#string-btn-expand").on("click", function() {
@@ -314,6 +304,8 @@
                     error: function() {
                     }
                 });
+            } else {
+                window.location.href = '/login.html';
             }
             
         </script>

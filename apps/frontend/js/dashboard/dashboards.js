@@ -1,376 +1,89 @@
+/*
+    Get cookie value
+*/
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
 function getDashboards() {
+    // if logged call server for available dasboards for user
+    // in other case return defaults as is
 
-    var pages = {
-        "page-0": {
-            "name": "Create New Widget",
-            "widgets": [
-                {
-                    "id": "widget-45453",
-                    "title": "Empty widget",
-                    "authors": ["carmen"],
-                    "modified": "2018-01-12T10:00:00Z",
-                    "sources": [],
-                    "timeinterval": null,
-                    "map": null,
-                    "refreshIntervalId": [],
-                    "data": [],
-                    "highmarker": [],
-                    "highmarkericon": [],
-                    "type": "dynamic"
-                }]
+    cookieValue = getCookie("session-id");
+    if (cookieValue == null) {
+        cookieValue = getCookie("session-token");
+    }
 
-        },
-        "page-1": {
-            "name": "Mobility with Bikes",
-            "widgets":  [
-                {
-                    "id": "widget-3553",
-                    "title": "Explore average number of available bikes per station in neighbourhoods",
-                    "authors": ["carmen"],
-                    "modified": "2018-01-12T00:00:00Z",
-                    "sources": [{
-                        "id": "4",
-                        "aggregation": "neighbourhood",
-                        "chart": "map-points",
-                        "type": "points",
-                        "granularity": "dynamic",
-                        "keyword": "",
-                        "start": "2018-06-12T00:00:00Z",
-                        "end": "2018-06-13T00:00:00Z",
-                        "dataset": null,
-                        "markers": null
-                    }
-                    ],
-                    "timeinterval": null,
-                    "map": null,
-                    "refreshIntervalId": [],
-                    "data": [],
-                    "highmarker": [],
-                    "highmarkericon": [],
-                    "type": "dynamic"
-                },
-                {
-                    "id": "widget-fdf",
-                    "title": "Combine bike sharing usage and bike lane distribution",
-                    "authors": ["carmen"],
-                    "modified": "2018-01-12T20:00:00Z",
-                    "sources": [{
-                        "id": "6",
-                        "aggregation": "none",
-                        "chart": "map-lines",
-                        "type": "points",
-                        "granularity": "cumulative",
-                        "keyword": "",
-                        "start": "2018-01-01T00:00:00Z",
-                        "end": "2018-06-30T00:00:00Z",
-                        "dataset": null,
-                        "markers": null
-                    },{
-                        "id": "4",
-                        "aggregation": "none",
-                        "chart": "map-points",
-                        "type": "points",
-                        "granularity": "dynamic",
-                        "keyword": "",
-                        "start": "2018-06-01T00:00:00Z",
-                        "end": "2018-06-02T00:00:00Z",
-                        "dataset": null,
-                        "markers": null
-                    }
-                    ],
-                    "timeinterval": null,
-                    "map": null,
-                    "refreshIntervalId": [],
-                    "data": [],
-                    "highmarker": [],
-                    "highmarkericon": [],
-                    "type": "static"
-                }
-                ]
-        },
-        "page-2": {
-            "name": "Agenda with events",
-            "widgets": [
-                    {
-                        "id": "widget-5467",
-                        "title": "Find City Events Around You",
-                        "authors": ["carmen"],
-                        "modified": "2018-01-12T20:00:00Z",
-                        "sources": [{
-                            "id": "2",
-                            "aggregation": "none",
-                            "chart": "map-points",
-                            "type": "points",
-                            "granularity": "cumulative",
-                            "keyword": "",
-                            "start": "2018-05-01T00:00:00Z",
-                            "end": "2018-05-02T00:00:00Z",
-                            "dataset": null,
-                            "markers": null
-                        }
-                        ],
-                        "timeinterval": null,
-                        "map": null,
-                        "refreshIntervalId": [],
-                        "data": [],
-                        "highmarker": [],
-                        "highmarkericon": [],
-                        "type": "static"
-                    }
-                ]
-        },
-        "page-3": {
-            "name": "Awareness on Noise",
-            "widgets": [
-                {
-                    "id": "widget-343",
-                    "title": "Explore temporal noise patterns",
-                    "authors": ["carmen"],
-                    "modified": "2018-01-12T12:00:00Z",
-                    "sources": [{
-                        "id": "1",
-                        "aggregation": "none",
-                        "chart": "map-points",
-                        "type": "points",
-                        "granularity": "dynamic",
-                        "keyword": "",
-                        "start": "2018-06-11T00:00:00Z",
-                        "end": "2018-06-12T00:00:00Z",
-                        "dataset": null,
-                        "markers": null
-                    }
-                    ],
-                    "timeinterval": null,
-                    "map": null,
-                    "refreshIntervalId": [],
-                    "data": [],
-                    "highmarker": [],
-                    "highmarkericon": [],
-                    "type": "dynamic"
-                },
-                {
-                    "id": "widget-657",
-                    "title": "Explore temporal average noise levels by neighbourhood",
-                    "authors": ["carmen"],
-                    "modified": "2018-01-12T12:00:00Z",
-                    "sources": [{
-                        "id": "1",
-                        "aggregation": "neighbourhood",
-                        "chart": "map-points",
-                        "type": "points",
-                        "granularity": "dynamic",
-                        "keyword": "",
-                        "start": "2018-06-12T00:00:00Z",
-                        "end": "2018-06-13T00:00:00Z",
-                        "dataset": null,
-                        "markers": null
-                    }
-                    ],
-                    "timeinterval": null,
-                    "map": null,
-                    "refreshIntervalId": [],
-                    "data": [],
-                    "highmarker": [],
-                    "highmarkericon": [],
-                    "type": "dynamic"
-                },
-                {
-                    "id": "widget-3553",
-                    "title": "Distribution of claims regarding noise",
-                    "authors": ["carmen"],
-                    "modified": "2018-01-12T13:00:00Z",
-                    "sources": [{
-                        "id": "3",
-                        "aggregation": "none",
-                        "chart": "heat-map",
-                        "type": "points",
-                        "granularity": "cumulative",
-                        "keyword": "soroll",
-                        "start": "2017-06-01T00:00:00Z",
-                        "end": "2018-05-21T00:00:00Z",
-                        "dataset": null,
-                        "markers": null
-                    },
-                    ],
-                    "timeinterval": null,
-                    "map": null,
-                    "refreshIntervalId": [],
-                    "data": [],
-                    "highmarker": [],
-                    "highmarkericon": [],
-                    "type": "static"
-                }
-            ]
-        },
-        "page-4": {
-            "name": "Photovoltaic Potential",
-            "widgets": [
-                {
-                    "id": "widget-fdfd",
-                    "title": "Explore photovoltaic potential distribution",
-                    "authors": ["carmen"],
-                    "modified": "2018-01-12T12:00:00Z",
-                    "sources": [{
-                        "id": "7",
-                        "aggregation": "none",
-                        "chart": "map-polygons",
-                        "type": "points",
-                        "granularity": "cumulative",
-                        "keyword": "",
-                        "start": "2018-06-11T00:00:00Z",
-                        "end": "2018-06-15T00:00:00Z",
-                        "dataset": null,
-                        "markers": null
-                    }
-                    ],
-                    "timeinterval": null,
-                    "map": null,
-                    "refreshIntervalId": [],
-                    "data": [],
-                    "highmarker": [],
-                    "highmarkericon": [],
-                    "type": "dynamic"
-                }
-            ]
-        },
-        "page-5": {
-            "name": "Housing",
-            "widgets": [
-                {
-                    "id": "widget-879",
-                    "title": "Explore touristic housing usage per 1,000 inhabitants together with Airbnb offer",
-                    "authors": ["carmen"],
-                    "modified": "2018-01-12T12:00:00Z",
-                    "sources": [{
-                        "id": "8",
-                        "aggregation": "district",
-                        "chart": "map-points",
-                        "type": "points",
-                        "granularity": "cumulative",
-                        "keyword": "",
-                        "start": "2016-06-11T00:00:00Z",
-                        "end": "2018-06-12T00:00:00Z",
-                        "dataset": null,
-                        "markers": null
-                    },
-                    {
-                        "id": "5",
-                        "aggregation": "none",
-                        "chart": "heat-map",
-                        "type": "points",
-                        "granularity": "cumulative",
-                        "keyword": "",
-                        "start": "2016-06-11T00:00:00Z",
-                        "end": "2018-06-12T00:00:00Z",
-                        "dataset": null,
-                        "markers": null
-                    }
-                    ],
-                    "timeinterval": null,
-                    "map": null,
-                    "refreshIntervalId": [],
-                    "data": [],
-                    "highmarker": [],
-                    "highmarkericon": [],
-                    "type": "dynamic"
-                },
-                {
-                    "id": "widget-0683",
-                    "title": "Explore average contract rental income per m2 over years",
-                    "authors": ["carmen"],
-                    "modified": "2018-01-12T12:00:00Z",
-                    "sources": [{
-                        "id": "9",
-                        "aggregation": "district",
-                        "chart": "map-points",
-                        "type": "points",
-                        "granularity": "dynamic",
-                        "keyword": "",
-                        "start": "2004-06-11T00:00:00Z",
-                        "end": "2018-06-12T00:00:00Z",
-                        "dataset": null,
-                        "markers": null
-                    }
-                    ],
-                    "timeinterval": null,
-                    "map": null,
-                    "refreshIntervalId": [],
-                    "data": [],
-                    "highmarker": [],
-                    "highmarkericon": [],
-                    "type": "dynamic"
-                },
-                {
-                    "id": "widget-0295",
-                    "title": "Explore room offer in hotels per 1,000 inhabitants",
-                    "authors": ["carmen"],
-                    "modified": "2018-01-12T12:00:00Z",
-                    "sources": [{
-                        "id": "10",
-                        "aggregation": "district",
-                        "chart": "map-points",
-                        "type": "points",
-                        "granularity": "cumulative",
-                        "keyword": "",
-                        "start": "2010-06-11T00:00:00Z",
-                        "end": "2018-06-12T00:00:00Z",
-                        "dataset": null,
-                        "markers": null
-                    }
-                    ],
-                    "timeinterval": null,
-                    "map": null,
-                    "refreshIntervalId": [],
-                    "data": [],
-                    "highmarker": [],
-                    "highmarkericon": [],
-                    "type": "dynamic"
-                },
-                {
-                    "id": "widget-5363",
-                    "title": "Explore room offer in hotels per 1,000 inhabitants together with Airbnb offer",
-                    "authors": ["carmen"],
-                    "modified": "2018-01-12T12:00:00Z",
-                    "sources": [{
-                        "id": "10",
-                        "aggregation": "district",
-                        "chart": "map-points",
-                        "type": "points",
-                        "granularity": "cumulative",
-                        "keyword": "",
-                        "start": "2010-06-11T00:00:00Z",
-                        "end": "2018-06-12T00:00:00Z",
-                        "dataset": null,
-                        "markers": null
-                    },
-                    {
-                        "id": "5",
-                        "aggregation": "none",
-                        "chart": "heat-map",
-                        "type": "points",
-                        "granularity": "cumulative",
-                        "keyword": "",
-                        "start": "2016-06-11T00:00:00Z",
-                        "end": "2018-06-12T00:00:00Z",
-                        "dataset": null,
-                        "markers": null
-                    }
-                    ],
-                    "timeinterval": null,
-                    "map": null,
-                    "refreshIntervalId": [],
-                    "data": [],
-                    "highmarker": [],
-                    "highmarkericon": [],
-                    "type": "dynamic"
-                }
-            ]
+    if (cookieValue != null) {
+        // get dasboards from server
+        var ret = $.ajax({
+            async: false,
+            url: url_root + "api/v0/get_public_dashboards",
+            beforeSend: function (xhr) {
+                // authenticate the call 
+                xhr.setRequestHeader ("Authorization", "Bearer " + cookieValue);
+            },
+            success: function(data) {
+                // var returnValue = jQuery.extend(true, {}, data);
+                return data;
+            },
+            error: function() {
+            }
+        });
+
+        if (ret['status'] == 200) {
+
+            responseText = ret['responseText'];
+            responseJson = JSON.parse(responseText);
+            return responseJson;
         }
-    };
-	
-	
-	
-	
+    }
 
-    return jQuery.extend(true, {}, pages);
+    return null;
+
+}
+
+function getPrivateDashboards() {
+    // if logged call server for available dasboards for user
+    // in other case return defaults as is
+
+    cookieValue = getCookie("session-id");
+    if (cookieValue == null) {
+        cookieValue = getCookie("session-token");
+    }
+
+    if (cookieValue != null) {
+        // get dasboards from server
+        var ret = $.ajax({
+            async: false,
+            url: url_root + "api/v0/get_private_dashboards",
+            beforeSend: function (xhr) {
+                // authenticate the call 
+                xhr.setRequestHeader ("Authorization", "Bearer " + cookieValue);
+            },
+            success: function(data) {
+                // var returnValue = jQuery.extend(true, {}, data);
+                return data;
+            },
+            error: function() {
+            }
+        });
+
+        if (ret['status'] == 200) {
+
+            responseText = ret['responseText'];
+            responseJson = JSON.parse(responseText);
+            return responseJson;
+        }
+    }
+
+    return null;
+
 }
