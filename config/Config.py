@@ -29,7 +29,7 @@ class Config:
                 "callbackurl": "http://bcnnow.decodeproject.eu/"
             },
             "project": {
-                  "base_url": "/home/rohit.kumar/Documents/Projects/Decode/code/bcnnow/",
+                  "base_url": "/home/code/projects/bcnnow/",
             }
         }
 
