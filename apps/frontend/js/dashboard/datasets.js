@@ -4,7 +4,7 @@ function getDatasets() {
         "id": "1",
         "type": "time-series",
         "name": "smartcitizen",
-        "description": "SmartCitizen Noise Levels",
+        "description": "Sentilo Noise Levels",
         "provider": "smartcitizen",
         "start": "2017-01-01T00:00:00Z",
         "end": null,
