@@ -1551,7 +1551,7 @@ $(document).ready(function() {
                 sources += '<label for="dataset">Select dataset:</label>' +
                     '<select class="form-control" id="' + windex + '-' + sindex + '-edit-dataset">';
                 jQuery.each(datasets, function(sindex, dataset) {
-                    if (datasets[dataset['id']].allowed_visual_models.length > 0)
+                    if (datasets[dataset['id']].allowed_maps.length > 0)
                         sources += '<option value="' + sindex + '" >' + dataset['description'] + '</option>';
                 });
                 sources += '</select>' +
@@ -1568,7 +1568,7 @@ $(document).ready(function() {
                     '</select><br/>';
                 /*sources += '<label for="type">Select visualization type:</label>' +
                     '<select class="form-control" id="' + windex + '-' + sindex + '-edit-type">';
-                jQuery.each(datasets[source['id']]['allowed_visual_models'], function(vindex, model) {
+                jQuery.each(datasets[source['id']]['allowed_maps'], function(vindex, model) {
                     sources += '<option value="' + model + '" ' + (source['chart'] == model ? 'selected' : '') + '>' + model + '</option>';
                 });
                 sources += '</select><br/><br/>' ;*/
@@ -1651,7 +1651,7 @@ $(document).ready(function() {
         options = ''
         jQuery.each(datasets, function(sindex, dataset) {
             if (widget.type == "map") {
-                if (dataset.allowed_visual_models.length > 0)
+                if (dataset.allowed_maps.length > 0)
                     options += '<option value="' + sindex + '">' + dataset['description'] + '</option>';
             } else if (widget.type == "bar-chart") {
                 if (dataset.allowed_bar_chart_dimensions.length > 0) options += '<option value="' + sindex + '">' + dataset['description'] + '</option>';
@@ -1857,7 +1857,7 @@ $(document).ready(function() {
             if ($("#" + windex + "-plus-type").val() == "none") {
                 $("#" + windex + "-plus-type").empty();
                 options = '<option value="none" >None</option>';
-                if (dataset.allowed_visual_models.length > 0)
+                if (dataset.allowed_maps.length > 0)
                     options += '<option value="map">map</option>';
                 if (dataset.allowed_bar_chart_dimensions.length > 0)
                     options += '<option value="bar-chart">bar-chart</option>';
@@ -1879,7 +1879,7 @@ $(document).ready(function() {
                     '<div class="option-value"> The data is available from ' + moment(dataset['start']).format('MMMM Do YYYY, h:mm:ss a') + ' to ' + (dataset['end'] == null ? 'two days ago' : moment(dataset['end']).format('MMMM Do YYYY, h:mm:ss a')) + ' </div>' +
                     '<div class="option-value"> The data is available in ' + dataset['language'] + '. </div>'
                 );
-                jQuery.each(dataset['allowed_visual_models'], function(vindex, model) {
+                jQuery.each(dataset['allowed_maps'], function(vindex, model) {
                     $("#" + windex + "-plus-marker").append('<option value="' + model + '" >' + model + '</option>');
                 });
                 jQuery.each(dataset['allowed_bar_chart_dimensions'], function(vindex, model) {
@@ -1963,7 +1963,7 @@ $(document).ready(function() {
                     $("#" + windex + "-plus-dataset").empty();
                     options = '<option value="none" >None</option>';
                     jQuery.each(datasets, function(sindex, dataset) {
-                        if (dataset.allowed_visual_models.length > 0)
+                        if (dataset.allowed_maps.length > 0)
                             options += '<option value="' + sindex + '">' + dataset['description'] + '</option>';
                     });
                     $("#" + windex + "-plus-dataset").append(options);

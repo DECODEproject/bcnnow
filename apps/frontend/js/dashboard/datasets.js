@@ -18,7 +18,7 @@ function getDatasets() {
         "parameters": "",
         "filter_field": "",
         "details": "",
-        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_maps": ["points-map", "heat-map"],
         "allowed_bar_chart_dimensions": [],
         "allowed_scatter_xy_dimensions": [],
         "allowed_scatter_color_dimensions": []
@@ -41,7 +41,7 @@ function getDatasets() {
         "parameters": "name@payload.name,enddate@payload.enddate,startdate@payload.startdate,categories@payload.categories,",
         "details": 'name@payload.name,enddate@payload.enddate,startdate@payload.startdate,categories@payload.categories,',
         "filter_field": "payload.name",
-        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_maps": ["points-map", "heat-map"],
         "allowed_bar_chart_dimensions": ["eventtype"],
         "allowed_scatter_xy_dimensions": [],
         "allowed_scatter_color_dimensions": []
@@ -64,7 +64,7 @@ function getDatasets() {
         "parameters": "element@payload.element,detail@payload.detail,area@payload.area,support@payload.support,channel@payload.channel,type@type,enddate@payload.enddate,startdate@payload.startdate,",
         "details": 'element@payload.element,detail@payload.detail,area@payload.area,support@payload.support,channel@payload.channel,type@type,enddate@payload.enddate,startdate@payload.startdate,',
         "filter_field": "payload.element",
-        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_maps": ["points-map", "heat-map"],
         "allowed_bar_chart_dimensions": [],
         "allowed_scatter_xy_dimensions": [],
         "allowed_scatter_color_dimensions": []
@@ -86,7 +86,7 @@ function getDatasets() {
         "cuts": [-1, 3, 6, 9, 12, 15, 18, 21, 24, 27],
         "parameters": "",
         "filter_field": "",
-        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_maps": ["points-map", "heat-map"],
         "allowed_bar_chart_dimensions": [],
         "allowed_scatter_xy_dimensions": [],
         "allowed_scatter_color_dimensions": []
@@ -108,7 +108,7 @@ function getDatasets() {
         "cuts": [-1],
         "parameters": "",
         "filter_field": "",
-        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_maps": ["points-map", "heat-map"],
         "allowed_bar_chart_dimensions": [],
         "allowed_scatter_xy_dimensions": [],
         "allowed_scatter_color_dimensions": []
@@ -130,7 +130,7 @@ function getDatasets() {
         "cuts": [-1],
         "parameters": "line@payload.line,",
         "filter_field": "",
-        "allowed_visual_models": ["points-map", "map-lines"],
+        "allowed_maps": ["points-map", "map-lines"],
         "allowed_bar_chart_dimensions": [],
         "allowed_scatter_xy_dimensions": [],
         "allowed_scatter_color_dimensions": []
@@ -152,7 +152,7 @@ function getDatasets() {
         "cuts": [-1, 500, 550, 600, 650, 700, 750],
         "parameters": "polygon@payload.polygon,",
         "filter_field": "",
-        "allowed_visual_models": ["points-map", "map-polygons"],
+        "allowed_maps": ["points-map", "map-polygons"],
         "allowed_bar_chart_dimensions": [],
         "allowed_scatter_xy_dimensions": [],
         "allowed_scatter_color_dimensions": []
@@ -175,7 +175,7 @@ function getDatasets() {
         "parameters": "",
         "filter_field": "",
         "details": "",
-        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_maps": ["points-map", "heat-map"],
         "allowed_bar_chart_dimensions": [],
         "allowed_scatter_xy_dimensions": [],
         "allowed_scatter_color_dimensions": []
@@ -198,7 +198,7 @@ function getDatasets() {
         "parameters": "",
         "filter_field": "",
         "details": "",
-        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_maps": ["points-map", "heat-map"],
         "allowed_bar_chart_dimensions": [],
         "allowed_scatter_xy_dimensions": [],
         "allowed_scatter_color_dimensions": []
@@ -221,7 +221,7 @@ function getDatasets() {
         "parameters": "",
         "filter_field": "",
         "details": "",
-        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_maps": ["points-map", "heat-map"],
         "allowed_bar_chart_dimensions": [],
         "allowed_scatter_xy_dimensions": [],
         "allowed_scatter_color_dimensions": []
@@ -244,7 +244,7 @@ function getDatasets() {
         "parameters": "",
         "filter_field": "",
         "details": "",
-        "allowed_visual_models": [],
+        "allowed_maps": [],
         "allowed_bar_chart_dimensions": ["category"],
         "allowed_scatter_xy_dimensions": ["voteCount", "totalCommentsCount"],
         "allowed_scatter_color_dimensions": ["category"]
@@ -267,7 +267,7 @@ function getDatasets() {
         "filter_field": "",
         "parameters": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
         "details": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
-        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_maps": ["points-map", "heat-map"],
         "allowed_bar_chart_dimensions": ["attendeeCount"],
         "allowed_scatter_xy_dimensions": [],
         "allowed_scatter_color_dimensions": []
@@ -291,7 +291,7 @@ function getDatasets() {
         "parameters": "",
         "filter_field": "",
         "details": "",
-        "allowed_visual_models": [],
+        "allowed_maps": [],
         "allowed_bar_chart_dimensions": ["category"],
         "allowed_scatter_xy_dimensions": ["voteCount", "totalCommentsCount"],
         "allowed_scatter_color_dimensions": ["category"]
@@ -314,7 +314,7 @@ function getDatasets() {
         "filter_field": "",
         "parameters": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
         "details": "title@payload.title,title@payload.title,startTime@payload.startTime,endTime@payload.endTime,address@payload.address,attachments@payload.attachments,attendeeCount@payload.attendeeCount,",
-        "allowed_visual_models": ["points-map", "heat-map"],
+        "allowed_maps": ["points-map", "heat-map"],
         "allowed_bar_chart_dimensions": [],
         "allowed_scatter_xy_dimensions": [],
         "allowed_scatter_color_dimensions": []
@@ -337,7 +337,7 @@ function getDatasets() {
         "filter_field": "",
         "parameters": "",
         "details": "",
-        "allowed_visual_models": [],
+        "allowed_maps": [],
         "allowed_bar_chart_dimensions": ["gender", "age", "country", "continent", "education", "workSituation", "organization", "city", "district", "device", "scale", "interest"],
         "allowed_scatter_xy_dimensions": [],
         "allowed_scatter_color_dimensions": []
