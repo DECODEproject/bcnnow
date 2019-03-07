@@ -61,9 +61,40 @@ class Community(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    public_key = db.Column(db.String(45))
-    private_key = db.Column(db.String(45))
     name = db.Column(db.String(45))
+    community_id = db.Column(db.String(45))
+    authorizable_attribute_id = db.Column(db.String(45))
+    credential_issuer_endpoint_address = db.Column(db.String(45))
+
+    @staticmethod
+    def create(community_name, community_id, authorizable_attribute_id, credential_issuer_endpoint_address):
+        community = Community()
+        community.community_id = community_id
+        community.name = community_name
+        community.authorizable_attribute_id = authorizable_attribute_id
+
+        if credential_issuer_endpoint_address is not None:
+            community.credential_issuer_endpoint_address = credential_issuer_endpoint_address
+
+        db.session.add(community)
+        db.session.commit()
+
+        return community
+
+    @staticmethod
+    def get(id):
+        community = Community.query.filter_by(id=id).first()
+        return community
+
+    @staticmethod
+    def get_from_community_id(community_id):
+        community = Community.query.filter_by(community_id=community_id).first()
+        return community
+
+    @staticmethod
+    def get_from_authorizable_attribute_id(authorizable_attribute_id):
+        community = Community.query.filter_by(authorizable_attribute_id=authorizable_attribute_id).first()
+        return community
 
 
 class Dashboard(db.Model):
