@@ -36,7 +36,7 @@ class InsideAirbnbListingCollector:
 
     # Send request to get data
     def sendRequest(self, url):
-        return pd.read_csv('/home/code/projects/decode-bcnnow/backend/data/collectors/polling/InsideAirbnbCollector/' + url, low_memory=False)
+        return pd.read_csv('/home/jordi.allue/Documents/Projects/bcnnow/apps/backend/data/collectors/pull/InsideAirbnbCollector/' + url, low_memory=False)
 
     # Build a record in the standard format
     def buildRecord(self, item):

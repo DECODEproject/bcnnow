@@ -1,9 +1,12 @@
 /*********************************************************************************************************************
                                                     GLOBAL VARIABLES 
 **********************************************************************************************************************/
+//var url_api = 'http://93ff8837.ngrok.io/api/v0/'; // Get the endpoint url of BarcelonaNow API
 var url_api = 'http://127.0.0.1:9530/api/v0/'; // Get the endpoint url of BarcelonaNow API
-var datasets = getDatasets(); // Get the available datasets from datasets.js file
-var dashboards = getDashboards(); // Get the available dashboards from dashboards.js file
+var url_root = 'http://127.0.0.1:9530/';
+var dashboards = getDashboards(); // Get the available dashboards from MongoDB
+var datasets = getDatasets(); // Get the available datasets from MongoDB
+var private_dashboards = getPrivateDashboards(); // Get the available dashboards from MongoDB
 var page = 'page-6'; // + (Object.keys(dashboards).length - 1); // Get the current dashboard to show (the last by default)
 var color_palette = ['#4D9DE0', '#E15554', '#E1BC29', '#3BB273', '#7768AE']; // Default color palette for time series
 var start_date = moment().subtract('days', 6).toISOString();
@@ -203,9 +206,10 @@ $(document).ready(function() {
     function addEventsNewDashboardItem() {
         $('.add').click(function(event) {
             var id = Object.keys(dashboards).length + 1;
+            var uuid = create_UUID();
             $('<li id="page-' + id + '" class="dashboard-page"> New Dashboard Page </li>').insertBefore(this);
             dashboards['page-' + id] = {};
-            dashboards['page-' + id]['name'] = 'New Dashboard Page';
+            dashboards['page-'+id]['name'] = 'New Dashboard Page-' + uuid;
             dashboards['page-' + id]['widgets'] = [];
             addEventsExistingDashboardItem();
             $.notify('You have inserted a dashboard page.', "success");
@@ -246,6 +250,9 @@ $(document).ready(function() {
             $('#bread-item').html(dashboards[page]['name'] + '<span id="popup-dashboard" class="fa fa-link popup-dashboard"></span>');
             addEventsShareDashboard();
             displayWidgets(dashboards[$(element).attr('id')]['widgets']);
+
+            // hide sidebar
+            $('.x-navigation').removeClass('x-navigation-open');
         }
     }
 
@@ -279,6 +286,8 @@ $(document).ready(function() {
         });
     }
 
+    loadSidebar();
+
     addEventsExistingDashboardItem();
     addEventsNewDashboardItem();
 
@@ -286,6 +295,34 @@ $(document).ready(function() {
                                                         UTILS
     ******************************************************************************************************************/
 
+
+    /*
+        Get cookie value
+    */
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    }
+    
+    /*
+        Generate UUID 
+    */
+    function create_UUID(){
+        var dt = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = (dt + Math.random()*16)%16 | 0;
+            dt = Math.floor(dt/16);
+            return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+        });
+        return uuid;
+    }
+    
     /*
         Checks whether at least one source inside the widget needs to be displayed along time
         @sources The list of sources inside a widget
@@ -448,6 +485,21 @@ $(document).ready(function() {
         });
         return result;
     }
+
+            
+    /*
+        Get cookie value
+    */
+    function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
 
     /*****************************************************************************************************************
                                                         WIDGETS
@@ -675,7 +727,7 @@ $(document).ready(function() {
         var is_observation = 'isObservation' + '&';
         var conditions = '$timestamp=gte@' + widget['sources'][sindex]['start'] + ',lt@' + widget['sources'][sindex]['end'] + '&';
         $('#' + widget['id'] + '-loader').show();
-        //console.log(url_api + dataset['name'] + '?' + operators + aggregation + parameters + sort + is_observation + conditions + filters);
+        console.log(url_api + dataset['name'] + '?' + operators  + aggregation + parameters + sort + is_observation + conditions + filters)
         $.ajax({
             url: url_api + dataset['name'] + '?' + operators + aggregation + parameters + sort + is_observation + conditions + filters,
             success: function(data) {
@@ -889,6 +941,10 @@ $(document).ready(function() {
             var WIDTH_IN_PERCENT_OF_PARENT = 100,
                 HEIGHT_IN_PERCENT_OF_PARENT = 100;
 
+            if ($(window).width() < 1300) {
+                WIDTH_IN_PERCENT_OF_PARENT = WIDTH_IN_PERCENT_OF_PARENT * 1.2;
+            }
+
             var gd3 = d3.select('#' + widget['id'] + '-dashboard-line')
                 .append('div')
                 .style({
@@ -912,9 +968,9 @@ $(document).ready(function() {
             }
 
             Plotly.newPlot(gd, widget['data'], {
-                autosize: true,
-                height: 300,
-                margin: {
+                  //autosize: true,
+                  height: 320,
+                  margin: {
                     l: 35,
                     r: 50,
                     b: 35,
@@ -1077,6 +1133,7 @@ $(document).ready(function() {
                     style: function(feature) {
                         return getAreaColor(feature, dataset, obs);
                     },
+                    pane: 'boundaries',
                     onEachFeature: function(feature, layer) {
                         var element = getLabel(feature, dataset, obs);
                         if (element) {
@@ -1162,10 +1219,10 @@ $(document).ready(function() {
                         });
                     }
                 });
-                widget['sources'][sindex]['markers'] = new L.LayerGroup();
-                widget['sources'][sindex]['markers'].clearLayers();
-                widget['sources'][sindex]['markers'].addLayer(geo_boundary);
-                widget['map'].addLayer(widget['sources'][sindex]['markers']);
+                
+                widget['map'].createPane('boundaries');
+                widget['map'].getPane('boundaries').style.zIndex = 4;
+                widget['map'].addLayer(geo_boundary);
             },
             error: function() {
 
@@ -2326,7 +2383,11 @@ $(document).ready(function() {
 
         // Cancel right sidebar
         $("#" + windex + "-sub-widget").click(function(e) {
-            $("#" + widget['id']).css("width", "49%");
+            if ($(window).width() < 1300) {
+                $("#" + widget['id']).css("width", "99%");
+            } else {
+                $("#" + widget['id']).css("width", "49%");
+            }
             widget['data'] = [];
             $("#" + windex + "-slider-date").removeClass('col-md-6').addClass('col-md-12');
             $("#" + windex + "-slider-date-graph").hide()
@@ -2447,6 +2508,103 @@ $(document).ready(function() {
         });
 
         $("body").removeClass("modal-open");
+    }
+
+    /*
+        Add new widget
+    */
+    $("#add-widget-button").on("click",function(){
+        addNewWidget();
+    });
+    function addNewWidget() {
+        
+        var uuid = create_UUID();
+
+        dashboards[page].widgets.push({
+            "id": "widget-" + uuid,
+            "title": "New widget",
+            "authors": ["carmen"],
+            "modified": "2018-01-12T00:00:00Z",
+            "sources": [],
+            "timeinterval": null,
+            "map": null,
+            "highmarkericon": [],
+            "refreshIntervalId": null,
+            "highmarker": [],
+            "data": []
+        });
+        addEventsShareDashboard();
+        displayWidgets(dashboards[page]['widgets']);
+
+        // hide sidebar
+        $('.x-navigation').removeClass('x-navigation-open');
+
+        // $.post(url_root + "api/v0/post_new_dashboard",dashboards[page],null); 
+    }
+
+    /*
+        Add new widget
+    */
+    $("#save-dashboard-button").on("click",function(){
+        postDashboardToServer();
+    });
+    function postDashboardToServer(dashboard) {
+        var seen = [];
+        var ret = $.ajax({
+            url: url_root + "api/v0/post_new_dashboard",
+            method: "POST",
+            dataType: "json",
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            url: url_root + "api/v0/post_new_dashboard",
+            data: JSON.stringify(dashboards[page], function(key, val) {
+                if (key.startsWith("_")) {
+                        return;
+                }
+                if (val != null && typeof val == "object") {
+                    if (seen.indexOf(val) >= 0) {
+                        return;
+                    }
+                    seen.push(val);
+                 }
+                 return val;
+             }),
+            beforeSend: function (xhr) {
+                // authenticate the call 
+                xhr.setRequestHeader ("Authorization", "Bearer " + cookieValue);
+            },
+            success: function(data) {
+                // var returnValue = jQuery.extend(true, {}, data);
+                return data;
+            },
+            error: function() {
+            }
+
+        });
+
+        // Reload page
+        location.reload();
+    }
+
+    /*
+        Load Sidebar Lists 
+    */
+    function loadSidebar() {
+        
+        for (var key in dashboards) {
+            $("#public-dashboards-list").append('<li id="' + key + '" class="dashboard-page">' + dashboards[key]['name'] + '</li>');
+        };
+
+        if (Object.keys(private_dashboards).length > 0){
+            $("#private-dashboards-list").append('<li class="dashboard-page-title" id="private-dashboards-title">Your Dashboards</li>');
+            $("#public-dashboards-title").text('Public Dashboards')
+        }
+
+        for (var key in private_dashboards) {
+            $("#private-dashboards-list").append('<li id="' + key + '" class="dashboard-page">' + private_dashboards[key]['name'] + '</li>');
+            dashboards[key] = private_dashboards[key];
+        };
+
     }
 
     /*
