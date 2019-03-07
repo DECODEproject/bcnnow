@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 import datetime
-from config.Config import Config as globalConfig
+from config.config import Config as globalConfig
 
 globalCfg = globalConfig().get()
 

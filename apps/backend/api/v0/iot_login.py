@@ -15,7 +15,7 @@ import qrcode
 import io
 from os import urandom
 from flask import request
-from config.Config import Config
+from config.config import Config
 import base64
 
 cfg = Config().get()

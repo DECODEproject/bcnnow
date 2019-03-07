@@ -14,7 +14,7 @@ from apps.backend.api.v0.models import db, User, OAuth2Client, OAuth2Token
 from apps.backend.api.v0.oauth2 import authorization, require_oauth
 from apps.backend.api.v0.iot_login import IoTWalletLoginManager
 from werkzeug.datastructures import ImmutableMultiDict
-from config.Config import Config
+from config.config import Config
 from base64 import b64encode
 
 __author__ = 'Jordi Allué'

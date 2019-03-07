@@ -21,7 +21,7 @@ from apps.backend.data.collectors.pull.OHBCollector.Config import Config as coll
 
 collectorCfg = collectorConfig().get()
 
-from config.Config import Config as globalConfig
+from config.config import Config as globalConfig
 
 globalCfg = globalConfig().get()
 

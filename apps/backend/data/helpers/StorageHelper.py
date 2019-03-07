@@ -1,6 +1,6 @@
 from pymongo import MongoClient, GEO2D
 from kafka import KafkaProducer
-from config.Config import Config
+from config.config import Config
 import json
 import datetime
 

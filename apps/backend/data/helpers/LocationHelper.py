@@ -22,7 +22,7 @@ import pyproj as pyproj
 from shapely.geometry import shape, Point
 
 from apps.backend.data.helpers.GeneralHelper import GeneralHelper
-from config.Config import Config
+from config.config import Config
 import io
 cfg = Config().get()
 

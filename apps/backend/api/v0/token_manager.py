@@ -1,5 +1,5 @@
 import sqlite3
-from config.Config import Config
+from config.config import Config
 cfg = Config().get()
 class TokenManager:
     def __init__(self, ):
