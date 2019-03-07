@@ -223,7 +223,7 @@ class DataSetDataBuilder:
                 "start": "2005-01-01T00:00:00Z",
                 "end": "2016-01-01T00:00:00Z",
                 "language": "English",
-                "labels": "€ m2/month",
+                "labels": "Euro m2/month",
                 "targetvalue": "value",
                 "aggregator": "avg",
                 "radius": 20,
@@ -1099,7 +1099,7 @@ class DashboardsDataBuilder:
                     },
                     {
                         "id": "widget-374",
-                        "title": "In a scale from 0 to 5, where 0 is “no at all” and 5 is “very much”, how worried are you about the management of your data by internet companies?",
+                        "title": "In a scale from 0 to 5, where 0 is 'no at all' and 5 is 'very much', how worried are you about the management of your data by internet companies?",
                         "authors": ["carmen"],
                         "modified": "2018-01-12T12:00:00Z",
                         "sources": [{
