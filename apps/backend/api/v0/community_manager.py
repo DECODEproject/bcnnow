@@ -57,17 +57,12 @@ class CommunityManager(Resource):
     def create_secure_community(self, community_name, community_id, attribute_id, credential_issuer_endpoint_address):
         try:
 
-            bcn_community_id=1
             f = urlopen(credential_issuer_endpoint_address)
             myfile = f.read()
 
-
             bcn_community = Community.create(community_name, community_id, attribute_id,
-                                             credential_issuer_endpoint_address)
+            credential_issuer_endpoint_address)
             return {"id": bcn_community.id,"public_key":cfg['encryption']['public']}
-
-
-
         except:
             print("Unexpected error:", sys.exc_info()[0])
             response = jsonify(message="Internal Error")
@@ -78,9 +73,6 @@ class CommunityManager(Resource):
         try:
            bcn_community= Community.create(community_name, community_id, attribute_id, credential_issuer_endpoint_address)
            return {"id" :bcn_community.id}
-
-
-
         except:
             print("Unexpected error:", sys.exc_info()[0])
             response = jsonify(message="Internal Error")

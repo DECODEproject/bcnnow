@@ -66,13 +66,8 @@ class IoTWalletLoginManager(Resource):
             # read the public key DB
             bcn_community_obj = Community.get_from_authorizable_attribute_id(authorizable_attribute_id)
             issuer_public = bcn_community_obj.community_validation_key
-
             value = basic_parameters['value']
-
             print(value)
-
-
-
             ## check with zenroom if login is valid
             with open('verifyer.zencode') as file:
                 verify_credential_script = file.read()

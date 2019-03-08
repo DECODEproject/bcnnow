@@ -352,4 +352,5 @@ if __name__ == '__main__':
     api.add_resource(BasicDataAccess, '/api/v0/<source>')
     api.add_resource(IoTWalletLoginManager, '/iotlogin/<string:source>')
     api.add_resource(OAuthManager, '/oauth/<string:source>')
+    api.add_resource(CommunityManager, '/community/<string:source>')
     app.run(host='0.0.0.0', port=cfg['api']['v0']['port'], threaded=True, debug=False)
