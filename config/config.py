@@ -5,7 +5,7 @@ class Config:
             "api": {
                   "v0": {
                           "ipaddress": "http://localhost",
-                          "port": 9530,
+                          "port": 8080,
                           "database_url": ""
                   }
             },
@@ -38,7 +38,7 @@ class Config:
             "oauth": {
                 "client_username": "AzrWLH8xw1xGYoPBBt1lP4xl",
                 "client_password": "V2CQt67jOXTpeV4BrDMumQOcka1HEpQmDWp72l1mnutz52j8"
-            }
+            },
             "encryption":{
                 "private":"",
                 "public":""
