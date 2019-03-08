@@ -19,6 +19,7 @@ from apps.backend.api.v0.oauth2_routes import OAuthManager
 from apps.backend.api.v0.iot_login import IoTWalletLoginManager
 from apps.backend.api.v0.models import db, DataSetCommunity, DataSet, Dashboard, DashboardCommunity
 from apps.backend.api.v0.oauth2 import config_oauth, require_oauth
+from apps.backend.api.v0.community_manager import CommunityManager
 
 cfg = Config().get()
 
