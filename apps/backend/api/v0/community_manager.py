@@ -64,15 +64,16 @@ class CommunityManager(Resource):
             }
             '''
             # to do get it from end point url
-            res = requests.get(credential_issuer_endpoint_address + "authorizable_attribute/{}".format(attribute_id))
-            if res.ok:
-                print("\tAll good, got this result: {}".format(res.json()))
-                credential_key = res.json()
-            else:
-                print("\tCalls not getting back, got this error: {}".format(res.json()))
-                response = jsonify(message="Could not get public key data from credential_issuer_endpoint_address")
-                response.status_code = 401
-                return response
+            if(cfg['iotconfig']['bypass']=='no'):
+                res = requests.get(credential_issuer_endpoint_address + "authorizable_attribute/{}".format(attribute_id))
+                if res.ok:
+                    print("\tAll good, got this result: {}".format(res.json()))
+                    credential_key = res.json()
+                else:
+                    print("\tCalls not getting back, got this error: {}".format(res.json()))
+                    response = jsonify(message="Could not get public key data from credential_issuer_endpoint_address")
+                    response.status_code = 401
+                    return response
 
             print("got public key for validation")
             Community.update(bcn_community.id, credential_key)
@@ -99,15 +100,16 @@ class CommunityManager(Resource):
             }
             '''
             # to do get it from end point url
-            res = requests.get(credential_issuer_endpoint_address + "authorizable_attribute/{}".format(attribute_id))
-            if res.ok:
-                print("\tAll good, got this result: {}".format(res.json()))
-                credential_key = res.json()
-            else:
-                print("\tCalls not getting back, got this error: {}".format(res.json()))
-                response = jsonify(message="Could not get public key data from credential_issuer_endpoint_address")
-                response.status_code = 401
-                return response
+            if (cfg['iotconfig']['bypass']=='no'):
+                res = requests.get(credential_issuer_endpoint_address + "authorizable_attribute/{}".format(attribute_id))
+                if res.ok:
+                    print("\tAll good, got this result: {}".format(res.json()))
+                    credential_key = res.json()
+                else:
+                    print("\tCalls not getting back, got this error: {}".format(res.json()))
+                    response = jsonify(message="Could not get public key data from credential_issuer_endpoint_address")
+                    response.status_code = 412
+                    return response
 
             print("got public key for validation")
             Community.update(bcn_community.id, credential_key)
