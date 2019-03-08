@@ -65,6 +65,7 @@ class Community(db.Model):
     community_id = db.Column(db.String(45))
     authorizable_attribute_id = db.Column(db.String(45))
     credential_issuer_endpoint_address = db.Column(db.String(45))
+    community_validation_key = db.Column(db.String(100))
 
     @staticmethod
     def create(community_name, community_id, authorizable_attribute_id, credential_issuer_endpoint_address):
@@ -82,8 +83,18 @@ class Community(db.Model):
         return community
 
     @staticmethod
-    def get(id):
-        community = Community.query.filter_by(id=id).first()
+    def update(bcn_community_id, community_validation_key):
+        community = Community.query.filter_by(id=bcn_community_id).first()
+        community.community_validation_key = community_validation_key
+
+        db.session.add(community)
+        db.session.commit()
+
+        return community
+
+    @staticmethod
+    def get(bcn_community_id):
+        community = Community.query.filter_by(id=bcn_community_id).first()
         return community
 
     @staticmethod
