@@ -5,7 +5,7 @@ class Config:
             "api": {
                   "v0": {
                           "ipaddress": "http://localhost",
-                          "port": 9530,
+                          "port": 8080,
                           "database_url": ""
                   }
             },
