@@ -112,7 +112,7 @@ class IoTWalletLoginManager(Resource):
 
     def get_new_token(self):
         #generate new token
-        tkn= uuid.uuid1().get_hex() # or uuid.uuid4()
+        tkn= uuid.uuid1().hex # or uuid.uuid4()
         tkn_manager=TokenManager()
         if(tkn_manager.insert_token(tkn)):
             return  tkn
@@ -124,7 +124,7 @@ class IoTWalletLoginManager(Resource):
         token=self.get_new_token()
         header=cfg['iotconfig']['header']
         callback=cfg['iotconfig']['callbackurl']
-        data = 'decodewallet://?action=login&header =%s&sessionId=%s&callback=%s' % (header, token, callback)
+        data = 'decodeapp://login?&sessionId=%s&callback=%s' % (token, callback)
         img_buf = io.BytesIO()
         img = self.random_qr(url=data)
         img.save(img_buf)
@@ -137,6 +137,6 @@ class IoTWalletLoginManager(Resource):
         token=self.get_new_token()
         header=cfg['iotconfig']['header']
         callback=cfg['iotconfig']['callbackurl']
-        data= 'decodewallet://?action=login&header =%s&sessionId=%s&callback=%s'%(header,token,callback)
+        data = 'decodeapp://login?&sessionId=%s&callback=%s' % (token, callback)
         return data
 
