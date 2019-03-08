@@ -10,8 +10,7 @@ from datetime import datetime
 import pymongo
 from pymongo import MongoClient
 from bson.json_util import dumps
-
-from config.Config import Config
+from config.config import Config
 import json
 import re
 import ast

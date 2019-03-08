@@ -6,10 +6,13 @@ NOTE: by requirements image in memory!
 from apps.backend.api.v0.db_manager import TokenManager
 from flask_restful import Resource
 
+from apps.backend.api.v0.models import Community
+
 __author__ = 'Rohit Kumar'
 __version__ = (0, 0, 1)
 
 import sys
+from urllib.request import urlopen
 import flask
 import qrcode
 import io
@@ -54,17 +57,32 @@ class CommunityManager(Resource):
     def create_secure_community(self, community_name, community_id, attribute_id, credential_issuer_endpoint_address):
         try:
 
+            bcn_community_id=1
+            f = urlopen(credential_issuer_endpoint_address)
+            myfile = f.read()
+
+
+            bcn_community = Community.create(community_name, community_id, attribute_id,
+                                             credential_issuer_endpoint_address)
+            return {"id": bcn_community.id,"public_key":cfg['encryption']['public']}
+
 
 
         except:
             print("Unexpected error:", sys.exc_info()[0])
-            return
+            response = jsonify(message="Internal Error")
+            response.status_code = 401
+            return response
 
     def create_community(self, community_name, community_id, attribute_id, credential_issuer_endpoint_address):
         try:
+           bcn_community= Community.create(community_name, community_id, attribute_id, credential_issuer_endpoint_address)
+           return {"id" :bcn_community.id}
 
 
 
         except:
             print("Unexpected error:", sys.exc_info()[0])
-            return
+            response = jsonify(message="Internal Error")
+            response.status_code = 401
+            return response
