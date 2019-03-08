@@ -3,6 +3,7 @@
 
 NOTE: by requirements image in memory!
 """
+import base64
 
 __author__ = 'Rohit Kumar'
 __version__ = (0, 0, 1)
@@ -94,7 +95,8 @@ class IoTWalletLoginManager(Resource):
 
 
 
-    def random_qr(self,url='www.google.com'):
+    @staticmethod
+    def random_qr(url='www.google.com'):
         qr = qrcode.QRCode(version=1,
                            error_correction=qrcode.constants.ERROR_CORRECT_L,
                            box_size=10,
@@ -105,7 +107,8 @@ class IoTWalletLoginManager(Resource):
         img = qr.make_image()
         return img
 
-    def get_new_token(self):
+    @staticmethod
+    def get_new_token():
         #generate new token
         tkn= uuid.uuid1().hex # or uuid.uuid4()
         tkn_manager=TokenManager()
@@ -115,21 +118,25 @@ class IoTWalletLoginManager(Resource):
             return None
 
 
-    def get_qrimg(self):
-        token=self.get_new_token()
-        header=cfg['iotconfig']['header']
-        callback=cfg['iotconfig']['callbackurl']
-        data = 'decodeapp://login?&sessionId=%s&callback=%s' % (token, callback)
+    @staticmethod
+    def get_qrimg():
+        token = IoTWalletLoginManager.get_new_token()
+        schema = cfg['iotconfig']['schema']
+        header = cfg['iotconfig']['header']
+        callback = cfg['iotconfig']['callbackurl']
+        data = '%s://?action=login&header =%s&sessionId=%s&callback=%s' % (schema, header, token, callback)
         img_buf = io.BytesIO()
-        img = self.random_qr(url=data)
+        img = IoTWalletLoginManager.random_qr(url=data)
         img.save(img_buf)
         img_buf.seek(0)
+        img_str = base64.b64encode(img_buf.getvalue()).decode()
 
-        return flask.send_file(img_buf, mimetype='image/png')
+        return {"qr": img_str, "session": token, "url_app": data, "url": data}
 
 
-    def get_link(self):
-        token=self.get_new_token()
+    @staticmethod
+    def get_link():
+        token=IoTWalletLoginManager.get_new_token()
         header=cfg['iotconfig']['header']
         callback=cfg['iotconfig']['callbackurl']
         data = 'decodeapp://login?&sessionId=%s&callback=%s' % (token, callback)
