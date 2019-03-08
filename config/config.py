@@ -26,8 +26,9 @@ class Config:
             },
             "iotconfig": {
                 "header": "{predicate:'schema:iotCommunity'}",
-                "callbackurl": "http://bcnnow.decodeproject.eu/oauth/iot_login_callback",
-                "schema": "decodewallet"
+                "callbackurl": "http://84.88.76.45:887/oauth/iot_login_callback",
+                "schema": "decodewallet",
+                "bypass":"yes"
             },
             "project": {
                   "base_url": "/home/code/projects/bcnnow/",

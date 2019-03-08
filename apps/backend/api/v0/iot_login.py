@@ -89,7 +89,7 @@ class IoTWalletLoginManager(Resource):
 
         except:
             print("Unexpected error:", sys.exc_info())
-            response = jsonify(message="Error in Validation")
+            response = jsonify(message="Unexpected Error in Validation")
             response.status_code = 412
             return response
 
