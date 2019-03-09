@@ -124,7 +124,7 @@ class IoTWalletLoginManager(Resource):
         schema = cfg['iotconfig']['schema']
         header = cfg['iotconfig']['header']
         callback = cfg['iotconfig']['callbackurl']
-        data = '%s://?action=login&header =%s&sessionId=%s&callback=%s' % (schema, header, token, callback)
+        data = 'decodeapp://login?&sessionId=%s&callback=%s' % (token, callback)
         img_buf = io.BytesIO()
         img = IoTWalletLoginManager.random_qr(url=data)
         img.save(img_buf)

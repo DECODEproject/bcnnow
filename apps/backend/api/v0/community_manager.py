@@ -114,7 +114,8 @@ class CommunityManager(Resource):
             print("got public key for validation")
             Community.update(bcn_community.id, credential_key)
             return {"id": bcn_community.id}
-        except:
+        except Exception as e:
+            print(e)
             print("Unexpected error:", sys.exc_info()[0])
             response = jsonify(message="Internal Error")
             response.status_code = 401
