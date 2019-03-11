@@ -28,7 +28,7 @@ class Config:
                 "header": "{predicate:'schema:iotCommunity'}",
                 "callbackurl": "http://84.88.76.45:887/oauth/iot_login_callback",
                 "schema": "decodewallet",
-                "bypass":"yes"
+                "bypass":"no"
             },
             "project": {
                   "base_url": "/home/code/projects/bcnnow/",

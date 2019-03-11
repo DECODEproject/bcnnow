@@ -11,7 +11,7 @@ from werkzeug.security import gen_salt
 from authlib.flask.oauth2 import current_token
 from authlib.specs.rfc6749 import OAuth2Error
 from zenroom import zenroom
-
+import requests
 from apps.backend.api.v0.models import db, User, OAuth2Client, OAuth2Token, Community
 from apps.backend.api.v0.oauth2 import authorization, require_oauth
 from apps.backend.api.v0.iot_login import IoTWalletLoginManager
@@ -147,43 +147,50 @@ class OAuthManager(Resource):
             authorizable_attribute_id = data['credential']['authorizable_attribute_id']
             credential_issuer_endpoint_address=data['credential']['credential_issuer_endpoint_address']
 
-            # read the public key DB
+            # read the public key from endpoint
             bcn_community_obj = Community.get_from_authorizable_attribute_id(authorizable_attribute_id)
-            issuer_public = bcn_community_obj.community_validation_key
-            value = data['credential']['value']
-            print(value)
-            ## check with zenroom if login is valid
-            verify_response_msg = "OK"
-            if (cfg['iotconfig']['bypass'] == 'no'):
-                with open('verifyer.zencode') as file:
-                    verify_credential_script = file.read()
-                verify_response, errs = zenroom.execute(verify_credential_script.encode(), data=issuer_public, keys=value)
-                verify_response_msg=verify_response.decode()
+            res = requests.get(credential_issuer_endpoint_address + "authorizable_attribute/{}".format(authorizable_attribute_id))
+            if res.ok:
+                print("\tAll good, got this result: {}".format(res.json()))
+                credential_key = json.dumps(res.json()["verification_key"]).encode()
+                value = json.dumps(data['credential']['value']).encode()
+                ## check with zenroom if login is valid
+                verify_response_msg = "OK"
+                if (cfg['iotconfig']['bypass'] == 'no'):
+                    with open('verifyer.zencode') as file:
+                        verify_credential_script = file.read()
+                    verify_response, errs = zenroom.execute(verify_credential_script.encode(), data=credential_key,
+                                                            keys=value)
+                    verify_response_msg = verify_response.decode()
 
-            if (verify_response_msg == "OK"):
-                tkn_manager = TokenManager()
-                tkn_status = tkn_manager.validate_token(session_token)
-                if (tkn_status == '1'):
-                    # login
-                    request.headers.environ['HTTP_AUTHORIZATION'] = \
-                        'Basic ' + b64encode(bytes(cfg['oauth']['client_username'] + ':'
-                                                   + cfg['oauth']['client_password'], 'utf-8')).decode('utf-8')
+                if (verify_response_msg == "OK"):
+                    tkn_manager = TokenManager()
+                    tkn_status = tkn_manager.validate_token(session_token)
+                    if (tkn_status == '1'):
+                        # login
+                        request.headers.environ['HTTP_AUTHORIZATION'] = \
+                            'Basic ' + b64encode(bytes(cfg['oauth']['client_username'] + ':'
+                                                       + cfg['oauth']['client_password'], 'utf-8')).decode('utf-8')
 
-                    data2 = ImmutableMultiDict([('grant_type', 'password'), ('username', session_token),
-                                                ('scope', 'profile'), ('password', 'dummy')])
-                    request.form = data2
+                        data2 = ImmutableMultiDict([('grant_type', 'password'), ('username', session_token),
+                                                    ('scope', 'profile'), ('password', 'dummy')])
+                        request.form = data2
 
-                    token = authorization.create_token_response(request)
-                    return token
+                        token = authorization.create_token_response(request)
+                        return token
+                    else:
+                        response = jsonify(message="Invalid Tokken")
+                        response.status_code = 401
+                        return response
                 else:
-                    response = jsonify(message="Invalid Tokken")
+                    response = jsonify(message="Invalid Credentials")
                     response.status_code = 401
                     return response
             else:
-                response = jsonify(message="Invalid Credentials")
-                response.status_code = 401
+                print("\tCalls not getting back, got this error: {}".format(res.json()))
+                response = jsonify(message="Could not get public key data from credential_issuer_endpoint_address")
+                response.status_code = 412
                 return response
-
         except Exception as e:
             print(e)
             response = jsonify(message="Unexpected Error in Validation")
