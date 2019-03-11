@@ -16,9 +16,9 @@ function getDatasets() {
     // if logged call server for available datasets for user
     // in other case return defaults as is
 
-    cookieValue = getCookie("session-id");
+    cookieValue = getCookie("session-token");
     if (cookieValue == null) {
-        cookieValue = getCookie("session-token");
+        cookieValue = getCookie("session-id");
     }
 
     if (cookieValue != null) {

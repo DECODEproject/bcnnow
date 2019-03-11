@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
-
+import sys
 from random import randint
 
 from flask import request, session
@@ -10,10 +10,14 @@ from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 from werkzeug.security import gen_salt
 from authlib.flask.oauth2 import current_token
 from authlib.specs.rfc6749 import OAuth2Error
-from apps.backend.api.v0.models import db, User, OAuth2Client, OAuth2Token
+from zenroom import zenroom
+
+from apps.backend.api.v0.models import db, User, OAuth2Client, OAuth2Token, Community
 from apps.backend.api.v0.oauth2 import authorization, require_oauth
 from apps.backend.api.v0.iot_login import IoTWalletLoginManager
 from werkzeug.datastructures import ImmutableMultiDict
+
+from apps.backend.api.v0.token_manager import TokenManager
 from config.config import Config
 from base64 import b64encode
 
@@ -138,26 +142,54 @@ class OAuthManager(Resource):
         # TODO: process data
         session_token = data['sessionId']
 
-        # TODO: do magic auth algorithm
+        try:
 
-        # if 3rd party magic algorithm success create oauth2 token else return error
-        number = randint(0, 9)
-        if number > 0:
-            # login
-            request.headers.environ['HTTP_AUTHORIZATION'] = \
-                'Basic ' + b64encode(bytes(cfg['oauth']['client_username'] + ':'
-                                           + cfg['oauth']['client_password'], 'utf-8')).decode('utf-8')
+            authorizable_attribute_id = data['credential']['authorizable_attribute_id']
+            credential_issuer_endpoint_address=data['credential']['credential_issuer_endpoint_address']
 
-            data2 = ImmutableMultiDict([('grant_type', 'password'), ('username', session_token),
-                                        ('scope', 'profile'), ('password', 'dummy')])
-            request.form = data2
+            # read the public key DB
+            bcn_community_obj = Community.get_from_authorizable_attribute_id(authorizable_attribute_id)
+            issuer_public = bcn_community_obj.community_validation_key
+            value = data['credential']['value']
+            print(value)
+            ## check with zenroom if login is valid
+            verify_response_msg = "OK"
+            if (cfg['iotconfig']['bypass'] == 'no'):
+                with open('verifyer.zencode') as file:
+                    verify_credential_script = file.read()
+                verify_response, errs = zenroom.execute(verify_credential_script.encode(), data=issuer_public, keys=value)
+                verify_response_msg=verify_response.decode()
 
-            token = authorization.create_token_response(request)
-            return token
-        else:
-            response = jsonify(message="IoT returned invalid authentication")
-            response.status_code = 401
+            if (verify_response_msg == "OK"):
+                tkn_manager = TokenManager()
+                tkn_status = tkn_manager.validate_token(session_token)
+                if (tkn_status == '1'):
+                    # login
+                    request.headers.environ['HTTP_AUTHORIZATION'] = \
+                        'Basic ' + b64encode(bytes(cfg['oauth']['client_username'] + ':'
+                                                   + cfg['oauth']['client_password'], 'utf-8')).decode('utf-8')
+
+                    data2 = ImmutableMultiDict([('grant_type', 'password'), ('username', session_token),
+                                                ('scope', 'profile'), ('password', 'dummy')])
+                    request.form = data2
+
+                    token = authorization.create_token_response(request)
+                    return token
+                else:
+                    response = jsonify(message="Invalid Tokken")
+                    response.status_code = 401
+                    return response
+            else:
+                response = jsonify(message="Invalid Credentials")
+                response.status_code = 401
+                return response
+
+        except Exception as e:
+            print(e)
+            response = jsonify(message="Unexpected Error in Validation")
+            response.status_code = 412
             return response
+
 
     @staticmethod
     def check_login():
