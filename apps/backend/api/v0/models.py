@@ -61,11 +61,11 @@ class Community(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    name = db.Column(db.String(45))
+    name = db.Column(db.String(100))
     community_id = db.Column(db.String(45))
-    authorizable_attribute_id = db.Column(db.String(45))
-    credential_issuer_endpoint_address = db.Column(db.String(45))
-    community_validation_key = db.Column(db.String(100))
+    authorizable_attribute_id = db.Column(db.String(100))
+    credential_issuer_endpoint_address = db.Column(db.String(400))
+    community_validation_key = db.Column(db.String(10000))
 
     @staticmethod
     def create(community_name, community_id, authorizable_attribute_id, credential_issuer_endpoint_address):
