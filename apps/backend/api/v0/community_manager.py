@@ -25,7 +25,7 @@ class CommunityManager(Resource):
         return
 
     def post(self, source):
-        if (source == 'create_encypted' or source == 'create'):
+        if (source == 'create_encrypted' or source == 'create'):
             try:
                 if (request.is_json):
                     basic_parameters = request.json
@@ -33,7 +33,7 @@ class CommunityManager(Resource):
                     community_name = basic_parameters['community_name']
                     authorizable_attribute_id = basic_parameters['authorizable_attribute_id']
                     credential_issuer_endpoint_address = basic_parameters['credential_issuer_endpoint_address']
-                    if (source == 'create_encypted'):
+                    if (source == 'create_encrypted'):
                         return self.create_secure_community(community_name, community_id, authorizable_attribute_id,
                                                             credential_issuer_endpoint_address)
                     else:
@@ -41,12 +41,20 @@ class CommunityManager(Resource):
                                                      credential_issuer_endpoint_address)
 
                 else:
-                    return ("Content Type not Json!! That was the deal please !!")
+                    response = jsonify(message="Param should be json only")
+                    response.status_code = 501
+                    return response
             except:
                 print("Unexpected error:", sys.exc_info()[0])
-                return "Value Error 1 "
+                print("Unexpected error:", sys.exc_info()[0])
+                response = jsonify(message="Internal Error")
+                response.status_code = 501
+                return response
         else:
-            return "Invalid!!"
+            print("Unexpected error:", sys.exc_info()[0])
+            response = jsonify(message="Invalid source path")
+            response.status_code = 501
+            return response
 
     def create_secure_community(self, community_name, community_id, attribute_id, credential_issuer_endpoint_address):
         try:
@@ -56,8 +64,8 @@ class CommunityManager(Resource):
             return {"id": bcn_community.id, "public_key": cfg['encryption']['public']}
         except:
             print("Unexpected error:", sys.exc_info()[0])
-            response = jsonify(message="Internal Error")
-            response.status_code = 401
+            response = jsonify(message="community_id or attribute_id already exist")
+            response.status_code = 501
             return response
 
     def create_community(self, community_name, community_id, attribute_id, credential_issuer_endpoint_address):
@@ -70,6 +78,6 @@ class CommunityManager(Resource):
         except Exception as e:
             print(e)
             print("Unexpected error:", sys.exc_info()[0])
-            response = jsonify(message="Internal Error")
-            response.status_code = 401
+            response = jsonify(message="community_id or attribute_id already exist")
+            response.status_code = 501
             return response

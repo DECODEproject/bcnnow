@@ -149,19 +149,24 @@ class OAuthManager(Resource):
 
             # read the public key from endpoint
             bcn_community_obj = Community.get_from_authorizable_attribute_id(authorizable_attribute_id)
-            res = requests.get(credential_issuer_endpoint_address + "authorizable_attribute/{}".format(authorizable_attribute_id))
+            res = requests.get(credential_issuer_endpoint_address + "/authorizable_attribute/{}".format(authorizable_attribute_id))
             if res.ok:
-                print("\tAll good, got this result: {}".format(res.json()))
+
                 credential_key = json.dumps(res.json()["verification_key"]).encode()
                 value = json.dumps(data['credential']['value']).encode()
                 ## check with zenroom if login is valid
                 verify_response_msg = "OK"
+                print("\tvalue: {}".format(value))
+                print("\tAll good, got this result: {}".format(res.json()))
                 if (cfg['iotconfig']['bypass'] == 'no'):
-                    with open('verifyer.zencode') as file:
+                    with open('/home/ubuntu/verifyer.zencode') as file:
                         verify_credential_script = file.read()
-                    verify_response, errs = zenroom.execute(verify_credential_script.encode(), data=credential_key,
+                    try:
+                        verify_response, errs = zenroom.execute(verify_credential_script.encode(), data=credential_key,
                                                             keys=value)
-                    verify_response_msg = verify_response.decode()
+                        verify_response_msg = verify_response.decode()
+                    except:
+                        verify_response_msg="not OK"
 
                 if (verify_response_msg == "OK"):
                     tkn_manager = TokenManager()
