@@ -47,6 +47,20 @@ class User(db.Model):
         db.session.add(user)
         db.session.commit()
 
+    @staticmethod
+    def update_user(username, name, city, age, area):
+        user = User.query.filter_by(username=username).first()
+        if name is not None:
+            user.profile_name = name
+        if city is not None:
+            user.profile_city = city
+        if age is not None:
+            user.profile_age = age
+        if area is not None:
+            user.profile_area = area
+
+        db.session.add(user)
+        db.session.commit()
 
 class DataSet(db.Model):
     __tablename__ = 'dataset'

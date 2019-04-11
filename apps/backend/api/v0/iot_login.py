@@ -125,14 +125,15 @@ class IoTWalletLoginManager(Resource):
         header = cfg['iotconfig']['header']
         callback = cfg['iotconfig']['callbackurl']
         data = 'decodeapp://login?&sessionId=%s&callback=%s' % (token, callback)
+        data_desktop = data + '&source=desktop'
+        data_mobile = data + '&source=mobile'
         img_buf = io.BytesIO()
-        img = IoTWalletLoginManager.random_qr(url=data)
+        img = IoTWalletLoginManager.random_qr(url=data_desktop)
         img.save(img_buf)
         img_buf.seek(0)
         img_str = base64.b64encode(img_buf.getvalue()).decode()
 
-        return {"qr": img_str, "session": token, "url_app": data, "url": data}
-
+        return {"qr": img_str, "session": token, "url_app": data, "url": data_mobile}
 
     @staticmethod
     def get_link():

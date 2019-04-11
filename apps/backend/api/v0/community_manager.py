@@ -27,9 +27,14 @@ class CommunityManager(Resource):
     def post(self, source):
         if (source == 'create_encrypted' or source == 'create'):
             try:
-                if (request.is_json):
+                print("create community")
+                print(str(request.json))
+                #if (request.is_json):
+                if True:
+                    print ("json: " + str(request.json))
                     basic_parameters = request.json
                     community_id = basic_parameters['community_id']
+                    print(community_id)
                     community_name = basic_parameters['community_name']
                     authorizable_attribute_id = basic_parameters['authorizable_attribute_id']
                     credential_issuer_endpoint_address = basic_parameters['credential_issuer_endpoint_address']
@@ -44,7 +49,8 @@ class CommunityManager(Resource):
                     response = jsonify(message="Param should be json only")
                     response.status_code = 501
                     return response
-            except:
+            except Exception as e:
+                print(e)
                 print("Unexpected error:", sys.exc_info()[0])
                 print("Unexpected error:", sys.exc_info()[0])
                 response = jsonify(message="Internal Error")
@@ -62,7 +68,8 @@ class CommunityManager(Resource):
             bcn_community = Community.create(community_name, community_id, attribute_id,
                                              credential_issuer_endpoint_address)
             return {"id": bcn_community.id, "public_key": cfg['encryption']['public']}
-        except:
+        except Exception as e:
+            print(e)
             print("Unexpected error:", sys.exc_info()[0])
             response = jsonify(message="community_id or attribute_id already exist")
             response.status_code = 501
@@ -70,7 +77,7 @@ class CommunityManager(Resource):
 
     def create_community(self, community_name, community_id, attribute_id, credential_issuer_endpoint_address):
         try:
-
+            print("updating db")
             bcn_community = Community.create(community_name, community_id, attribute_id,
                                              credential_issuer_endpoint_address)
             print("created community locally")
