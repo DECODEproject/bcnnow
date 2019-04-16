@@ -312,7 +312,7 @@ body.page-container-boxed .page-container {
   position: relative;
 }
 .x-navigation li > a {
-  display: block;
+  /* display: block; */
   float: left;
   width: 100%;
   line-height: 19px;
@@ -1708,6 +1708,7 @@ span.high-name {
   padding: 15px;
   position: relative;
 }
+
 .panel .panel-body.scroll {
   padding-right: 0px;
 }
@@ -6825,13 +6826,13 @@ div.tagsinput div {
   display: block;
 }
 .file-caption .glyphicon {
-  display: inline-block;
+  /* display: inline-block; */
   min-width: 18px;
   float: left;
   margin-top: 2px;
 }
 .file-caption-name {
-  display: inline-block;
+  /* display: inline-block; */
   float: left;
   overflow: hidden;
   white-space: nowrap;
@@ -6986,7 +6987,7 @@ div.tagsinput div {
   border: 1px solid #ccc;
   border-radius: 4px;
   color: #555;
-  display: block;
+  /* display: block; */
   font-size: 11px;
   height: 30px;
   line-height: 30px;
@@ -7781,12 +7782,7 @@ span.add-source.fa.fa-plus {
 }
 /* END BCNNOW */
 @media only screen and (max-width: 768px) {
-  [class^='col-xs-'],
-  [class^='col-sm-'],
-  [class^='col-md-'],
-  [class^='col-lg-'] {
-    margin-bottom: 10px;
-  }
+  
   /* LOGIN */
   .login-container {
     padding: 0px 10px;

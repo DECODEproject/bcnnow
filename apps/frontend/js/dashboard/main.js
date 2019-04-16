@@ -1251,8 +1251,6 @@ $(document).ready(function() {
                                             '</div>' +
                                         '</div>' +
                                     '</div>' +
-                                    '<div class="col-md-6">' +
-                                    '</div>' +
                                 '</div>' +
                             '</div>' +
                             '<div id="' + windex + '-slider-date-graph" class="col-md-6 slider-date-graph" style="display: none;">' +
