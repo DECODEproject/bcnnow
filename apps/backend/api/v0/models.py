@@ -47,6 +47,20 @@ class User(db.Model):
         db.session.add(user)
         db.session.commit()
 
+    @staticmethod
+    def update_user(username, name, city, age, area):
+        user = User.query.filter_by(username=username).first()
+        if name is not None:
+            user.profile_name = name
+        if city is not None:
+            user.profile_city = city
+        if age is not None:
+            user.profile_age = age
+        if area is not None:
+            user.profile_area = area
+
+        db.session.add(user)
+        db.session.commit()
 
 class DataSet(db.Model):
     __tablename__ = 'dataset'
@@ -61,9 +75,51 @@ class Community(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    public_key = db.Column(db.String(45))
-    private_key = db.Column(db.String(45))
-    name = db.Column(db.String(45))
+    name = db.Column(db.String(100))
+    community_id = db.Column(db.String(45))
+    authorizable_attribute_id = db.Column(db.String(100))
+    credential_issuer_endpoint_address = db.Column(db.String(400))
+    community_validation_key = db.Column(db.String(10000))
+
+    @staticmethod
+    def create(community_name, community_id, authorizable_attribute_id, credential_issuer_endpoint_address):
+        community = Community()
+        community.community_id = community_id
+        community.name = community_name
+        community.authorizable_attribute_id = authorizable_attribute_id
+
+        if credential_issuer_endpoint_address is not None:
+            community.credential_issuer_endpoint_address = credential_issuer_endpoint_address
+
+        db.session.add(community)
+        db.session.commit()
+
+        return community
+
+    @staticmethod
+    def update(bcn_community_id, community_validation_key):
+        community = Community.query.filter_by(id=bcn_community_id).first()
+        community.community_validation_key = community_validation_key
+
+        db.session.add(community)
+        db.session.commit()
+
+        return community
+
+    @staticmethod
+    def get(bcn_community_id):
+        community = Community.query.filter_by(id=bcn_community_id).first()
+        return community
+
+    @staticmethod
+    def get_from_community_id(community_id):
+        community = Community.query.filter_by(community_id=community_id).first()
+        return community
+
+    @staticmethod
+    def get_from_authorizable_attribute_id(authorizable_attribute_id):
+        community = Community.query.filter_by(authorizable_attribute_id=authorizable_attribute_id).first()
+        return community
 
 
 class Dashboard(db.Model):

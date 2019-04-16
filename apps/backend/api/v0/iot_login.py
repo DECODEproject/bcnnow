@@ -3,91 +3,97 @@
 
 NOTE: by requirements image in memory!
 """
-from http.client import HTTPResponse
-
-from apps.backend.api.v0.token_manager import TokenManager
-from flask_restful import Resource
-__author__ = 'Rohit Kumar'
-__version__ = (0, 0, 1)
-
-import sys
-import qrcode
-import io
-from os import urandom
-from flask import request
-from config.Config import Config
 import base64
 
-cfg = Config().get()
+__author__ = 'Rohit Kumar'
+__version__ = (0, 0, 1)
+from apps.backend.api.v0.token_manager import TokenManager
+from flask_restful import Resource
+import sys
+import flask
+import qrcode
+import io
+import uuid
+from apps.backend.api.v0.models import Community
+from zenroom import zenroom
+from flask import request, jsonify
+from config.config import Config
 
+cfg = Config().get()
 
 class IoTWalletLoginManager(Resource):
     def __init__(self, ):
         return
 
     def get(self, source):
-        if source == 'qrcode':
+        if(source=='qrcode'):
             return self.get_qrimg()
-        elif source == 'link':
+        elif(source=='link'):
             return self.get_link()
-        elif source == 'login':
-            session_id = request.args['session']
-            return self.allow_login(session_id)
-        elif source == 'force':
-            session_id = request.args['session']
-            return self.forceValidateLogin(session_id)
         else:
             return "Invalid!!"
 
     def post(self, source):
-        if source == 'qrcode':
+        if(source=='qrcode'):
             return self.get_qrimg()
-        elif source == 'link':
+        elif(source=='link'):
             return self.get_link()
-        elif source == 'login':
-            session_id = request.args['session']
-            return self.allow_login(session_id)
-        elif source == 'validate':
+        elif (source == 'validate'):
             try:
-                if request.is_json:
+                if(request.is_json):
                     basic_parameters = request.json
                     token = basic_parameters['sessionId']
-                    return self.validateLogin(token,basic_parameters['attribute'])
+                    return self.validateLogin(token,basic_parameters['credential'])
                 else:
-                    return ("Content Type not Json!! That was the deal please !!")
+                    response = jsonify(message="Content Type not Json!! That was the deal please !!")
+                    response.status_code = 401
+                    return response
+
             except:
                 print("Unexpected error:", sys.exc_info()[0])
-                return "Value Error 1 "
+                response = jsonify(message="System Error")
+                response.status_code = 401
+                return response
         else:
             return "Invalid!!"
 
-    def validateLogin(self, token, basic_parameters):
-        try:
-            tkn_manager = TokenManager()
-            tkn_status=tkn_manager.validate_token(token)
 
-            if tkn_status == '1':
-                predicate = basic_parameters['attribute']['predicate']
-                if (predicate == 'schema:iotCommunity'):
-                    credential_x = basic_parameters['attribute']['provenance']['credential']['x']
-                    credential_y = basic_parameters['attribute']['provenance']['credential']['y']
-                    return "Login_valid"
+    def validateLogin(self,token,basic_parameters):
+        try:
+
+            authorizable_attribute_id = basic_parameters['authorizable_attribute_id']
+            credential_issuer_endpoint_address=basic_parameters['credential_issuer_endpoint_address']
+
+            # read the public key DB
+            bcn_community_obj = Community.get_from_authorizable_attribute_id(authorizable_attribute_id)
+            issuer_public = bcn_community_obj.community_validation_key
+            value = basic_parameters['value']
+            print(value)
+            ## check with zenroom if login is valid
+            with open('verifyer.zencode') as file:
+                verify_credential_script = file.read()
+            verify_response, errs = zenroom.execute(verify_credential_script.encode(), data=issuer_public, keys=value)
+            if (verify_response.decode() == "OK"):
+                tkn_manager = TokenManager()
+                tkn_status = tkn_manager.validate_token(token)
+                if (tkn_status == '1'):
+                    return {"status": False, "message": "Login Success"}
                 else:
-                    return "predicate not matching"
+                    response = jsonify(message="Invalid Tokken")
+                    response.status_code = 401
+                    return response
             else:
-                return tkn_status
-        except:
-            print("Unexpected error:", sys.exc_info()[0])
-            return "Value Error 2"
+                response = jsonify(message="Invalid Credentials")
+                response.status_code = 401
+                return response
 
-    def forceValidateLogin(self, token):
-        try:
-            tkn_manager = TokenManager()
-            tkn_status = tkn_manager.validate_token(token)
-            return tkn_status
         except:
-            print("Unexpected error:", sys.exc_info()[0])
-            return "Value Error 2"
+            print("Unexpected error:", sys.exc_info())
+            response = jsonify(message="Unexpected Error in Validation")
+            response.status_code = 412
+            return response
+
+
 
     @staticmethod
     def random_qr(url='www.google.com'):
@@ -104,12 +110,13 @@ class IoTWalletLoginManager(Resource):
     @staticmethod
     def get_new_token():
         #generate new token
-        tkn = urandom(12).hex()
-        tkn_manager = TokenManager()
-        if tkn_manager.insert_token(tkn):
-            return tkn
+        tkn= uuid.uuid1().hex # or uuid.uuid4()
+        tkn_manager=TokenManager()
+        if(tkn_manager.insert_token(tkn)):
+            return  tkn
         else:
             return None
+
 
     @staticmethod
     def get_qrimg():
@@ -117,29 +124,22 @@ class IoTWalletLoginManager(Resource):
         schema = cfg['iotconfig']['schema']
         header = cfg['iotconfig']['header']
         callback = cfg['iotconfig']['callbackurl']
-        data = '%s://?action=login&header =%s&sessionId=%s&callback=%s' % (schema, header, token, callback)
+        data = 'decodeapp://login?&sessionId=%s&callback=%s' % (token, callback)
+        data_desktop = data + '&source=desktop'
+        data_mobile = data + '&source=mobile'
         img_buf = io.BytesIO()
-        img = IoTWalletLoginManager.random_qr(url=data)
+        img = IoTWalletLoginManager.random_qr(url=data_desktop)
         img.save(img_buf)
         img_buf.seek(0)
         img_str = base64.b64encode(img_buf.getvalue()).decode()
-        return {"qr": img_str, "session": token, "url_app": data, "url": data}
 
-    def allow_login(self, sessionId):
-        status = False
-        if sessionId == "987654321":
-            status = True
-        else:
-            tkn_manager = TokenManager()
-            tkn_status = tkn_manager.check_token(sessionId)
-            if tkn_status == 1:
-                status = True
-        return {"status": status}
+        return {"qr": img_str, "session": token, "url_app": data, "url": data_mobile}
 
-    def get_link(self):
-        token=self.get_new_token()
+    @staticmethod
+    def get_link():
+        token=IoTWalletLoginManager.get_new_token()
         header=cfg['iotconfig']['header']
         callback=cfg['iotconfig']['callbackurl']
-        data= 'decodewallet://?action=login&header =%s&sessionId=%s&callback=%s'%(header,token,callback)
+        data = 'decodeapp://login?&sessionId=%s&callback=%s' % (token, callback)
         return data
 

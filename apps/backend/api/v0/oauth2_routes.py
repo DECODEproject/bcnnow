@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
-
+import sys
 from random import randint
 
+from datetime import date
 from flask import request, session
 from flask import render_template, redirect, jsonify, json, abort
 from flask_restful import Resource
@@ -10,11 +11,15 @@ from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 from werkzeug.security import gen_salt
 from authlib.flask.oauth2 import current_token
 from authlib.specs.rfc6749 import OAuth2Error
-from apps.backend.api.v0.models import db, User, OAuth2Client, OAuth2Token
+from zenroom import zenroom
+import requests
+from apps.backend.api.v0.models import db, User, OAuth2Client, OAuth2Token, Community
 from apps.backend.api.v0.oauth2 import authorization, require_oauth
 from apps.backend.api.v0.iot_login import IoTWalletLoginManager
 from werkzeug.datastructures import ImmutableMultiDict
-from config.Config import Config
+
+from apps.backend.api.v0.token_manager import TokenManager
+from config.config import Config
 from base64 import b64encode
 
 __author__ = 'Jordi Allué'
@@ -111,7 +116,11 @@ class OAuthManager(Resource):
 
     @staticmethod
     def issue_token():
-        return authorization.create_token_response(request)
+        try:
+         return authorization.create_token_response(request)
+        except Exception as e:
+         print(e)
+        return
 
     @staticmethod
     def revoke_token():
@@ -135,29 +144,109 @@ class OAuthManager(Resource):
         # password: V2CQt67jOXTpeV4BrDMumQOcka1HEpQmDWp72l1mnutz52j8
 
         data = request.json
-        # TODO: process data
         session_token = data['sessionId']
 
-        # TODO: do magic auth algorithm
+        districts = {
+            "1": "Ciutat Vella",
+            "2": "Eixample",
+            "3": "Sants-Montjuïc",
+            "4": "Les Corts",
+            "5": "Sarrià-Sant Gervasi",
+            "6": "Gràcia",
+            "7": "Horta-Guinardó",
+            "8": "Nou Barris",
+            "9": "Sant Andreu",
+            "10": "Sant Martí",
+        }
 
-        # if 3rd party magic algorithm success create oauth2 token else return error
-        number = randint(0, 9)
-        if number > 0:
-            # login
-            request.headers.environ['HTTP_AUTHORIZATION'] = \
-                'Basic ' + b64encode(bytes(cfg['oauth']['client_username'] + ':'
-                                           + cfg['oauth']['client_password'], 'utf-8')).decode('utf-8')
+        try:
 
-            data2 = ImmutableMultiDict([('grant_type', 'password'), ('username', session_token),
-                                        ('scope', 'profile'), ('password', 'dummy')])
-            request.form = data2
+            print("starting callback")
+            authorizable_attribute_id = data['credential']['authorizable_attribute_id']
+            print("authorizable_attribute_id: " + authorizable_attribute_id)
+            credential_issuer_endpoint_address=data['credential']['credential_issuer_endpoint_address']
+            print("credential_issuer_endpoint_address: " + credential_issuer_endpoint_address)
 
-            token = authorization.create_token_response(request)
-            return token
-        else:
-            response = jsonify(message="IoT returned invalid authentication")
-            response.status_code = 401
+            # read the public key from endpoint
+            # bcn_community_obj = Community.get_from_authorizable_attribute_id(authorizable_attribute_id)
+            # print("bcn_community_obj: " + bcn_community_obj)
+            print("URL: " + credential_issuer_endpoint_address + "/authorizable_attribute/{}".format(authorizable_attribute_id))
+            res = requests.get(credential_issuer_endpoint_address + "/authorizable_attribute/{}".format(authorizable_attribute_id))
+            if res.ok:
+
+                credential_key = json.dumps(res.json()["verification_key"]).encode()
+                value = json.dumps(data['credential']['value']).encode()
+                ## check with zenroom if login is valid
+                verify_response_msg = "OK"
+                print("\tvalue: {}".format(value))
+                print("\tAll good, got this result: {}".format(res.json()))
+                if (cfg['iotconfig']['bypass'] == 'no'):
+                    with open('/home/code/verifyer.zencode') as file:
+                        verify_credential_script = file.read()
+                    try:
+                        verify_response, errs = zenroom.execute(verify_credential_script.encode(), data=credential_key,
+                                                            keys=value)
+                        verify_response_msg = verify_response.decode()
+                    except:
+                        verify_response_msg="not OK"
+
+                if (verify_response_msg == "OK"):
+                    tkn_manager = TokenManager()
+                    tkn_status = tkn_manager.validate_token(session_token)
+                    if (tkn_status == '1'):
+                        # login
+                        request.headers.environ['HTTP_AUTHORIZATION'] = \
+                            'Basic ' + b64encode(bytes(cfg['oauth']['client_username'] + ':'
+                                                       + cfg['oauth']['client_password'], 'utf-8')).decode('utf-8')
+
+                        data2 = ImmutableMultiDict([('grant_type', 'password'), ('username', session_token),
+                                                    ('scope', 'profile'), ('password', 'dummy')])
+                        request.form = data2
+
+                        # Get personal data
+                        name = ""
+                        city = "Barcelona"
+                        age = ""
+                        area = ""
+                        profile_data_array = data['optionalAttributes']
+                        for profile_data in profile_data_array:
+                            if profile_data['attribute_id'] == "schema:dateOfBirth":
+                                # process age dd/mm/yyyy
+                                day, month, year = profile_data['value'].split('/')
+                                today = date.today()
+                                age = today.year - int(year) - ((today.month, today.day) < (int(month), int(day)))
+                            if profile_data['attribute_id'] == "schema:name":
+                                name = profile_data['value']
+                            if profile_data['attribute_id'] == "schema:city":
+                                city = profile_data['value']
+                            if profile_data['attribute_id'] == "schema:district":
+                                if profile_data['value'] in districts:
+                                    area = districts[profile_data['value']]
+
+                        User.update_user(session_token, name, city, age, area)
+
+
+                        token = authorization.create_token_response(request)
+                        return token
+                    else:
+                        response = jsonify(message="Invalid Tokken")
+                        response.status_code = 401
+                        return response
+                else:
+                    response = jsonify(message="Invalid Credentials")
+                    response.status_code = 401
+                    return response
+            else:
+                print("\tCalls not getting back, got this error: {}".format(res.json()))
+                response = jsonify(message="Could not get public key data from credential_issuer_endpoint_address")
+                response.status_code = 412
+                return response
+        except Exception as e:
+            print(e)
+            response = jsonify(message="Unexpected Error in Validation")
+            response.status_code = 412
             return response
+
 
     @staticmethod
     def check_login():

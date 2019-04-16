@@ -1,3 +1,5 @@
+import sys
+
 from bson import ObjectId
 from flask import Flask
 from flask_cors import CORS
@@ -8,8 +10,7 @@ from datetime import datetime
 import pymongo
 from pymongo import MongoClient
 from bson.json_util import dumps
-
-from config.Config import Config
+from config.config import Config
 import json
 import re
 import ast
@@ -18,6 +19,7 @@ from apps.backend.api.v0.oauth2_routes import OAuthManager
 from apps.backend.api.v0.iot_login import IoTWalletLoginManager
 from apps.backend.api.v0.models import db, DataSetCommunity, DataSet, Dashboard, DashboardCommunity
 from apps.backend.api.v0.oauth2 import config_oauth, require_oauth
+from apps.backend.api.v0.community_manager import CommunityManager
 
 cfg = Config().get()
 
@@ -168,8 +170,9 @@ class BasicDataAccess(Resource):
                     results = list(collection.aggregate((query), allowDiskUse=True))
                 else:
                     query.append({"$match": parameters})
-                    query.append({"$group": {"_id": {field.split('@')[0]: '$' + field.split('@')[1] for field in group.split(',')}, "doc": {"$last": "$$ROOT"}}})
+                    query.append({"$group": {"_id": {field.split('@')[0]: '$' + field.split('@')[1] for field in group.split(',')}, "count":{"$sum":1}, "doc": {"$last": "$$ROOT"}}})
                     query.append({"$sort": { "_id": 1 }})
+                    
                     results = list(collection.aggregate((query), allowDiskUse=True))
 
         # Build query results
@@ -350,4 +353,5 @@ if __name__ == '__main__':
     api.add_resource(BasicDataAccess, '/api/v0/<source>')
     api.add_resource(IoTWalletLoginManager, '/iotlogin/<string:source>')
     api.add_resource(OAuthManager, '/oauth/<string:source>')
+    api.add_resource(CommunityManager, '/community/<string:source>')
     app.run(host='0.0.0.0', port=cfg['api']['v0']['port'], threaded=True, debug=False)

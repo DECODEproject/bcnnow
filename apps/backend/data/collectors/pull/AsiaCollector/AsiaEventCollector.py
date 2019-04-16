@@ -1,7 +1,7 @@
 import sys
 from apps.backend.data.collectors.pull.AsiaCollector.Config import Config as collectorConfig
 collectorCfg = collectorConfig().get()
-from config.Config import Config as globalConfig
+from config.config import Config as globalConfig
 globalCfg = globalConfig().get()
 
 from apps.backend.data.collectors.pull.AsiaCollector.AsiaEventPayload import AsiaEventPayload

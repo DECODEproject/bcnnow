@@ -39,6 +39,11 @@ Install all the required dependencies:
 ```
 $ pip install -r bcnnow/requirements.txt
 ```
+Install Mysql libraries
+```
+sudo apt-get install python3-dev libmysqlclient-dev
+pip install mysqlclient
+```
 Copy the dashboard app folder into the Apache public folder:
 ```
 $ sudo cp -r bcnnow/apps/frontend /var/www/html/
