@@ -17,11 +17,12 @@
 '''
 import sys
 
-
 from apps.backend.data.collectors.pull.OHBCollector.Config import Config as collectorConfig
+
 collectorCfg = collectorConfig().get()
 
-from config.Config import Config as globalConfig
+from config.config import Config as globalConfig
+
 globalCfg = globalConfig().get()
 
 from apps.backend.data.collectors.pull.OHBCollector.OHBPayload import OHBPayload
@@ -35,6 +36,7 @@ from shapely.geometry import shape
 import pandas as pd
 import datetime
 
+
 # This class defines the structure of Inside Airbnb Listing collector which adopts the pull strategy.
 class OHBCollector:
 
@@ -46,13 +48,13 @@ class OHBCollector:
         print(str(datetime.datetime.now()) + ' ' + 'Start collection')
         total = 0
         for rindex, rID in enumerate(resourceIDs):
-          #  print(str(datetime.datetime.now()) + ' ' + '    Collecting collection for ' + rID)
+            #  print(str(datetime.datetime.now()) + ' ' + '    Collecting collection for ' + rID)
             url = base + str(rID)
-           # print(str(datetime.datetime.now()) + ' ' + '        ' + ' Access to URL: ' + url)
+            # print(str(datetime.datetime.now()) + ' ' + '        ' + ' Access to URL: ' + url)
             data = self.sendRequest(url)
             self.saveData(data, rID)
             total += len(data.index)
-            #print(str(datetime.datetime.now()) + ' ' + '         Total: ' + str("{0:0>9}".format(total)))
+        # print(str(datetime.datetime.now()) + ' ' + '         Total: ' + str("{0:0>9}".format(total)))
         print(str(datetime.datetime.now()) + ' ' + 'End collection')
 
     # This method sends a request to get OHB data
@@ -101,6 +103,7 @@ class OHBCollector:
         if len(items.index) >= 0:
             for index, item in items.iterrows():
                 StorageHelper().store(self.buildRecord(item, type).toJSON())
+
 
 if __name__ == "__main__":
     base = collectorCfg['collectors']['OHB']['base_url']

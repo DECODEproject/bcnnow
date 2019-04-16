@@ -1,0 +1,216 @@
+{
+	"info": {
+		"name": "DECODE",
+		"_postman_id": "19b673c8-fff7-13c6-c72e-8b992d02d8ec",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "LOCAL",
+			"description": "",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "jordi0",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "valid",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "profile",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:9530/oauth/token",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9530",
+							"path": [
+								"oauth",
+								"token"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "3rd party login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "jordi0",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "valid",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "profile",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:9530/oauth/token",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9530",
+							"path": [
+								"oauth",
+								"token"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "echo response",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "jordi0",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "valid",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "profile",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:9530/oauth/token",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9530",
+							"path": [
+								"oauth",
+								"token"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get SmartCitizen",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://127.0.0.1:9530/api/v0/smartcitizen",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9530",
+							"path": [
+								"api",
+								"v0",
+								"smartcitizen"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

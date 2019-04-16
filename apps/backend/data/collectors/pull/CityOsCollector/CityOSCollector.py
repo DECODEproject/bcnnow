@@ -22,7 +22,7 @@ import sys
 
 import pymongo
 from pymongo import MongoClient
-from config.Config import Config as globalConfig
+from config.config import Config as globalConfig
 globalCfg = globalConfig().get()
 
 #from apps.backend.data.collectors.pull.CityOsCollector.Config import Config as collectorConfig

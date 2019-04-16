@@ -3,7 +3,7 @@ import sys
 
 from apps.backend.data.collectors.pull.InsideAirbnbCollector.Config import Config as collectorConfig
 collectorCfg = collectorConfig().get()
-from config.Config import Config as globalConfig
+from config.config import Config as globalConfig
 globalCfg = globalConfig().get()
 
 from apps.backend.data.collectors.pull.InsideAirbnbCollector.InsideAirbnbListingPayload import InsideAirbnbListingPayload
@@ -36,7 +36,7 @@ class InsideAirbnbListingCollector:
 
     # Send request to get data
     def sendRequest(self, url):
-        return pd.read_csv('/home/code/projects/decode-bcnnow/backend/data/collectors/polling/InsideAirbnbCollector/' + url, low_memory=False)
+        return pd.read_csv('/home/jordi.allue/Documents/Projects/bcnnow/apps/backend/data/collectors/pull/InsideAirbnbCollector/' + url, low_memory=False)
 
     # Build a record in the standard format
     def buildRecord(self, item):
