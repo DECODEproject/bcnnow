@@ -25,35 +25,28 @@ class CommunityManager(Resource):
         return
 
     def post(self, source):
-        if (source == 'create_encrypted' or source == 'create'):
+        if source == 'create_encrypted' or source == 'create':
             try:
                 print("create community")
-                print(str(request.json))
-                #if (request.is_json):
-                if True:
-                    print ("json: " + str(request.json))
-                    basic_parameters = request.json
-                    community_id = basic_parameters['community_id']
-                    print(community_id)
-                    community_name = basic_parameters['community_name']
-                    authorizable_attribute_id = basic_parameters['authorizable_attribute_id']
-                    credential_issuer_endpoint_address = basic_parameters['credential_issuer_endpoint_address']
-                    if (source == 'create_encrypted'):
-                        return self.create_secure_community(community_name, community_id, authorizable_attribute_id,
-                                                            credential_issuer_endpoint_address)
-                    else:
-                        return self.create_community(community_name, community_id, authorizable_attribute_id,
-                                                     credential_issuer_endpoint_address)
-
+                print("json: " + str(request.json))
+                basic_parameters = request.json
+                community_id = basic_parameters['community_id']
+                print(community_id)
+                community_name = basic_parameters['community_name']
+                authorizable_attribute_id = basic_parameters['authorizable_attribute_id']
+                credential_issuer_endpoint_address = basic_parameters['credential_issuer_endpoint_address']
+                if source == 'create_encrypted':
+                    return self.create_secure_community(community_name, community_id, authorizable_attribute_id,
+                                                        credential_issuer_endpoint_address)
                 else:
-                    response = jsonify(message="Param should be json only")
-                    response.status_code = 501
-                    return response
+                    return self.create_community(community_name, community_id, authorizable_attribute_id,
+                                                 credential_issuer_endpoint_address)
+
             except Exception as e:
                 print(e)
                 print("Unexpected error:", sys.exc_info()[0])
                 print("Unexpected error:", sys.exc_info()[0])
-                response = jsonify(message="Internal Error")
+                response = jsonify(message="Internal Error: " + str(e))
                 response.status_code = 501
                 return response
         else:
