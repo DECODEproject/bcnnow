@@ -12,7 +12,7 @@ class Config:
             "collectors": {
                   "common": {
                             "destination": "mongodb",
-                            "collection":"collector_config"
+                            "collection": "collector_config"
 
                   }
             },
@@ -28,7 +28,8 @@ class Config:
                 "header": "{predicate:'schema:iotCommunity'}",
                 "callbackurl": "http://84.88.76.45:887/oauth/iot_login_callback",
                 "schema": "decodewallet",
-                "bypass":"no"
+                "bypass": "no",
+                "login_url": "https://iot.decodeproject.eu/#/"
             },
             "project": {
                   "base_url": "/home/code/projects/bcnnow/",
