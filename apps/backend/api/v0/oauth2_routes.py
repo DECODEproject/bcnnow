@@ -268,12 +268,10 @@ class OAuthManager(Resource):
                     "token_type": token.token_type}
         except MultipleResultsFound as e:
             message = format(e)
-            current_app.logger.error("Unexpected error:" + sys.exc_info()[0])
             current_app.logger.error("Error description: " + message)
             return {"status": False, "message": message}
         except NoResultFound as e:
             message = format(e)
-            current_app.logger.error("Unexpected error:" + sys.exc_info()[0])
             current_app.logger.error("Error description: " + message)
             return {"status": False, "message": message}
 
