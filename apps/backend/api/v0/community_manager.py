@@ -14,7 +14,7 @@ __version__ = (0, 0, 1)
 import sys
 
 import requests
-from flask import request, jsonify
+from flask import request, jsonify, current_app
 from config.config import Config
 
 cfg = Config().get()
@@ -27,11 +27,11 @@ class CommunityManager(Resource):
     def post(self, source):
         if source == 'create_encrypted' or source == 'create':
             try:
-                print("create community")
-                print("json: " + str(request.json))
+                current_app.logger.info(" Called POST create community")
+                current_app.logger.info("json: " + str(request.json))
                 basic_parameters = request.json
                 community_id = basic_parameters['community_id']
-                print(community_id)
+                current_app.logger.debug("Created community: " + community_id)
                 community_name = basic_parameters['community_name']
                 authorizable_attribute_id = basic_parameters['authorizable_attribute_id']
                 credential_issuer_endpoint_address = basic_parameters['credential_issuer_endpoint_address']
@@ -43,14 +43,14 @@ class CommunityManager(Resource):
                                                  credential_issuer_endpoint_address)
 
             except Exception as e:
-                print(e)
-                print("Unexpected error:", sys.exc_info()[0])
-                print("Unexpected error:", sys.exc_info()[0])
+                current_app.logger.error("Unexpected error:" + sys.exc_info()[0])
+                current_app.logger.error("Error description: " + e)
                 response = jsonify(message="Internal Error: " + str(e))
                 response.status_code = 501
                 return response
         else:
-            print("Unexpected error:", sys.exc_info()[0])
+            current_app.logger.error("Unknown request: " + source)
+            current_app.logger.error("Unexpected error:" + sys.exc_info()[0])
             response = jsonify(message="Invalid source path")
             response.status_code = 501
             return response
@@ -62,22 +62,22 @@ class CommunityManager(Resource):
                                              credential_issuer_endpoint_address)
             return {"id": bcn_community.id, "public_key": cfg['encryption']['public']}
         except Exception as e:
-            print(e)
-            print("Unexpected error:", sys.exc_info()[0])
+            current_app.logger.error("Unexpected error:" + sys.exc_info()[0])
+            current_app.logger.error("Error description: " + e)
             response = jsonify(message="community_id or attribute_id already exist")
             response.status_code = 501
             return response
 
     def create_community(self, community_name, community_id, attribute_id, credential_issuer_endpoint_address):
         try:
-            print("updating db")
+            current_app.logger.debug("updating db")
             bcn_community = Community.create(community_name, community_id, attribute_id,
                                              credential_issuer_endpoint_address)
-            print("created community locally")
+            current_app.logger.info("created community locally: " + community_name)
             return {"id": bcn_community.id}
         except Exception as e:
-            print(e)
-            print("Unexpected error:", sys.exc_info()[0])
+            current_app.logger.error("Unexpected error:" + sys.exc_info()[0])
+            current_app.logger.error("Error description: " + e)
             response = jsonify(message="community_id or attribute_id already exist")
             response.status_code = 501
             return response

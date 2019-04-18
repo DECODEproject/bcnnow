@@ -16,7 +16,7 @@ import io
 import uuid
 from apps.backend.api.v0.models import Community
 from zenroom import zenroom
-from flask import request, jsonify
+from flask import request, jsonify, current_app
 from config.config import Config
 
 cfg = Config().get()
@@ -26,21 +26,27 @@ class IoTWalletLoginManager(Resource):
         return
 
     def get(self, source):
-        if(source=='qrcode'):
+        if source == 'qrcode':
+            current_app.logger.info("Called GET qrcode")
             return self.get_qrimg()
-        elif(source=='link'):
+        elif source == 'link':
+            current_app.logger.info("Called GET link")
             return self.get_link()
         else:
+            current_app.logger.error("Called GET unknown method: " + source)
             return "Invalid!!"
 
     def post(self, source):
-        if(source=='qrcode'):
+        if source == 'qrcode':
+            current_app.logger.info("Called POST qrcode")
             return self.get_qrimg()
-        elif(source=='link'):
+        elif source == 'link':
+            current_app.logger.info("Called POST link")
             return self.get_link()
-        elif (source == 'validate'):
+        elif source == 'validate':
+            current_app.logger.info("Called POST validate")
             try:
-                if(request.is_json):
+                if request.is_json:
                     basic_parameters = request.json
                     token = basic_parameters['sessionId']
                     return self.validateLogin(token,basic_parameters['credential'])
@@ -49,12 +55,14 @@ class IoTWalletLoginManager(Resource):
                     response.status_code = 401
                     return response
 
-            except:
-                print("Unexpected error:", sys.exc_info()[0])
+            except Exception as e:
+                current_app.logger.error("Unexpected error:" + sys.exc_info()[0])
+                current_app.logger.error("Error description: " + e)
                 response = jsonify(message="System Error")
                 response.status_code = 401
                 return response
         else:
+            current_app.logger.error("Called POST unknown method: " + source)
             return "Invalid!!"
 
 
@@ -68,15 +76,16 @@ class IoTWalletLoginManager(Resource):
             bcn_community_obj = Community.get_from_authorizable_attribute_id(authorizable_attribute_id)
             issuer_public = bcn_community_obj.community_validation_key
             value = basic_parameters['value']
-            print(value)
-            ## check with zenroom if login is valid
+            current_app.logger.debug(value)
+
+            # check with zenroom if login is valid
             with open('verifyer.zencode') as file:
                 verify_credential_script = file.read()
             verify_response, errs = zenroom.execute(verify_credential_script.encode(), data=issuer_public, keys=value)
-            if (verify_response.decode() == "OK"):
+            if verify_response.decode() == "OK":
                 tkn_manager = TokenManager()
                 tkn_status = tkn_manager.validate_token(token)
-                if (tkn_status == '1'):
+                if tkn_status == '1':
                     return {"status": False, "message": "Login Success"}
                 else:
                     response = jsonify(message="Invalid Tokken")
@@ -87,8 +96,9 @@ class IoTWalletLoginManager(Resource):
                 response.status_code = 401
                 return response
 
-        except:
-            print("Unexpected error:", sys.exc_info())
+        except Exception as e:
+            current_app.logger.error("Unexpected error:" + sys.exc_info()[0])
+            current_app.logger.error("Error description: " + e)
             response = jsonify(message="Unexpected Error in Validation")
             response.status_code = 412
             return response
@@ -109,11 +119,11 @@ class IoTWalletLoginManager(Resource):
 
     @staticmethod
     def get_new_token():
-        #generate new token
-        tkn= uuid.uuid1().hex # or uuid.uuid4()
-        tkn_manager=TokenManager()
-        if(tkn_manager.insert_token(tkn)):
-            return  tkn
+        # generate new token
+        tkn = uuid.uuid1().hex  # or uuid.uuid4()
+        tkn_manager = TokenManager()
+        if tkn_manager.insert_token(tkn):
+            return tkn
         else:
             return None
 

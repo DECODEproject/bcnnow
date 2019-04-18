@@ -1,7 +1,8 @@
 import sys
+from logging.config import dictConfig
 
 from bson import ObjectId
-from flask import Flask
+from flask import Flask, logging
 from flask_cors import CORS
 from flask_restful import Api
 from flask_restful import Resource
@@ -25,13 +26,43 @@ cfg = Config().get()
 
 app = Flask(__name__)
 
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }, 'detailed': {
+        'format': '%(asctime)s %(module)-17s line:%(lineno)-4d ' \
+        '%(levelname)-8s %(message)s',
+    }},
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'INFO',
+            'formatter': 'detailed',
+            'stream': 'ext://sys.stdout',
+        },
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'INFO',
+            'formatter': 'detailed',
+            'filename': 'bcnnow_api.log',
+            'mode': 'a',
+            'maxBytes': 10485760,
+            'backupCount': 5,
+        }
+    },
+    'root': {
+        'level': 'INFO',
+        'handlers': ['console', 'file']
+    }
+})
+
 app.config.update({
     'SECRET_KEY': 'NyJH84Nh5iTSoYime40ctGPkwN6sPSL8kVpg92YpA2SUhPzU',
     'OAUTH2_REFRESH_TOKEN_GENERATOR': True,
     'SQLALCHEMY_TRACK_MODIFICATIONS': False,
     'SQLALCHEMY_DATABASE_URI': cfg['db']['url'],
 })
-
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
@@ -350,6 +381,10 @@ if __name__ == '__main__':
     api = Api(app)
     db.init_app(app)
     config_oauth(app)
+
+    app.logger.addHandler(logging.StreamHandler())
+    app.logger.setLevel('INFO')
+
     api.add_resource(BasicDataAccess, '/api/v0/<source>')
     api.add_resource(IoTWalletLoginManager, '/iotlogin/<string:source>')
     api.add_resource(OAuthManager, '/oauth/<string:source>')
