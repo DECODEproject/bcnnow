@@ -2,7 +2,7 @@ import sys
 from logging.config import dictConfig
 
 from bson import ObjectId
-from flask import Flask, logging
+from flask import Flask, logging, current_app, jsonify
 from flask_cors import CORS
 from flask_restful import Api
 from flask_restful import Resource
@@ -76,18 +76,22 @@ class BasicDataAccess(Resource):
 
     def post(self, source):
         if source == 'post_new_dashboard':
+            current_app.logger.info("Called POST post_new_dashboard")
             return self.post_new_dashboard()
 
     # @require_oauth('profile')
     def get(self, source):
 
         if source == 'get_available_datasets':
+            current_app.logger.info("Called GET get_available_datasets")
             return self.get_available_datasets()
 
         if source == 'get_public_dashboards':
+            current_app.logger.info("Called GET get_public_dashboards")
             return self.get_public_dashboards()
 
         if source == 'get_private_dashboards':
+            current_app.logger.info("Called GET get_private_dashboards")
             return self.get_private_dashboards()
 
         # Default values
@@ -220,60 +224,75 @@ class BasicDataAccess(Resource):
     @require_oauth('profile')
     def get_available_datasets(self):
 
-        # connect to Mongo
-        client = MongoClient(cfg['storage']['ipaddress'], cfg['storage']['port'])
-        m_db = client[cfg['storage']['dbname']]
-        collection = m_db["datasets"]
+        try:
+            # connect to Mongo
+            client = MongoClient(cfg['storage']['ipaddress'], cfg['storage']['port'])
+            m_db = client[cfg['storage']['dbname']]
+            collection = m_db["datasets"]
 
-        # get dataset json contents from MongoDB
-        return_dict = {}
+            # get dataset json contents from MongoDB
+            return_dict = {}
 
-        # build an array of private dataset ids:
-        user = OAuthManager.get_current_user()
-        data_sets_community = DataSetCommunity.query.filter_by(community_id=user.community_id).all()
-        for data_set in data_sets_community:
-            entry = collection.find_one({"id": str(data_set.dataset_id)})
-            # add type to entry
-            entry["availability"] = 'private'
-            return_dict[entry["id"]] = entry
+            # build an array of private dataset ids:
+            user = OAuthManager.get_current_user()
+            data_sets_community = DataSetCommunity.query.filter_by(community_id=user.community_id).all()
+            for data_set in data_sets_community:
+                entry = collection.find_one({"id": str(data_set.dataset_id)})
+                # add type to entry
+                entry["availability"] = 'private'
+                return_dict[entry["id"]] = entry
 
-        # get public datasets
-        data_sets = DataSet.query.filter_by(typeof='public').all()
-        for data_set in data_sets:
-            entry = collection.find_one({"id": str(data_set.id)})
-            # add type to cursor
-            entry["availability"] = 'public'
-            return_dict[entry["id"]] = entry
+            # get public datasets
+            data_sets = DataSet.query.filter_by(typeof='public').all()
+            for data_set in data_sets:
+                entry = collection.find_one({"id": str(data_set.id)})
+                # add type to cursor
+                entry["availability"] = 'public'
+                return_dict[entry["id"]] = entry
 
-        ret = JSONEncoder().encode(return_dict)
-        return json.loads(ret)
+            ret = JSONEncoder().encode(return_dict)
+            return json.loads(ret)
+        except Exception as e:
+            current_app.logger.error("Unexpected error:" + sys.exc_info()[0])
+            current_app.logger.error("Error description: " + e)
+            response = jsonify(message="System Error")
+            response.status_code = 401
+            return response
 
     @require_oauth('profile')
     def get_public_dashboards(self):
 
-        # get public dashboards
-        dashboards = Dashboard.query.filter_by(typeof='public').all()
+        try:
+            # get public dashboards
+            dashboards = Dashboard.query.filter_by(typeof='public').all()
 
-        # get dashboards json contents from MongoDB
-        client = MongoClient(cfg['storage']['ipaddress'], cfg['storage']['port'])
-        m_db = client[cfg['storage']['dbname']]
-        collection = m_db["dashboards"]
+            # get dashboards json contents from MongoDB
+            client = MongoClient(cfg['storage']['ipaddress'], cfg['storage']['port'])
+            m_db = client[cfg['storage']['dbname']]
+            collection = m_db["dashboards"]
 
-        return_dict = {}
+            return_dict = {}
 
-        for dashboard in dashboards:
+            for dashboard in dashboards:
 
-            query_cursor = collection.find({"id": dashboard.id})
+                query_cursor = collection.find({"id": dashboard.id})
 
-            for cursor in query_cursor:
-                # build dict of format "page-2": {...}
-                head = "page-" + str(cursor["id"]-1)
-                return_dict[head] = cursor
-                # body = cursor[head]
-                # return_dict[head] = body
+                for cursor in query_cursor:
+                    # build dict of format "page-2": {...}
+                    head = "page-" + str(cursor["id"]-1)
+                    return_dict[head] = cursor
+                    # body = cursor[head]
+                    # return_dict[head] = body
 
-        ret = JSONEncoder().encode(return_dict)
-        return json.loads(ret)
+            ret = JSONEncoder().encode(return_dict)
+            return json.loads(ret)
+        except Exception as e:
+            current_app.logger.error("Unexpected error:" + sys.exc_info()[0])
+            current_app.logger.error("Error description: " + e)
+            response = jsonify(message="System Error")
+            response.status_code = 401
+            return response
+
 
     @require_oauth('profile')
     def get_private_dashboards(self):
