@@ -24,6 +24,7 @@ class DecidimPetitionSignaturePayload:
     def __init__(self):
         self.id = ''
         self.petitionId = ''
+        self.label = ''
         self.startTime = ''
         self.endTime = ''
 
@@ -38,6 +39,12 @@ class DecidimPetitionSignaturePayload:
 
     def getPetitionId(self):
         return self.petitionId        
+
+    def setLabel(self, label):
+        self.label = label
+
+    def getLabel(self):
+        return self.label
 
     def setStartTime(self, startTime):
         self.startTime = startTime
@@ -55,6 +62,7 @@ class DecidimPetitionSignaturePayload:
         return '{'    +\
                   '"id": ' + json.dumps(self.getId())  +','  +\
                   '"petitionId": ' + json.dumps(self.getPetitionId())  +','  +\
+                  '"label": ' + json.dumps(self.getLabel())  +','  +\
                   '"startTime": ' + json.dumps(self.getStartTime())  +','  +\
                   '"endTime": ' + json.dumps(self.getEndTime())  +\
                '}'

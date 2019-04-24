@@ -70,9 +70,6 @@ class Config:
                         "dddc_username" : "",
                         "dddc_password" : "",
                         "query" : "{ petition(id: 1) { attribute_id, credential_issuer_api_url, json_attribute_info_optional } }",
-                        "dddc-pilot-contracts_path" : {
-                            "14" : "/home/code/projects/dddc-pilot-contracts/src/14-CITIZEN-count-petition.zencode"
-                        }
                     }
                 }
             },

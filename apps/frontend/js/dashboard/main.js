@@ -917,7 +917,7 @@ $(document).ready(function() {
             });
         }
 
-        if (dataset['name'] == 'smartcitizen' || dataset['name'] == 'bicing') {
+        if (dataset['name'] == 'smartcitizen' || dataset['name'] == 'bicing' || dataset['name'].startsWith('iot_')) {
             var flag = false;
             widget['data'].forEach(function(record, index) {
                 if (record['name'] == 'Sensor ' + markerid)
@@ -1023,7 +1023,7 @@ $(document).ready(function() {
             widget["highmarker"].push(e.target);
             widget["highmarkericon"].push(e.target.options.icon);
 
-            if (dataset['name'] == 'smartcitizen' || dataset['name'] == 'bicing') {
+            if (dataset['name'] == 'smartcitizen' || dataset['name'] == 'bicing' || dataset['name'].startsWith('iot_')) {
                 $('.' + 'circle-icon-' + windex + '-' + sindex + '-' + markerid).empty();
                 e.target.setIcon(getRectangleIcon(windex + '-' + sindex + '-' + markerid, widget));
                 $('.' + 'circle-icon-' + windex + '-' + sindex + '-' + markerid).empty();

@@ -16,7 +16,7 @@
     Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 '''
 
-import sys
+import sys, os
 
 from apps.backend.data.collectors.pull.DecidimCollector.Config import Config as collectorConfig
 collectorCfg = collectorConfig().get()
@@ -96,16 +96,16 @@ class DecidimPetitionCollector:
                         StorageHelper().store(self.buildCredentialRecord(item).toJSON())
                         item_count += 1
             # fill with not provided data
-            for i in range(total-attribute_total_count):
-                item = {}
-                item['id'] = petition_id + '-' + str(item_count)
-                item['petitionId'] = petition_id
-                item['age'] = None
-                item['gender'] = None
-                item['district'] = None
-                item[attribute] = 'not provided'
-                StorageHelper().store(self.buildCredentialRecord(item).toJSON())
-                item_count += 1
+            #for i in range(total-attribute_total_count):
+            #    item = {}
+            #    item['id'] = petition_id + '-' + str(item_count)
+            #    item['petitionId'] = petition_id
+            #    item['age'] = None
+            #    item['gender'] = None
+            #    item['district'] = None
+            #    item[attribute] = 'not provided'
+            #    StorageHelper().store(self.buildCredentialRecord(item).toJSON())
+            #    item_count += 1
 
         print(str(datetime.datetime.now()) + ' ' + '         Total: ' + str("{0:0>9}".format(total)))
         print(str(datetime.datetime.now()) + ' ' + 'End collection')
@@ -142,9 +142,10 @@ class DecidimPetitionCollector:
             f = open('/tmp/petition.json', 'w')
             f.write(json.dumps(petition, indent=2))
             f.close()   
-            with open(collectorCfg['collectors']['decidim'][source_name]['dddc-pilot-contracts_path']['14']) as file:
+            __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+            with open(os.path.join(__location__, '14-CITIZEN-count-petition.zencode')) as file:
                 petition_count_zencode = file.read()
-            command = 'zenroom -k /tmp/tally.json -a /tmp/petition.json -z ' + collectorCfg['collectors']['decidim'][source_name]['dddc-pilot-contracts_path']['14']
+            command = 'zenroom -k /tmp/tally.json -a /tmp/petition.json -z ' + (os.path.join(__location__, '14-CITIZEN-count-petition.zencode'))
             assert_count = json.loads(subprocess.check_output(command.split()).decode("utf-8"))
             if (assert_count==count):
                 print ( 'Everything was validated perfectly! Result:', str(assert_count['result']))
@@ -200,11 +201,12 @@ class DecidimPetitionCollector:
     # This method builds an DecidimPetitionSignature BaseRecord
     def buildSignatureRecord(self, item):
         record = BaseRecord()
-        payload = DecidimPetitionCredentialPayload()
+        payload = DecidimPetitionSignaturePayload()
         location = LocationRecord()                
         
         payload.setId(GeneralHelper().default(item['id']))
         payload.setPetitionId(GeneralHelper().default(item['petitionId']))
+        payload.setLabel('signature')
         payload.setStartTime(str(datetime.datetime.now()))
         payload.setEndTime(str(datetime.datetime.now()))
 
