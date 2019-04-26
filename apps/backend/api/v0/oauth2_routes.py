@@ -184,7 +184,7 @@ class OAuthManager(Resource):
                 current_app.logger.info("\tvalue: {}".format(value))
                 current_app.logger.info("\tAll good, got this result: {}".format(res.json()))
                 if cfg['iotconfig']['bypass'] == 'no':
-                    with open('/home/code/verifyer.zencode') as file:
+                    with open('verifyer.zencode') as file:
                         verify_credential_script = file.read()
                     try:
                         verify_response, errs = zenroom.execute(verify_credential_script.encode(), data=credential_key,
