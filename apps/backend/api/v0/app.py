@@ -31,7 +31,7 @@ dictConfig({
     'formatters': {'default': {
         'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
     }, 'detailed': {
-        'format': '%(asctime)s %(module)-17s line:%(lineno)-4d ' \
+        'format': '%(asctime)s %(module)-17s line:%(lineno)-4d '
         '%(levelname)-8s %(message)s',
     }},
     'handlers': {
@@ -63,6 +63,7 @@ app.config.update({
     'SQLALCHEMY_TRACK_MODIFICATIONS': False,
     'SQLALCHEMY_DATABASE_URI': cfg['db']['url'],
 })
+
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
@@ -393,6 +394,12 @@ class BasicDataAccess(Resource):
 
         return True
 
+    @app.errorhandler(500)
+    def internal_error(exception):
+        current_app.logger.error(exception)
+        response = jsonify(message="Unexpected error")
+        response.status_code = 500
+        return response
 
 if __name__ == '__main__':
     Compress(app)
