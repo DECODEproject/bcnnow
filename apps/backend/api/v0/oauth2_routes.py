@@ -169,7 +169,7 @@ class OAuthManager(Resource):
             current_app.logger.info("credential_issuer_endpoint_address: " + credential_issuer_endpoint_address)
 
             # read the public key from endpoint
-            # bcn_community_obj = Community.get_from_authorizable_attribute_id(authorizable_attribute_id)
+            bcn_community_obj = Community.get_from_authorizable_attribute_id(authorizable_attribute_id)
             # print("bcn_community_obj: " + bcn_community_obj)
             current_app.logger.info("URL: " + credential_issuer_endpoint_address + "/authorizable_attribute/{}".format(
                 authorizable_attribute_id))
@@ -227,6 +227,7 @@ class OAuthManager(Resource):
                                     area = districts[profile_data['value']]
 
                         User.update_user(session_token, name, city, age, area)
+                        User.user_add_community(session_token, bcn_community_obj.id)
 
                         token = authorization.create_token_response(request)
                         return token

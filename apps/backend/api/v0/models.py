@@ -62,6 +62,16 @@ class User(db.Model):
         db.session.add(user)
         db.session.commit()
 
+    @staticmethod
+    def user_add_community(username, community_id):
+        user = User.query.filter_by(username=username).first()
+        if community_id is not None:
+            user.community_id = community_id
+
+            db.session.add(user)
+            db.session.commit()
+
+
 class DataSet(db.Model):
     __tablename__ = 'dataset'
     id = db.Column(db.BigInteger, primary_key=True)
