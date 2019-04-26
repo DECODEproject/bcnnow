@@ -87,7 +87,7 @@ class DecidimProposalCollector:
         payload.setTotalCommentsCount(GeneralHelper().default(item['totalCommentsCount']))
         if 'category' in item: payload.setCategory(GeneralHelper().default(item['category']['name']['translations'][0]['text']))
 
-        if 'scope' in item:
+        if 'scope' in item and item['scope']!=None:
             coords = shape(LocationHelper().getAreaGeometry(item['scope']['name']['translations'][0]['text'].replace(' - ','-'), 'neighbourhood_group')).centroid
             location.setDistrict(GeneralHelper().default(item['scope']['name']['translations'][0]['text'].replace(' - ','-').strip()))
             payload.setDistrict(GeneralHelper().default(item['scope']['name']['translations'][0]['text'].replace(' - ','-').strip()))
