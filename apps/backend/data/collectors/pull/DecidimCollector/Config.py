@@ -41,7 +41,7 @@ class Config:
                     },
                     "dddc_proposal": {
                         "source_name": "dddc_proposal",
-                        "component_id": 2,
+                        "component_id": 4,
                         "base_url": "https://dddc.decodeproject.eu/api",
                         "query" : [
                             "{ participatoryProcess(id: 1) { id title { translations { locale text } } components { id name { translations { text } } ... on Proposals { proposals(after: \"\") { pageInfo { endCursor startCursor } edges { node { id title reference voteCount totalCommentsCount publishedAt category { id name { translations { text } } } } } } } } } }"
@@ -60,8 +60,30 @@ class Config:
                         "component_id": 0,
                         "base_url": "answers/",
                         "paths" : ["demographics.json"]
+                    },
+                    "dddc_petition": {
+                        "source_name": "dddc_signature",
+                        "credentials_url" : "https://credentials.decodeproject.eu",
+                        "petitions_url" : "https://petitions.decodeproject.eu",
+                        "petitions_ids" : ["decidim-decode-data-commons-manifesto"],
+                        "dddc_api_url" : "https://dddc.decodeproject.eu/api/",
+                        "dddc_username" : "",
+                        "dddc_password" : "",
+                        "query" : "{ petition(id: 1) { attribute_id, credential_issuer_api_url, json_attribute_info_optional } }",
                     }
                 }
+            },
+            "districts" : {
+                "1" : "Ciutat Vella",
+                "2" : "Eixample",
+                "3" : "Sants-Montjuïc",
+                "4" : "Les Corts",
+                "5" : "Sarrià-Sant Gervasi",
+                "6" : "Gràcia",
+                "7" : "Horta-Guinardó",
+                "8" : "Nou Barris",
+                "9" : "Sant Andreu",
+                "10" : "Sant Martí",
             }
         }
 
