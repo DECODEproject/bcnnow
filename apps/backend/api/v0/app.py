@@ -348,6 +348,8 @@ class BasicDataAccess(Resource):
                 if dataset.typeof == 'private':
                     dashboard_type = 'private'
                     break
+                # remove data
+                source['dataset'] = None
 
         if 'id' in dashboard.keys():
             # get the id from the query
