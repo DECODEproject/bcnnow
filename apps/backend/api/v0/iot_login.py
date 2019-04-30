@@ -138,10 +138,15 @@ class IoTWalletLoginManager(Resource):
         img = IoTWalletLoginManager.random_qr(url=data)
         img.save(img_buf)
         img_buf.seek(0)
-        img_str = base64.b64encode(img_buf.getvalue()).decode()
+        dddc_img_str = base64.b64encode(img_buf.getvalue()).decode()
         url_webapp = '%slogin?sessionId=%s&callback=%s' % (iot_login_url, token, callback)
+        iot_img_buf = io.BytesIO()
+        iot_img = IoTWalletLoginManager.random_qr(url=url_webapp)
+        iot_img.save(iot_img_buf)
+        iot_img_buf.seek(0)
+        iot_img_str = base64.b64encode(iot_img_buf.getvalue()).decode()
 
-        return {"qr": img_str, "session": token, "url": url_webapp}
+        return {"session": token, "dddc_qr": dddc_img_str, "dddc_url": data, "iot_qr": iot_img_str, "iot_url": url_webapp}
 
     @staticmethod
     def get_link():

@@ -136,7 +136,11 @@ class OAuthManager(Resource):
         # create user for oit session
         User.crate_user(iot_login_info['session'], 'iot')
 
-        return {"qr": iot_login_info['qr'], "session": iot_login_info['session'], "url": iot_login_info['url']}
+        return {"session": iot_login_info['session'],
+                "dddc_qr": iot_login_info['dddc_qr'],
+                "dddc_url": iot_login_info['dddc_url'],
+                "iot_qr": iot_login_info['iot_qr'],
+                "iot_url": iot_login_info['iot_url']}
 
     @staticmethod
     def login_with_iot_callback():
