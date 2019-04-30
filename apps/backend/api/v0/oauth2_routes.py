@@ -4,7 +4,7 @@ import sys
 from random import randint
 
 from datetime import date
-from flask import request, session
+from flask import request, session, current_app
 from flask import render_template, redirect, jsonify, json, abort
 from flask_restful import Resource
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
@@ -117,9 +117,10 @@ class OAuthManager(Resource):
     @staticmethod
     def issue_token():
         try:
-         return authorization.create_token_response(request)
+            return authorization.create_token_response(request)
         except Exception as e:
-         print(e)
+            current_app.logger.error("Unexpected error:" + sys.exc_info()[0])
+            current_app.logger.error("Error description: " + e)
         return
 
     @staticmethod
@@ -135,7 +136,11 @@ class OAuthManager(Resource):
         # create user for oit session
         User.crate_user(iot_login_info['session'], 'iot')
 
-        return {"qr": iot_login_info['qr'], "session": iot_login_info['session'], "url": iot_login_info['url']}
+        return {"session": iot_login_info['session'],
+                "dddc_qr": iot_login_info['dddc_qr'],
+                "dddc_url": iot_login_info['dddc_url'],
+                "iot_qr": iot_login_info['iot_qr'],
+                "iot_url": iot_login_info['iot_url']}
 
     @staticmethod
     def login_with_iot_callback():
@@ -161,39 +166,41 @@ class OAuthManager(Resource):
 
         try:
 
-            print("starting callback")
+            current_app.logger.info("starting callback")
             authorizable_attribute_id = data['credential']['authorizable_attribute_id']
-            print("authorizable_attribute_id: " + authorizable_attribute_id)
-            credential_issuer_endpoint_address=data['credential']['credential_issuer_endpoint_address']
-            print("credential_issuer_endpoint_address: " + credential_issuer_endpoint_address)
+            current_app.logger.info("authorizable_attribute_id: " + authorizable_attribute_id)
+            credential_issuer_endpoint_address = data['credential']['credential_issuer_endpoint_address']
+            current_app.logger.info("credential_issuer_endpoint_address: " + credential_issuer_endpoint_address)
 
             # read the public key from endpoint
-            # bcn_community_obj = Community.get_from_authorizable_attribute_id(authorizable_attribute_id)
+            bcn_community_obj = Community.get_from_authorizable_attribute_id(authorizable_attribute_id)
             # print("bcn_community_obj: " + bcn_community_obj)
-            print("URL: " + credential_issuer_endpoint_address + "/authorizable_attribute/{}".format(authorizable_attribute_id))
-            res = requests.get(credential_issuer_endpoint_address + "/authorizable_attribute/{}".format(authorizable_attribute_id))
+            current_app.logger.info("URL: " + credential_issuer_endpoint_address + "/authorizable_attribute/{}".format(
+                authorizable_attribute_id))
+            res = requests.get(
+                credential_issuer_endpoint_address + "/authorizable_attribute/{}".format(authorizable_attribute_id))
             if res.ok:
 
                 credential_key = json.dumps(res.json()["verification_key"]).encode()
                 value = json.dumps(data['credential']['value']).encode()
                 ## check with zenroom if login is valid
                 verify_response_msg = "OK"
-                print("\tvalue: {}".format(value))
-                print("\tAll good, got this result: {}".format(res.json()))
-                if (cfg['iotconfig']['bypass'] == 'no'):
-                    with open('/home/code/verifyer.zencode') as file:
+                current_app.logger.info("\tvalue: {}".format(value))
+                current_app.logger.info("\tAll good, got this result: {}".format(res.json()))
+                if cfg['iotconfig']['bypass'] == 'no':
+                    with open('verifyer.zencode') as file:
                         verify_credential_script = file.read()
                     try:
                         verify_response, errs = zenroom.execute(verify_credential_script.encode(), data=credential_key,
-                                                            keys=value)
+                                                                keys=value)
                         verify_response_msg = verify_response.decode()
                     except:
-                        verify_response_msg="not OK"
+                        verify_response_msg = "not OK"
 
-                if (verify_response_msg == "OK"):
+                if verify_response_msg == "OK":
                     tkn_manager = TokenManager()
                     tkn_status = tkn_manager.validate_token(session_token)
-                    if (tkn_status == '1'):
+                    if tkn_status == '1':
                         # login
                         request.headers.environ['HTTP_AUTHORIZATION'] = \
                             'Basic ' + b64encode(bytes(cfg['oauth']['client_username'] + ':'
@@ -224,7 +231,7 @@ class OAuthManager(Resource):
                                     area = districts[profile_data['value']]
 
                         User.update_user(session_token, name, city, age, area)
-
+                        User.user_add_community(session_token, bcn_community_obj.id)
 
                         token = authorization.create_token_response(request)
                         return token
@@ -237,16 +244,16 @@ class OAuthManager(Resource):
                     response.status_code = 401
                     return response
             else:
-                print("\tCalls not getting back, got this error: {}".format(res.json()))
+                current_app.logger.info("\tCalls not getting back, got this error: {}".format(res.json()))
                 response = jsonify(message="Could not get public key data from credential_issuer_endpoint_address")
                 response.status_code = 412
                 return response
         except Exception as e:
-            print(e)
+            current_app.logger.error("Unexpected error:" + sys.exc_info()[0])
+            current_app.logger.error("Error description: " + e)
             response = jsonify(message="Unexpected Error in Validation")
             response.status_code = 412
             return response
-
 
     @staticmethod
     def check_login():
@@ -266,11 +273,11 @@ class OAuthManager(Resource):
                     "token_type": token.token_type}
         except MultipleResultsFound as e:
             message = format(e)
-            print(message)
+            current_app.logger.error("Error description: " + message)
             return {"status": False, "message": message}
         except NoResultFound as e:
             message = format(e)
-            print(message)
+            current_app.logger.error("Error description: " + message)
             return {"status": False, "message": message}
 
     @staticmethod
