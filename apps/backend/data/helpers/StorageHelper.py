@@ -26,10 +26,10 @@ class StorageHelper:
             try:
                 if collection.find({"id": json_record['id']}).count() == 0:
                     collection.insert_one(json_record)
-                    print(str(datetime.datetime.now()) + ' ' + '              Saved to ' + cfg['collectors']['common']['destination'] + ' ' + record)
+                    #print(str(datetime.datetime.now()) + ' ' + '              Saved to ' + cfg['collectors']['common']['destination'] + ' ' + record)
                 else:
                     collection.update_one({"id": json_record['id']}, {"$set": json_record}, upsert=False)
-                    print(str(datetime.datetime.now()) + ' ' + '              Updated to ' + cfg['collectors']['common']['destination'] + ' ' + record)
+                    #print(str(datetime.datetime.now()) + ' ' + '              Updated to ' + cfg['collectors']['common']['destination'] + ' ' + record)
             except:
                 print(str(datetime.datetime.now()) + ' ' + '              Error with ' + cfg['collectors']['common']['destination'] + ' ' + record)
 

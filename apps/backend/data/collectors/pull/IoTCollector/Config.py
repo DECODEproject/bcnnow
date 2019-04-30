@@ -27,6 +27,7 @@ class Config:
                         "community_id": "",
                         "community_seckey": "",
                         "base_url": "https://datastore.decodeproject.eu",
+                        "minutes": 2,
                     }
                 }
             }

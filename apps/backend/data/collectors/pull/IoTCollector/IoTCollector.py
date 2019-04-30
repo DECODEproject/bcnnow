@@ -49,7 +49,7 @@ class IoTCollector:
         return
 
     # This method starts the collection process
-    def start(self, base, community_id, community_seckey):
+    def start(self, base, community_id, community_seckey, minutes):
         print(str(datetime.now()) + ' ' + 'Start collection')
         print(str(datetime.now()) + ' ' + '    Collecting collection for ' + community_id)
         print(str(datetime.now()) + ' ' + '        ' + ' Access to URL: ' + base)
@@ -62,7 +62,7 @@ class IoTCollector:
         rr.community_id = community_id
         # set start time to some point in the past (here we use 1 hour ago but could be
         # whatever interval the collector requires)
-        start_time = datetime.utcnow() - timedelta(hours=1)
+        start_time = datetime.utcnow() - timedelta(minutes=minutes)
         rr.start_time.FromDatetime(start_time)
         # make the first request
         resp = client.read_data(rr)
@@ -141,7 +141,7 @@ class IoTCollector:
     # This method saves a IoT BaseRecord
     def saveData(self, data, community_id):
         total = 0
-        print (data)
+        #print (data)
         item = data.copy()
         del item['sensors']
         for sensor in data['sensors']:
@@ -156,4 +156,5 @@ if __name__ == "__main__":
         base_url = collectorCfg['collectors']['iot'][collector]['base_url']
         community_id = collectorCfg['collectors']['iot'][collector]['community_id']
         community_seckey = collectorCfg['collectors']['iot'][collector]['community_seckey']
-        IoTCollector().start(base_url, community_id, community_seckey)
+        minutes = collectorCfg['collectors']['iot'][collector]['minutes']
+        IoTCollector().start(base_url, community_id, community_seckey, minutes)
