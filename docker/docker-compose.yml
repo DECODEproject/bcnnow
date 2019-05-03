@@ -2,7 +2,7 @@ version: '3.2'
 services:
 
   mongodb:
-    container_name: bcnnow_backend
+    container_name: bcnnow_mongodb
     hostname: mydocker-mongo
     image: mongo:4.0
     # restart: always
@@ -15,7 +15,7 @@ services:
 
   mysqldb:
     image: mysql
-    container_name: bcnnow_backend
+    container_name: bcnnow_mysqlsb
     command: --default-authentication-plugin=mysql_native_password
     # restart: always
     restart: "no"
@@ -30,6 +30,9 @@ services:
     build: backend
     container_name: bcnnow_backend
     restart: "no"
+    environment:
+      - PYTHONPATH=/bcnnow
+      - AUTHLIB_INSECURE_TRANSPORT=1
     ports:
       - "8080:8080"
     depends_on:
