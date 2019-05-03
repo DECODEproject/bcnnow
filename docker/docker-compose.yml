@@ -1,0 +1,42 @@
+version: '3.2'
+services:
+
+  mongodb:
+    container_name: bcnnow_backend
+    hostname: mydocker-mongo
+    image: mongo:4.0
+    # restart: always
+    restart: "no"
+    ports:
+      - "27017:27017"
+      - "28017:28017"
+    volumes:
+      - mongo-data:/data/db
+
+  mysqldb:
+    image: mysql
+    container_name: bcnnow_backend
+    command: --default-authentication-plugin=mysql_native_password
+    # restart: always
+    restart: "no"
+    environment:
+      MYSQL_ROOT_PASSWORD: Capitan2014
+    ports: 
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  backend:
+    build: backend
+    container_name: bcnnow_backend
+    restart: "no"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+      - mysqldb
+
+
+volumes:
+ mongo-data:
+ mysql-data:
