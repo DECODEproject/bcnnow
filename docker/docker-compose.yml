@@ -39,6 +39,17 @@ services:
       - mongodb
       - mysqldb
 
+  frontend:
+    build: frontend
+    container_name: bcnnow_frontend
+    restart: "no"
+    ports:
+      - "8081:80"
+    depends_on:
+      - mongodb
+      - mysqldb
+      - backend
+
 
 volumes:
  mongo-data:

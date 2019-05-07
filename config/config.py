@@ -17,7 +17,7 @@ class Config:
                   }
             },
             "storage": {
-                  "ipaddress": "mongodb",
+                  "ipaddress": "localhost",
                   "port": 27017,
                   "dbname": "decode",
                   "clname": "bcnnow",
