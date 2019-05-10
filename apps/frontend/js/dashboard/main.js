@@ -1699,7 +1699,7 @@ $(document).ready(function() {
             }
             sources += '</div></div>' +
                 '<div class="modal-footer">' +
-                '<button id="' + windex + '-' + sindex + '-edit-close" type="button" class="edit-close btn btn-default" data-dismiss="modal">Edit</button>' +
+                '<button id="' + windex + '-' + sindex + '-edit-close" type="button" class="edit-close btn btn-default" data-dismiss="modal">OK</button>' +
                 '<button class="btn btn-default" data-dismiss="modal">Cancel</button>' +
                 '</div>' +
                 '</div>' +
@@ -1792,7 +1792,7 @@ $(document).ready(function() {
 
                 '</div>' +
                 '<div class="modal-footer">' +
-                '<button id="' + windex + '-btn-new-data-source" type="button" class="btn btn-default new-data-source">Insert</button>' +
+                '<button id="' + windex + '-btn-new-data-source" type="button" class="btn btn-default new-data-source">OK</button>' +
                 '<button class="btn btn-default" data-dismiss="modal">Cancel</button>' +
                 '</div>' +
                 '</div>' +
