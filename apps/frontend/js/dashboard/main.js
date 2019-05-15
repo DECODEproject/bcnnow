@@ -2393,7 +2393,7 @@ $(document).ready(function() {
         };
 
         if (Object.keys(private_dashboards).length > 0){
-            $("#private-dashboards-list").append('<li class="dashboard-page-title" id="private-dashboards-title">Your Dashboards</li>');
+            $("#private-dashboards-list").append('<li class="dashboard-page-title" id="private-dashboards-title">Community Dashboards</li>');
             $("#public-dashboards-title").text('Public Dashboards')
         }
 

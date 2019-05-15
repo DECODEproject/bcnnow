@@ -120,7 +120,7 @@ class OAuthManager(Resource):
             return authorization.create_token_response(request)
         except Exception as e:
             current_app.logger.error("Unexpected error:" + str(sys.exc_info()[0]))
-            current_app.logger.error("Error description: " + e)
+            current_app.logger.error("Error description: " + str(e))
         return
 
     @staticmethod
