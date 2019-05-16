@@ -82,10 +82,13 @@ class IoTCollector:
                 # execute returns a tuple now - not sure what we should do with the err value
                 result, err = zenroom.execute(script.encode(), keys=keys.encode(), data=ev.data, verbosity=1)
                 # we decode the returned data and parse the json
-                msg = json.loads(result.decode("utf-8"))
-                # our actual data packet is passed as another JSON object passed as a field in the main message
-                data = json.loads(msg['data'])
-                total += self.saveData(data, community_id)
+                try:
+                    msg = json.loads(result.decode("utf-8"))
+                    # our actual data packet is passed as another JSON object passed as a field in the main message
+                    data = json.loads(msg['data'])
+                    total += self.saveData(data, community_id)
+                except:
+                    pass
             # if no more results then break the loop
             if resp.next_page_cursor == '':
                 break
@@ -100,6 +103,7 @@ class IoTCollector:
         record = BaseRecord()
         payload = IoTPayload()
         location = LocationRecord()
+        item['recordedAt'] = (datetime.strptime(item['recordedAt'], '%Y-%m-%dT%H:%M:%SZ')+timedelta(hours=2)).strftime('%Y-%m-%dT%H:%M:%SZ')
 
         latitude, longitude = GeneralHelper().default(item['latitude']), GeneralHelper().default(item['longitude'])
         location.setPoint(latitude, longitude)
@@ -127,7 +131,7 @@ class IoTCollector:
         payload.setExposure(GeneralHelper().default(item['exposure']))
 
         record.setId(GeneralHelper().default(item['token']+'.'+item['recordedAt']))
-        record.setSource('iot_'+community_id.replace('-','_')+'__'+item['name'].lower().split()[0])
+        record.setSource(('iot__'+community_id+'__'+item['name'].lower().split()[0]).replace('-','_').replace('.','_'))
         record.setProvider('decidim')
         record.setPublisher('bcnnow')
         record.setType('event')
