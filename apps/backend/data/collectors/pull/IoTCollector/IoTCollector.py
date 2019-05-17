@@ -132,7 +132,7 @@ class IoTCollector:
 
         record.setId(GeneralHelper().default(item['token']+'.'+item['recordedAt']))
         record.setSource(('iot__'+community_id+'__'+item['name'].lower().split()[0]).replace('-','_').replace('.','_'))
-        record.setProvider('decidim')
+        record.setProvider('Smart Citizen')
         record.setPublisher('bcnnow')
         record.setType('event')
         record.setTimestamp(item['recordedAt'])
