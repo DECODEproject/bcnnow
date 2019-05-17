@@ -7,7 +7,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <link rel="icon" href="favicon.png" type="image/x-icon" />
+        <link rel="icon" href="img/favicon.png" type="image/x-icon" />
         <!-- END META SECTION -->
         
         <!-- CSS INCLUDE -->
@@ -17,10 +17,12 @@
         <script type="text/javascript" src="js/plugins/bootstrap/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/plugins/moment.min.js"></script>
         <script type="text/javascript" src="js/dashboard/datasets.js"></script>
-        <script type="text/javascript" src="js/dashboard/dashboards.js"></script>
-        <script type="text/javascript" src="js/dashboard/main.js"></script>
+        <script type="text/javascript" src="js/dashboard/config.js"></script>
         <link rel="stylesheet" href="css/theme-default.css" type="text/css"/>
-        <!-- EOF CSS INCLUDE -->                                    
+        <!-- EOF CSS INCLUDE -->
+
+        <script type="text/javascript" src="js/dashboard/utils.js"></script>
+
     </head>
     <body>
         
@@ -30,15 +32,15 @@
                 <a target="_blank" href="https://decodeproject.eu"><div class="login-logo"></div></a>
                 <div class="login-body">
                     <div class="login-title"><strong>Welcome BCNNower</strong>, please log in</div>
-                    <form id="form-login" action="index.html" class="form-horizontal" method="post" onsubmit="return validateForm()" >
-                        <div class="form-group">
+                    <form id="form-login" action="dashboard.html" class="form-horizontal" method="post" onsubmit="return validateForm()" >
+                        <div class="form-group hidden">
                             <div class="col-md-12">
                                 <input type="text" class="form-control" value="guest" placeholder="Username" id="username"/>
                             </div>
                         </div>
                         <div class="default">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group hidden">
                             <div class="col-md-12">
                                 <input type="password" class="form-control" value="guest" placeholder="Password" id="password"/>
                             </div>
@@ -48,11 +50,11 @@
                         </div>
 
                         <div class="form-group">
-                            <div class="col-md-6">
+                            <div class="col-md-6 hidden">
                                 <a href="#" class="btn btn-link btn-block">Forgot your password?</a>
                             </div>
-                            <div class="col-md-6">
-                                <button class="btn btn-info btn-block">Log In</button>
+                            <div class="col-md-12">
+                                <button class="btn btn-info btn-block">Log in as a guest</button>
                             </div>
                         </div>
                     </form>
@@ -177,22 +179,9 @@
                 // save session id in cookies and redirect 
                 document.cookie = "session-id=" + token + ";"
                 document.cookie = "session-token=" + responseJson['access_token'] + ";"
-                window.location.href = '/index.html';
+                window.location.href = '/dashboard.html';
             }
 
-        }
-
-        function forceLogin(userSessionId) {
-
-            $('#login-loader').show();            
-            
-            setInterval(function() { 
-                var ret = $.ajax({
-                        type: "GET",
-                        dataType: 'json',
-                        url: url_root + "iotlogin/force?session=" + userSessionId
-                    });
-            }, 2000);
         }
 
         var loginTimeout = 600;
