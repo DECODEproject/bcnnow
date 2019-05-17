@@ -905,9 +905,18 @@ $(document).ready(function() {
             });
             widget['sources'][sindex]['markers'].addLayer(layer);
         } else {
-            data.forEach(function(record, index) {
-                widget['sources'][sindex]['markers'].addLayer(record);
-            });
+            if (dataset['name'] == 'smartcitizen' || dataset['name'] == 'bicing' || dataset['name'].startsWith('iot_')) {
+                data.forEach(function(record, index) {
+                                widget['sources'][sindex]['markers'].addLayer(record);
+                });
+            }
+            else {
+                var markers = L.markerClusterGroup();
+                data.forEach(function(record, index) {
+                    markers.addLayer(record);
+                });
+                widget['map'].addLayer(markers);            
+            }
         }
         widget['map'].addLayer(widget['sources'][sindex]['markers']);
     }
