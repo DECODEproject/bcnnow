@@ -1,15 +1,20 @@
 /*********************************************************************************************************************
                                                     GLOBAL VARIABLES 
 **********************************************************************************************************************/
-//var url_api = 'http://93ff8837.ngrok.io/api/v0/'; // Get the endpoint url of BarcelonaNow API
-//var url_api = 'http://172.20.120.110:9530/api/v0/'; // Get the endpoint url of BarcelonaNow API
-//var url_root = 'http://172.20.120.110:9530/';
-var url_api = 'http://127.0.0.1:8080/api/v0/'; // Get the endpoint url of BarcelonaNow API
-var url_root = 'http://127.0.0.1:8080/';
+// Load from config.js
+// $.getScript( "js/dashboard/config.js" )
+//   .done(function( script, textStatus ) {
+//     console.log( textStatus );
+//   })
+//   .fail(function( jqxhr, settings, exception ) {
+//     console.log( exception );
+// });
+
+
 var dashboards = getDashboards(); // Get the available dashboards from MongoDB
 var datasets = getDatasets(); // Get the available datasets from MongoDB
 var private_dashboards = getPrivateDashboards(); // Get the available dashboards from MongoDB
-var page = 'page-6'; // + (Object.keys(dashboards).length - 1); // Get the current dashboard to show (the last by default)
+var page =  Object.keys(private_dashboards).length > 0 ? Object.keys(private_dashboards)[0] : 'page-6'; // + (Object.keys(dashboards).length - 1); // Get the current dashboard to show (the last by default)
 var color_palette = ['#4D9DE0', '#E15554', '#E1BC29', '#3BB273', '#7768AE']; // Default color palette for time series
 var start_date = moment().subtract('days', 6).toISOString();
 var end_date = moment().toISOString();
@@ -292,216 +297,6 @@ $(document).ready(function() {
 
     addEventsExistingDashboardItem();
     addEventsNewDashboardItem();
-
-    /*****************************************************************************************************************
-                                                        UTILS
-    ******************************************************************************************************************/
-
-
-    /*
-        Get cookie value
-    */
-    function getCookie(name) {
-        var nameEQ = name + "=";
-        var ca = document.cookie.split(';');
-        for(var i=0;i < ca.length;i++) {
-            var c = ca[i];
-            while (c.charAt(0)==' ') c = c.substring(1,c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-        }
-        return null;
-    }
-    
-    /*
-        Generate UUID 
-    */
-    function create_UUID(){
-        var dt = new Date().getTime();
-        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = (dt + Math.random()*16)%16 | 0;
-            dt = Math.floor(dt/16);
-            return (c=='x' ? r :(r&0x3|0x8)).toString(16);
-        });
-        return uuid;
-    }
-    
-    /*
-        Checks whether at least one source inside the widget needs to be displayed along time
-        @sources The list of sources inside a widget
-        @return Returns "dynamic" if at least one source needs to be displayed along time, otherwise "static"
-    */
-    function getType(sources) {
-        var value = 'static';
-        sources.forEach(function(source, index) {
-            if (source['granularity'] != 'cumulative') {
-                value = 'dynamic';
-            }
-        });
-        return value;
-    }
-
-    /*
-        Creates a circle icon
-        @id The id to assign to the icon
-        @obsval The intensity value to assign to the icon
-        @dataset The dataset from which getting the intensity color palette
-        @return A circle icon colored on the basis of its intensity value
-    */
-    function getCircleIcon(id, obsval, dataset) {
-        return L.vectorIcon({
-            className: 'circle-icon-' + id,
-            svgHeight: 12,
-            svgWidth: 12,
-            type: 'circle',
-            shape: {
-                r: '5',
-                cx: '6',
-                cy: '6'
-            },
-            style: {
-                fill: getIconColor(dataset, obsval),
-                stroke: '#000',
-                strokeWidth: 1
-            }
-        });
-    }
-
-    /*
-        Creates a rectangle icon
-        @id The id to assign to the icon
-        @widget The widget where the icon will be displayed
-        @return A rectangle icon colored on the basis of the number of rectangle icons currently displayed
-    */
-    function getRectangleIcon(id, widget) {
-        return L.vectorIcon({
-            className: 'circle-icon-' + id,
-            svgHeight: 16,
-            svgWidth: 16,
-            type: 'rect',
-            shape: {
-                x: '1',
-                y: '1',
-                width: '14',
-                height: '14'
-            },
-            style: {
-                fill: color_palette[widget['data'].length],
-                stroke: '#000',
-                strokeWidth: 1
-            }
-        })
-    }
-
-    /*
-        Returns an intensity color
-        @dataset The dataset from which getting the intensity color palette
-        @value The intensity value to assign to the color
-        @return A color on the basis of the intensity value
-    */
-    function getIconColor(dataset, value) {
-        var colors = dataset['colors'];
-        var cuts = dataset['cuts'];
-        var color = '#217C7E';
-
-        cuts.forEach(function(cut, i) {
-            if (cut < value) {
-                color = colors[i];
-            }
-        });
-
-        return color;
-    }
-
-    /*
-        Returns an intensity color
-        @feature The current geographical feature
-        @dataset The dataset from which getting the intensity color palette
-        @obs The set of observation to be displayed
-        @return A style of a geographical area on the basis of the intensity value
-    */
-    function getAreaColor(feature, dataset, obs) {
-        var bordercolor = 'rgba(0,0,0,0)';
-        var fillcolor = 'rgba(0,0,0,0)';
-        obs.forEach(function(element) {
-            if (titleCase(feature.properties.neighbourhood) == titleCase(element.id)) {
-                fillcolor = getIconColor(dataset, element.value);
-                bordercolor = '#000';
-            }
-        });
-
-        return {
-            color: bordercolor,
-            weight: 1,
-            opacity: 1,
-            fillColor: fillcolor,
-            fillOpacity: 0.8
-        }
-    }
-
-    function getPolygonColor(feature, dataset) {
-        var bordercolor = 'rgba(0,0,0,0)';
-        var fillcolor = getIconColor(dataset, feature.properties.value);
-
-        return {
-            color: bordercolor,
-            weight: 1,
-            opacity: 1,
-            fillColor: fillcolor,
-            fillOpacity: 0.8
-        }
-    }
-
-    /*
-        Transforms a text to camel case
-        @str The string to be modified
-        @return The string in camel case format
-    */
-    function titleCase(str) {
-        var splitStr = str.toLowerCase().split(' ');
-        for (var i = 0; i < splitStr.length; i++) {
-            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
-        }
-
-        str = splitStr.join(' ');
-        var splitStr = str.split('\'');
-        for (var i = 0; i < splitStr.length; i++) {
-            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
-        }
-
-        return splitStr.join('\'');
-    }
-
-    /*
-        Returns an intensity color
-        @feature The current geographical feature
-        @dataset The dataset from which getting the intensity color palette
-        @obs The set of observation to be displayed
-        @return The observation associated to the current geographical feature
-    */
-    function getLabel(feature, dataset, obs) {
-        var result = null;
-        obs.forEach(function(element) {
-            if (titleCase(feature.properties.neighbourhood) == titleCase(element.id)) {
-                result = element;
-            }
-        });
-        return result;
-    }
-
-            
-    /*
-        Get cookie value
-    */
-    function getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0;i < ca.length;i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-    }
-    return null;
-}
 
     /*****************************************************************************************************************
                                                         WIDGETS
@@ -1110,9 +905,18 @@ $(document).ready(function() {
             });
             widget['sources'][sindex]['markers'].addLayer(layer);
         } else {
-            data.forEach(function(record, index) {
-                widget['sources'][sindex]['markers'].addLayer(record);
-            });
+            if (dataset['name'] == 'smartcitizen' || dataset['name'] == 'bicing' || dataset['name'].startsWith('iot_')) {
+                data.forEach(function(record, index) {
+                                widget['sources'][sindex]['markers'].addLayer(record);
+                });
+            }
+            else {
+                var markers = L.markerClusterGroup();
+                data.forEach(function(record, index) {
+                    markers.addLayer(record);
+                });
+                widget['map'].addLayer(markers);            
+            }
         }
         widget['map'].addLayer(widget['sources'][sindex]['markers']);
     }
@@ -2598,7 +2402,7 @@ $(document).ready(function() {
         };
 
         if (Object.keys(private_dashboards).length > 0){
-            $("#private-dashboards-list").append('<li class="dashboard-page-title" id="private-dashboards-title">Your Dashboards</li>');
+            $("#private-dashboards-list").append('<li class="dashboard-page-title" id="private-dashboards-title">Community Dashboards</li>');
             $("#public-dashboards-title").text('Public Dashboards')
         }
 

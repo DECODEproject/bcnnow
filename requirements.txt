@@ -15,3 +15,4 @@ qrcode==6.1
 Shapely==1.6.4.post2
 xmltodict==0.12.0
 zenroom==0.1.2
+mysqlclient==1.4.2
