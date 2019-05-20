@@ -49,7 +49,7 @@ class IoTCollector:
         return
 
     # This method starts the collection process
-    def start(self, base, community_id, community_seckey):
+    def start(self, base, community_id, community_seckey, minutes):
         print(str(datetime.now()) + ' ' + 'Start collection')
         print(str(datetime.now()) + ' ' + '    Collecting collection for ' + community_id)
         print(str(datetime.now()) + ' ' + '        ' + ' Access to URL: ' + base)
@@ -62,7 +62,7 @@ class IoTCollector:
         rr.community_id = community_id
         # set start time to some point in the past (here we use 1 hour ago but could be
         # whatever interval the collector requires)
-        start_time = datetime.utcnow() - timedelta(hours=1)
+        start_time = datetime.utcnow() - timedelta(minutes=minutes)
         rr.start_time.FromDatetime(start_time)
         # make the first request
         resp = client.read_data(rr)
@@ -82,10 +82,13 @@ class IoTCollector:
                 # execute returns a tuple now - not sure what we should do with the err value
                 result, err = zenroom.execute(script.encode(), keys=keys.encode(), data=ev.data, verbosity=1)
                 # we decode the returned data and parse the json
-                msg = json.loads(result.decode("utf-8"))
-                # our actual data packet is passed as another JSON object passed as a field in the main message
-                data = json.loads(msg['data'])
-                total += self.saveData(data, community_id)
+                try:
+                    msg = json.loads(result.decode("utf-8"))
+                    # our actual data packet is passed as another JSON object passed as a field in the main message
+                    data = json.loads(msg['data'])
+                    total += self.saveData(data, community_id)
+                except:
+                    pass
             # if no more results then break the loop
             if resp.next_page_cursor == '':
                 break
@@ -100,6 +103,7 @@ class IoTCollector:
         record = BaseRecord()
         payload = IoTPayload()
         location = LocationRecord()
+        item['recordedAt'] = (datetime.strptime(item['recordedAt'], '%Y-%m-%dT%H:%M:%SZ')+timedelta(hours=2)).strftime('%Y-%m-%dT%H:%M:%SZ')
 
         latitude, longitude = GeneralHelper().default(item['latitude']), GeneralHelper().default(item['longitude'])
         location.setPoint(latitude, longitude)
@@ -127,7 +131,7 @@ class IoTCollector:
         payload.setExposure(GeneralHelper().default(item['exposure']))
 
         record.setId(GeneralHelper().default(item['token']+'.'+item['recordedAt']))
-        record.setSource('iot_'+community_id.replace('-','_')+'__'+item['name'].lower().split()[0])
+        record.setSource(('iot__'+community_id+'__'+item['name'].lower().split()[0]).replace('-','_').replace('.','_'))
         record.setProvider('decidim')
         record.setPublisher('bcnnow')
         record.setType('event')
@@ -141,7 +145,7 @@ class IoTCollector:
     # This method saves a IoT BaseRecord
     def saveData(self, data, community_id):
         total = 0
-        print (data)
+        #print (data)
         item = data.copy()
         del item['sensors']
         for sensor in data['sensors']:
@@ -156,4 +160,5 @@ if __name__ == "__main__":
         base_url = collectorCfg['collectors']['iot'][collector]['base_url']
         community_id = collectorCfg['collectors']['iot'][collector]['community_id']
         community_seckey = collectorCfg['collectors']['iot'][collector]['community_seckey']
-        IoTCollector().start(base_url, community_id, community_seckey)
+        minutes = collectorCfg['collectors']['iot'][collector]['minutes']
+        IoTCollector().start(base_url, community_id, community_seckey, minutes)

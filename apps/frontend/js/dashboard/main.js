@@ -905,9 +905,18 @@ $(document).ready(function() {
             });
             widget['sources'][sindex]['markers'].addLayer(layer);
         } else {
-            data.forEach(function(record, index) {
-                widget['sources'][sindex]['markers'].addLayer(record);
-            });
+            if (dataset['name'] == 'smartcitizen' || dataset['name'] == 'bicing' || dataset['name'].startsWith('iot_')) {
+                data.forEach(function(record, index) {
+                                widget['sources'][sindex]['markers'].addLayer(record);
+                });
+            }
+            else {
+                var markers = L.markerClusterGroup();
+                data.forEach(function(record, index) {
+                    markers.addLayer(record);
+                });
+                widget['map'].addLayer(markers);            
+            }
         }
         widget['map'].addLayer(widget['sources'][sindex]['markers']);
     }
@@ -1494,7 +1503,7 @@ $(document).ready(function() {
             }
             sources += '</div></div>' +
                 '<div class="modal-footer">' +
-                '<button id="' + windex + '-' + sindex + '-edit-close" type="button" class="edit-close btn btn-default" data-dismiss="modal">Edit</button>' +
+                '<button id="' + windex + '-' + sindex + '-edit-close" type="button" class="edit-close btn btn-default" data-dismiss="modal">OK</button>' +
                 '<button class="btn btn-default" data-dismiss="modal">Cancel</button>' +
                 '</div>' +
                 '</div>' +
@@ -1587,7 +1596,7 @@ $(document).ready(function() {
 
                 '</div>' +
                 '<div class="modal-footer">' +
-                '<button id="' + windex + '-btn-new-data-source" type="button" class="btn btn-default new-data-source">Insert</button>' +
+                '<button id="' + windex + '-btn-new-data-source" type="button" class="btn btn-default new-data-source">OK</button>' +
                 '<button class="btn btn-default" data-dismiss="modal">Cancel</button>' +
                 '</div>' +
                 '</div>' +
