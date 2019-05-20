@@ -14,7 +14,7 @@
 var dashboards = getDashboards(); // Get the available dashboards from MongoDB
 var datasets = getDatasets(); // Get the available datasets from MongoDB
 var private_dashboards = getPrivateDashboards(); // Get the available dashboards from MongoDB
-var page = 'page-6'; // + (Object.keys(dashboards).length - 1); // Get the current dashboard to show (the last by default)
+var page =  Object.keys(private_dashboards).length > 0 ? Object.keys(private_dashboards)[0] : 'page-6'; // + (Object.keys(dashboards).length - 1); // Get the current dashboard to show (the last by default)
 var color_palette = ['#4D9DE0', '#E15554', '#E1BC29', '#3BB273', '#7768AE']; // Default color palette for time series
 var start_date = moment().subtract('days', 6).toISOString();
 var end_date = moment().toISOString();
