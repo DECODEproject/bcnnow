@@ -2354,6 +2354,7 @@ $(document).ready(function() {
     $("#save-dashboard-button").on("click",function(){
         postDashboardToServer();
     });
+
     function postDashboardToServer(dashboard) {
         var seen = [];
         var ret = $.ajax({
@@ -2365,15 +2366,16 @@ $(document).ready(function() {
             url: url_root + "api/v0/post_new_dashboard",
             data: JSON.stringify(dashboards[page], function(key, val) {
                 if (key.startsWith("_")) {
-                        return;
+                    return;
                 }
                 if (val != null && typeof val == "object") {
                     if (seen.indexOf(val) >= 0) {
                         return;
                     }
                     seen.push(val);
-                 }
-                 return val;
+                }
+
+                return val;
              }),
             beforeSend: function (xhr) {
                 // authenticate the call 
@@ -2391,6 +2393,124 @@ $(document).ready(function() {
         // Reload page
         location.reload();
     }
+
+    $("#export-dashboard-button").on("click",function(){
+
+        var seen = [];
+        var dashboardsJson = dashboards[page];
+        // remove dashboard data
+        for (widget in dashboardsJson['widgets']) {
+            for (source in dashboardsJson['widgets'][widget]['sources']) {
+                dashboardsJson['widgets'][widget]['sources'][source]['dataset'] = null;
+            }
+        }
+
+        var stringValue = JSON.stringify(dashboardsJson, function(key, val) {
+            
+            if (key.startsWith("_")) {
+                return "";
+            }
+            if (val != null && typeof val == "object") {
+                if (seen.indexOf(val) >= 0) {
+                    return "";
+                }
+                seen.push(val);
+            }
+
+            return val;
+        })
+    
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href",     "data:text/json;charset=utf-8," + stringValue);
+        downloadAnchorNode.setAttribute("download", "dashboard.json");
+        document.body.appendChild(downloadAnchorNode); // required for firefox
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    });
+
+    $("#export-dashboard-button").on("click",function(){
+
+        var seen = [];
+        var dashboardsJson = dashboards[page];
+        // remove dashboard data
+        for (widget in dashboardsJson['widgets']) {
+            for (source in dashboardsJson['widgets'][widget]['sources']) {
+                dashboardsJson['widgets'][widget]['sources'][source]['dataset'] = null;
+            }
+        }
+
+        var stringValue = JSON.stringify(dashboardsJson, function(key, val) {
+            
+            if (key.startsWith("_")) {
+                return "";
+            }
+            if (val != null && typeof val == "object") {
+                if (seen.indexOf(val) >= 0) {
+                    return "";
+                }
+                seen.push(val);
+            }
+
+            return val;
+        })
+    
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href",     "data:text/json;charset=utf-8," + stringValue);
+        downloadAnchorNode.setAttribute("download", "dashboard.json");
+        document.body.appendChild(downloadAnchorNode); // required for firefox
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    });
+
+    $('#import-dashboard').click(function() { 
+        $('#dashboard-input-file').trigger('click'); 
+    });
+
+    $('#dashboard-input-file').change(function(e) { // will trigger each time
+        e.preventDefault();
+
+        var file = e.target.files[0];
+        if (file.type == "application/json") {
+            var reader = new FileReader();
+                reader.onload = function(event) {
+                    var json = JSON.parse(reader.result);
+                    var newPropertyNum = 1;
+                    while ( dashboards.hasOwnProperty("page-" + newPropertyNum) ) {
+                        newPropertyNum++;
+                    } 
+
+                    dashboards["page-" + newPropertyNum] = json;
+                    clearSidebar();
+                    loadSidebar();
+
+                    addEventsExistingDashboardItem();
+                    addEventsNewDashboardItem();
+            };
+            reader.readAsText(file);
+        }
+    });
+    
+    // $("#import-dashboard").on("click",function(e){
+    //     e.preventDefault();
+
+    //     var numPages = dashboards.length;
+    //     dashboards["page-" + numPages] = {
+    //         "name": "Create New Widget",
+    //         "widgets": [{
+    //             "id": "widget-6656",
+    //             "title": "New widget",
+    //             "authors": ["carmen"],
+    //             "modified": "2018-01-12T00:00:00Z",
+    //             "sources": [],
+    //             "timeinterval": null,
+    //             "map": null,
+    //             "highmarkericon": [],
+    //             "refreshIntervalId": null,
+    //             "highmarker": [],
+    //             "data": []
+    //         }]
+    //     }
+    // });
 
     /*
         Load Sidebar Lists 
@@ -2413,10 +2533,17 @@ $(document).ready(function() {
 
     }
 
+    function clearSidebar() {
+        $("#public-dashboards-list").html('');
+    }
+
     /*
         Loads the current dashboard
     */
     function loadDashboard() {
+
+        $("#dashboard-input-file").css('opacity','0');
+
         var new_shared_widget = decodeURIComponent(window.location.href).split('widget=')[1];
         var new_shared_dashboard = decodeURIComponent(window.location.href).split('widgets=')[1];
 

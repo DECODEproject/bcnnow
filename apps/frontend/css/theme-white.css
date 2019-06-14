@@ -263,13 +263,14 @@ body.page-container-boxed .page-container {
   border-radius: 0px;
 }
 /* END PAGE CONTAINER */
-.add-widget-button {
+.add-widget-button, .export-dashboard-button {
   float: left;
   width: 100%;
   padding-left: 25px;
+  padding-bottom: 5px;
   background: #e9ebee;
 }
-.save-dashboard-button {
+.save-dashboard-button .export-dashboard-button {
   float: right;
   width: 100%;
   padding-left: 25px;
