@@ -2422,41 +2422,8 @@ $(document).ready(function() {
     
         var downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute("href",     "data:text/json;charset=utf-8," + stringValue);
-        downloadAnchorNode.setAttribute("download", "dashboard.json");
-        document.body.appendChild(downloadAnchorNode); // required for firefox
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
-    });
-
-    $("#export-dashboard-button").on("click",function(){
-
-        var seen = [];
-        var dashboardsJson = dashboards[page];
-        // remove dashboard data
-        for (widget in dashboardsJson['widgets']) {
-            for (source in dashboardsJson['widgets'][widget]['sources']) {
-                dashboardsJson['widgets'][widget]['sources'][source]['dataset'] = null;
-            }
-        }
-
-        var stringValue = JSON.stringify(dashboardsJson, function(key, val) {
-            
-            if (key.startsWith("_")) {
-                return "";
-            }
-            if (val != null && typeof val == "object") {
-                if (seen.indexOf(val) >= 0) {
-                    return "";
-                }
-                seen.push(val);
-            }
-
-            return val;
-        })
-    
-        var downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute("href",     "data:text/json;charset=utf-8," + stringValue);
-        downloadAnchorNode.setAttribute("download", "dashboard.json");
+        var jsonFilename =  dashboardsJson['name'].replace(/\s/g,'') + ".json";
+        downloadAnchorNode.setAttribute("download", jsonFilename);
         document.body.appendChild(downloadAnchorNode); // required for firefox
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
