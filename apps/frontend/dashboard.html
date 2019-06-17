@@ -92,6 +92,11 @@
                     <li id="page-0" class="editor dashboard-page">
                         Create Dashboard
                     </li>
+                    <li id="page-import" class="dashboard-page-default">
+                        <input type="file" id="dashboard-input-file" style="display:none" />
+                        <a href="#" id="import-dashboard">Import Dashboard</a> 
+                    </li>
+
 
                     <div id="private-dashboards-list">
                     </div>
@@ -160,7 +165,12 @@
                 <!-- <div class="save-dashboard-button">
                     <button id="save-dashboard-button" class="btn btn-default btn-lg mb-control-close">Save dashboard</button>
                 </div> -->
-                <!-- SAVE DASHBOARD BUTTON -->     
+                <!-- SAVE DASHBOARD BUTTON -->
+                <!-- EXPORT DASHBOARD BUTTON -->
+                <div class="export-dashboard-button">
+                    <button id="export-dashboard-button" class="btn btn-default btn-lg mb-control-close">Export dashboard</button>
+                </div>
+                <!-- EXPORT DASHBOARD BUTTON -->      
 
                 <!-- PAGE CONTENT WRAPPER -->
                 <div id="sortable" class="page-content-wrap">
