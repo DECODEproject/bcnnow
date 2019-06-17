@@ -2447,8 +2447,12 @@ $(document).ready(function() {
                     } 
 
                     dashboards["page-" + newPropertyNum] = json;
+                    page = "page-" + newPropertyNum;
                     clearSidebar();
                     loadSidebar();
+                    
+                    displayWidgets(dashboards[page]['widgets']);
+                    $('#' + page).addClass('active');
 
                     addEventsExistingDashboardItem();
                     addEventsNewDashboardItem();
@@ -2457,28 +2461,6 @@ $(document).ready(function() {
         }
     });
     
-    // $("#import-dashboard").on("click",function(e){
-    //     e.preventDefault();
-
-    //     var numPages = dashboards.length;
-    //     dashboards["page-" + numPages] = {
-    //         "name": "Create New Widget",
-    //         "widgets": [{
-    //             "id": "widget-6656",
-    //             "title": "New widget",
-    //             "authors": ["carmen"],
-    //             "modified": "2018-01-12T00:00:00Z",
-    //             "sources": [],
-    //             "timeinterval": null,
-    //             "map": null,
-    //             "highmarkericon": [],
-    //             "refreshIntervalId": null,
-    //             "highmarker": [],
-    //             "data": []
-    //         }]
-    //     }
-    // });
-
     /*
         Load Sidebar Lists 
     */
