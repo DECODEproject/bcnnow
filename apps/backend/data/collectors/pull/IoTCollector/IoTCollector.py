@@ -103,7 +103,7 @@ class IoTCollector:
         record = BaseRecord()
         payload = IoTPayload()
         location = LocationRecord()
-        item['recordedAt'] = (datetime.strptime(item['recordedAt'], '%Y-%m-%dT%H:%M:%SZ')+timedelta(hours=2)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        item['recordedAt'] = (datetime.strptime(item['recordedAt'], '%Y-%m-%dT%H:%M:%SZ')+timedelta(hours=2)).strftime('%Y-%m-%dT%H:%M:%S')
 
         latitude, longitude = GeneralHelper().default(item['latitude']), GeneralHelper().default(item['longitude'])
         location.setPoint(latitude, longitude)
@@ -113,7 +113,7 @@ class IoTCollector:
         location.setDistrict(GeneralHelper().default(district))
         location.setNeighbourhood(GeneralHelper().default(neighbourhood))
 
-        payload.setId(GeneralHelper().default(item['label'].replace(' ','-')))
+        payload.setId(GeneralHelper().default(item['label'].replace('\'','-').replace(' ','-')))
         payload.setType(GeneralHelper().default(item['type']))
         payload.setName(GeneralHelper().default(item['name']))
         payload.setDescription(GeneralHelper().default(item['description']))
@@ -130,7 +130,7 @@ class IoTCollector:
         payload.setRecordedAt(GeneralHelper().default(item['recordedAt']))
         payload.setExposure(GeneralHelper().default(item['exposure']))
 
-        record.setId(GeneralHelper().default(item['label'].replace(' ','-')+'.'+item['recordedAt']))
+        record.setId(GeneralHelper().default(item['label'].replace('\'','-').replace(' ','-')+'.'+item['recordedAt']))
         record.setSource(('iot__'+community_id+'__'+item['name'].lower().split()[0]).replace('-','_').replace('.','_'))
         record.setProvider('smartcitizen')
         record.setPublisher('bcnnow')
@@ -149,7 +149,7 @@ class IoTCollector:
         item = data.copy()
         del item['sensors']
         for sensor in data['sensors']:
-            StorageHelper().store(self.buildRecord({**item, **sensor},community_id).toJSON())
+            if (sensor['description'] != 'Humidity'): StorageHelper().store(self.buildRecord({**item, **sensor},community_id).toJSON())
             total +=1 
         return total
 
