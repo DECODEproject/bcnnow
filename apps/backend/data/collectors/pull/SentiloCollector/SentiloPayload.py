@@ -3,11 +3,15 @@ import json
 class SentiloPayload:
 
     def __init__(self):
+        self.id = ''
         self.value = 0
         self.emplacament = ''
         self.type = ''
         self.unit = ''
         self.description = ''
+
+    def setId(self, id):
+        self.id = id
 
     def setValue(self, value):
         self.value = value
@@ -39,8 +43,12 @@ class SentiloPayload:
     def getValue(self):
         return self.value
 
+    def getId(self):
+        return self.id
+
     def toJSON(self):
         return '{'    +\
+                  '"id": ' + json.dumps(self.getId()) + ',' +\
                   '"value": ' + json.dumps(self.getValue()) + ',' +\
                   '"emplacament": ' + json.dumps(self.getEmplacament()) + ',' +\
                   '"description": ' + json.dumps(self.getDescription()) + ',' +\
