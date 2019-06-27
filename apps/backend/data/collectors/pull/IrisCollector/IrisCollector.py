@@ -14,6 +14,7 @@ from apps.backend.data.helpers.GeneralHelper import GeneralHelper
 from apps.backend.data.helpers.StorageHelper import StorageHelper
 
 import requests
+import datetime
 
 class IrisCollector:
     def __init__(self, ):
@@ -21,21 +22,21 @@ class IrisCollector:
 
     # Start reader process
     def start(self, base, resourceIDs=[]):
-        # print(str(datetime.datetime.now()) + ' ' + 'Start collection')
+        print(str(datetime.datetime.now()) + ' ' + 'Start collection')
         for rindex, rID in enumerate(resourceIDs):
-            # print(str(datetime.datetime.now()) + ' ' + '    Collecting data for ' + rID)
+            print(str(datetime.datetime.now()) + ' ' + '    Collecting data for ' + rID)
             url = base + collectorCfg['collectors']['odi']['iris']['api_base_url'] + str(rID) + '&offset=' + str(0)
             flag = True
             total = 0
             while flag:
-                # print(str(datetime.datetime.now()) + ' ' + '        ' + ' Access to URL: ' + url)
+                print(str(datetime.datetime.now()) + ' ' + '        ' + ' Access to URL: ' + url)
                 data = self.sendRequest(url)
                 self.saveData(data)
                 url = base + data['result']['_links']['next']
                 flag = len(data['result']['records']) > 0
                 total += len(data['result']['records'])
-                # print(str(datetime.datetime.now()) + ' ' + '         Total: ' + str("{0:0>9}".format(total)))
-                # print(str(datetime.datetime.now()) + ' ' + 'End collection')
+                print(str(datetime.datetime.now()) + ' ' + '         Total: ' + str("{0:0>9}".format(total)))
+                print(str(datetime.datetime.now()) + ' ' + 'End collection')
 
     # Send request to get data
     def sendRequest(self, url):
@@ -47,7 +48,7 @@ class IrisCollector:
                 data = response.json()
                 return data
             except:
-                # print(str(datetime.datetime.now()) + ' ' + '         Reconnecting...')
+                print(str(datetime.datetime.now()) + ' ' + '         Reconnecting...')
                 flag = True
 
     # Build a record in the standard format

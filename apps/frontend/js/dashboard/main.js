@@ -16,8 +16,8 @@ var datasets = getDatasets(); // Get the available datasets from MongoDB
 var private_dashboards = getPrivateDashboards(); // Get the available dashboards from MongoDB
 var page =  Object.keys(private_dashboards).length > 0 ? Object.keys(private_dashboards)[0] : 'page-6'; // + (Object.keys(dashboards).length - 1); // Get the current dashboard to show (the last by default)
 var color_palette = ['#4D9DE0', '#E15554', '#E1BC29', '#3BB273', '#7768AE']; // Default color palette for time series
-var start_date = moment().subtract('days', 6).toISOString();
-var end_date = moment().toISOString();
+var start_date = moment().subtract('days', 6).format();
+var end_date = moment().format();
 
 /********************************************************************************************************************
                                                     SHARE
@@ -522,7 +522,9 @@ $(document).ready(function() {
         var operators = (widget['sources'][sindex]['aggregation'] != 'none') ? 'aggregators=avg@payload.' + dataset['targetvalue'] + '&' : '';
         var sort = 'sort=a@timestamp' + '&';
         var is_observation = 'isObservation' + '&';
-        var conditions = '$timestamp=gte@' + widget['sources'][sindex]['start'] + ',lt@' + widget['sources'][sindex]['end'] + '&';
+        var conditions = '$timestamp=gte@' + moment().advancedTime(widget['sources'][sindex]['start']).format().replace('Z', '')
+ + ',lt@' + moment().advancedTime(widget['sources'][sindex]['end']).format().replace('Z', '')
+ + '&';
         $('#' + widget['id'] + '-loader').show();
         console.log(url_api + dataset['name'] + '?' + operators  + aggregation + parameters + sort + is_observation + conditions + filters)
         $.ajax({
@@ -552,7 +554,9 @@ $(document).ready(function() {
         /*var operators = (widget['sources'][sindex]['aggregation'] != 'none') ? 'aggregators=avg@payload.' + dataset['targetvalue'] + '&' : '';
         var sort = 'sort=a@timestamp' + '&';
         var is_observation = 'isObservation' + '&';*/
-        var conditions = '$timestamp=gte@' + widget['sources'][sindex]['start'] + ',lt@' + widget['sources'][sindex]['end'] + '&';
+        var conditions = '$timestamp=gte@' + moment().advancedTime(widget['sources'][sindex]['start']).format().replace('Z', '')
+ + ',lt@' + moment().advancedTime(widget['sources'][sindex]['end']).format().replace('Z', '')
+ + '&';
         $('#' + widget['id'] + '-loader').show();
         $.ajax({
             url: url_api + dataset['name'] + '?' + aggregation + conditions,
@@ -581,7 +585,9 @@ $(document).ready(function() {
         var operators = (widget['sources'][sindex]['aggregation'] != 'none') ? 'aggregators=avg@payload.' + dataset['targetvalue'] + '&' : '';
         var sort = 'sort=a@timestamp' + '&';
         var is_observation = 'isObservation' + '&';*/
-        var conditions = 'timestamp=gte@' + widget['sources'][sindex]['start'] + ',lt@' + widget['sources'][sindex]['end'] + '&';
+        var conditions = 'timestamp=gte@' + moment().advancedTime(widget['sources'][sindex]['start']).format().replace('Z', '')
+ + ',lt@' + moment().advancedTime(widget['sources'][sindex]['end']).format().replace('Z', '')
+ + '&';
         $('#' + widget['id'] + '-loader').show();
         $.ajax({
             url: url_api + dataset['name'] + '?' + conditions, //operators + aggregation + parameters + sort + is_observation + conditions, // + filters,
@@ -649,8 +655,8 @@ $(document).ready(function() {
                     var categories = '';
                     for (var k in element.doc[0].categories) categories += element.doc[0].categories[k] + '; ';
                     $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Name:</span> ' + element.doc[0].name + '</div>');
-                    $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Start Date:</span> ' + moment(element.doc[0].startdate).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
-                    $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">End Date:</span> ' + moment(element.doc[0].enddate).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
+                    $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Start Date:</span> ' + moment().advancedTime(element.doc[0].startdate).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
+                    $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">End Date:</span> ' + moment().advancedTime(element.doc[0].enddate).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
                     $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Categories:</span> ' + categories + '</div>');
                 } else {
                     $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Number of events:</span> ' + element.doc[0].count + '</div>');
@@ -680,8 +686,8 @@ $(document).ready(function() {
                     if (dataset['name'] == 'pam_meeting') $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Title:</span> <a target="_blank" href="https://www.decidim.barcelona/processes/pam/f/11/meetings/' + id + '">' + element.doc[0].title + '</a></div>');
                     else if (dataset['name'] == 'dddc_meeting') $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Title:</span> <a target="_blank" href="https://dddc.decodeproject.eu/processes/main/f/4/meetings/' + id + '">' + element.doc[0].title + '</a></div>');
                     $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Address:</span> ' + element.doc[0].address + '</div>');
-                    $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Start Date:</span> ' + moment(element.doc[0].startTime).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
-                    $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">End Date:</span> ' + moment(element.doc[0].endTime).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
+                    $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Start Date:</span> ' + moment().advancedTime(element.doc[0].startTime).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
+                    $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">End Date:</span> ' + moment().advancedTime(element.doc[0].endTime).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
                     if (element.doc[0].attendeeCount !== "") $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Attendees:</span> ' + element.doc[0].attendeeCount + '</div>');
                     if (dataset['name'] == 'pam_meeting') {
                         $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name">');
@@ -704,15 +710,15 @@ $(document).ready(function() {
                     $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Detail:</span> ' + element.doc[0].detail + '</div>');
                     $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Support:</span> ' + element.doc[0].support + '</div>');
                     $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Channel:</span> ' + element.doc[0].channel + '</div>');
-                    $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Opening Date:</span> ' + moment(element.doc[0].startdate).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
-                    $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Closing Date:</span> ' + moment(element.doc[0].enddate).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
+                    $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Opening Date:</span> ' + moment().advancedTime(element.doc[0].startdate).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
+                    $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Closing Date:</span> ' + moment().advancedTime(element.doc[0].enddate).format('dddd, MMMM Do YYYY, h:mm:ss a') + '</div>');
                 } else {
                     $("#" + widget['id'] + "-dashboard-line").append('<div class="event-name"> <span class="event-bold">Number of iris:</span> ' + element.doc[0].count + '</div>');
                 }
             });
         }
 
-        if (dataset['name'] == 'smartcitizen' || dataset['name'] == 'bicing' || dataset['name'].startsWith('iot_')) {
+        if (dataset['name'] == 'sentilo' || dataset['name'] == 'smartcitizen' || dataset['name'] == 'bicing' || dataset['name'].startsWith('iot_')) {
             var flag = false;
             widget['data'].forEach(function(record, index) {
                 if (record['name'] == 'Sensor ' + markerid)
@@ -818,7 +824,7 @@ $(document).ready(function() {
             widget["highmarker"].push(e.target);
             widget["highmarkericon"].push(e.target.options.icon);
 
-            if (dataset['name'] == 'smartcitizen' || dataset['name'] == 'bicing' || dataset['name'].startsWith('iot_')) {
+            if (dataset['name'] == 'sentilo' || dataset['name'] == 'smartcitizen' || dataset['name'] == 'bicing' || dataset['name'].startsWith('iot_')) {
                 $('.' + 'circle-icon-' + windex + '-' + sindex + '-' + markerid).empty();
                 e.target.setIcon(getRectangleIcon(windex + '-' + sindex + '-' + markerid, widget));
                 $('.' + 'circle-icon-' + windex + '-' + sindex + '-' + markerid).empty();
@@ -833,17 +839,18 @@ $(document).ready(function() {
             var agg = (widget['sources'][sindex]['aggregation'] != 'none') ? "avg" : 'value';
             var filters = (widget['sources'][sindex]['keyword'] != '') ? "$" + dataset['filter_field'] + "=[" + query + "]" : '';
             var parameters = "fields=" + dataset['details'] + "id@id,value@payload." + datasets[widget['sources'][sindex]['id']]['targetvalue'] + ",point@location.point.coordinates" + "&";
-            var current = (widget['sources'][sindex]['aggregation'] != 'none' && (dataset['name'] == 'asia' || dataset['name'] == 'iris' || dataset['name'] == 'pointsinterest')) ? "&$timestamp=gte@" + moment(widget['sources'][sindex]['dataset'].records[(val - 1) % (max)]["_id"].replace(' ', 'T') + 'Z').set({
+            var current = (widget['sources'][sindex]['aggregation'] != 'none' && (dataset['name'] == 'asia' || dataset['name'] == 'iris' || dataset['name'] == 'pointsinterest')) ? "&$timestamp=gte@" + moment().advancedTime(widget['sources'][sindex]['dataset'].records[(val - 1) % (max)]["_id"].replace(' ', 'T')).set({
                 hour: 0,
                 minute: 0,
                 second: 0,
                 millisecond: 0
-            }).toISOString() + ",lt@" + moment(widget['sources'][sindex]['dataset'].records[(val - 1) % (max)]["_id"].replace(' ', 'T') + 'Z').add(1, "days").set({
+            }).format() + ",lt@" + moment().advancedTime(widget['sources'][sindex]['dataset'].records[(val - 1) % (max)]["_id"].replace(' ', 'T') + 'Z').add(1, "days").set({
                 hour: 0,
                 minute: 0,
                 second: 0,
                 millisecond: 0
-            }).toISOString() : "&$timestamp=gte@" + widget['sources'][sindex]['start'] + ",lt@" + widget['sources'][sindex]['end'];
+            }).format() : "&$timestamp=gte@" + moment().advancedTime(widget['sources'][sindex]['start']).format().replace('Z', '')
+ + ",lt@" + moment().advancedTime(widget['sources'][sindex]['end']).format().replace('Z', '');
             var sort = "sort=a@timestamp" + "&";
             var is_observation = "isObservation" + "&";
             $.ajax({
@@ -905,7 +912,7 @@ $(document).ready(function() {
             });
             widget['sources'][sindex]['markers'].addLayer(layer);
         } else {
-            if (dataset['name'] == 'smartcitizen' || dataset['name'] == 'bicing' || dataset['name'].startsWith('iot_')) {
+            if (dataset['name'] == 'sentilo' || dataset['name'] == 'smartcitizen' || dataset['name'] == 'bicing' || dataset['name'].startsWith('iot_')) {
                 data.forEach(function(record, index) {
                                 widget['sources'][sindex]['markers'].addLayer(record);
                 });
@@ -1049,7 +1056,7 @@ $(document).ready(function() {
 
         $("#" + widget['id'] + "-slider").slider("value", (val) % (max + 1));
         if (widget['sources'][sindex]['dataset'].records.length > 0) {
-            $("#" + widget['id'] + "-slider-value").html("<span  class='tip'>" + moment(widget['sources'][sindex]['dataset'].records[(val - 1) % (max)]["_id"]).format('dddd, MMMM Do YYYY, h:mm:ss a') + "</span>");
+            $("#" + widget['id'] + "-slider-value").html("<span  class='tip'>" + moment().advancedTime(widget['sources'][sindex]['dataset'].records[(val - 1) % (max)]["_id"]).format('dddd, MMMM Do YYYY, h:mm:ss a') + "</span>");
         }
 
         obs = [];
@@ -1385,8 +1392,8 @@ $(document).ready(function() {
 
             sources += '<div  id="' + windex + '-' + sindex + '-source-item" class="row source-item">' +
                 '<div class="high-name"><strong>' + datasets[source['id']]['description'] + '</strong></div> ' +
-                '<div class="high-name"> from <strong>' + moment(source['start']).format('MMMM Do YYYY') + '</strong></div>' +
-                '<div class="high-name"> to <strong>' + moment(source['end']).format('MMMM Do YYYY') + '</strong></div> '
+                '<div class="high-name"> from <strong>' + moment().advancedTime(source['start']).format('MMMM Do YYYY') + '</strong></div>' +
+                '<div class="high-name"> to <strong>' + moment().advancedTime(source['end']).format('MMMM Do YYYY') + '</strong></div> '
             if (widget.type == "map") {
                 if (source['keyword'] != '') sources += '<div class="high-name"> by keyword <strong>' + source['keyword'] + '</strong></div> ';
                 if (source['aggregation'] != 'none') sources += ' <div class="high-name"> by <strong>' + source['aggregation'] + '</strong></div> ';
@@ -1428,7 +1435,12 @@ $(document).ready(function() {
                     '<select class="form-control" id="' + windex + '-' + sindex + '-edit-granularity">' +
                     '<option value="cumulative">Cumulative</option>' +
                     '<option value="dynamic">Dynamic</option>' +
-                    '</select><br/>';
+                    '</select><br/>'+ 
+                    '<label for="type">Select marker type:</label>' +
+                    '<select class="form-control" id="' + windex + '-' + sindex + '-edit-marker">' +
+                    '<option value="points-map">points-map</option>' +
+                    '<option value="heat-map">heat-map</option>' +
+                    '</select><br/>' ;
                 /*sources += '<label for="type">Select visualization type:</label>' +
                     '<select class="form-control" id="' + windex + '-' + sindex + '-edit-type">';
                 jQuery.each(datasets[source['id']]['allowed_maps'], function(vindex, model) {
@@ -1739,7 +1751,7 @@ $(document).ready(function() {
             $("#" + windex + "-plus-scale").empty();
             if (dataset != null) {
                 $('#' + widget['id'] + ' #' + windex + '-plus-info').html(
-                    '<div class="option-value"> The data is available from ' + moment(dataset['start']).format('MMMM Do YYYY, h:mm:ss a') + ' to ' + (dataset['end'] == null ? 'two days ago' : moment(dataset['end']).format('MMMM Do YYYY, h:mm:ss a')) + ' </div>' +
+                    '<div class="option-value"> The data is available from ' + moment().advancedTime(dataset['start']).format('MMMM Do YYYY, h:mm:ss a') + ' to ' + (dataset['end'] == null ? 'two days ago' : moment().advancedTime(dataset['end']).format('MMMM Do YYYY, h:mm:ss a')) + ' </div>' +
                     '<div class="option-value"> The data is available in ' + dataset['language'] + '. </div>'
                 );
                 jQuery.each(dataset['allowed_maps'], function(vindex, model) {
@@ -1760,8 +1772,8 @@ $(document).ready(function() {
                 for (scale of["linear", "sqrt"]) {
                     $("#" + windex + "-plus-scale").append('<option value="' + scale + '" >' + scale + '</option>');
                 }
-                start_date = (dataset.start === null) ? moment().subtract(6, 'days').toISOString() : moment(dataset.start).toISOString();
-                end_date = (dataset.end === null) ? moment().toISOString() : moment(dataset.end).toISOString();
+                start_date = (dataset.start === null) ? moment().subtract(6, 'days').format() : moment().advancedTime(dataset.start).format().replace('Z', '');
+                end_date = (dataset.end === null) ? moment().format() : moment().advancedTime(dataset.end).format().replace('Z', '');
                 $("#" + windex + "-plus-time-interval").daterangepicker({
                     ranges: {
                         'Today': [moment(), moment()],
@@ -1780,13 +1792,13 @@ $(document).ready(function() {
                     startDate: moment().subtract('days', 6),
                     endDate: moment()
                 }, function(start, end) {
-                    start_date = start.toISOString();
-                    end_date = end.toISOString();
+                    start_date = start.format();
+                    end_date = end.format();
                     $("#" + windex + "-plus-time-interval span").html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
                 });
                 $("#" + windex + "-plus-time-interval span").html(
-                    ((dataset.start === null) ? moment().subtract(6, 'days').format('MMMM D, YYYY') : moment(dataset.start).format('MMMM D, YYYY')) + ' - ' +
-                    ((dataset.end === null) ? moment().format('MMMM D, YYYY') : moment(dataset.end).format('MMMM D, YYYY'))
+                    ((dataset.start === null) ? moment().subtract(6, 'days').format('MMMM D, YYYY') : moment().advancedTime(dataset.start).format('MMMM D, YYYY')) + ' - ' +
+                    ((dataset.end === null) ? moment().format('MMMM D, YYYY') : moment().advancedTime(dataset.end).format('MMMM D, YYYY'))
                 );
             }
         });
@@ -1948,8 +1960,8 @@ $(document).ready(function() {
 
             var dataset = datasets[$('#' + widget['id'] + ' #' + windex + '-plus-dataset').val()];
             if (dataset != null) {
-                start_date = (dataset.start === null) ? moment().subtract(6, 'days').toISOString() : moment(dataset.start).toISOString();
-                end_date = (dataset.end === null) ? moment().toISOString() : moment(dataset.end).toISOString();
+                start_date = (dataset.start === null) ? moment().subtract(6, 'days').format() : moment().advancedTime(dataset.start).format().replace('Z', '');
+                end_date = (dataset.end === null) ? moment().format() : moment().advancedTime(dataset.end).format().replace('Z', '');
                 $("#" + windex + "-plus-time-interval").daterangepicker({
                     ranges: {
                         'Today': [moment(), moment()],
@@ -1968,13 +1980,13 @@ $(document).ready(function() {
                     startDate: moment().subtract('days', 6),
                     endDate: moment()
                 }, function(start, end) {
-                    start_date = start.toISOString();
-                    end_date = end.toISOString();
+                    start_date = start.format();
+                    end_date = end.format();
                     $("#" + windex + "-plus-time-interval span").html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
                 });
                 $("#" + windex + "-plus-time-interval span").html(
-                    ((dataset.start === null) ? moment().subtract(6, 'days').format('MMMM D, YYYY') : moment(dataset.start).format('MMMM D, YYYY')) + ' - ' +
-                    ((dataset.end === null) ? moment().format('MMMM D, YYYY') : moment(dataset.end).format('MMMM D, YYYY'))
+                    ((dataset.start === null) ? moment().subtract(6, 'days').format('MMMM D, YYYY') : moment().advancedTime(dataset.start).format('MMMM D, YYYY')) + ' - ' +
+                    ((dataset.end === null) ? moment().format('MMMM D, YYYY') : moment().advancedTime(dataset.end).format('MMMM D, YYYY'))
                 );
             }
 
@@ -1999,8 +2011,8 @@ $(document).ready(function() {
             startDate: moment().subtract('days', 6),
             endDate: moment()
         }, function(start, end) {
-            widget['sources'][0]['start'] = start.toISOString();
-            widget['sources'][0]['end'] = end.toISOString();
+            widget['sources'][0]['start'] = start.format();
+            widget['sources'][0]['end'] = end.format();
             $("#" + windex + "-plus-time-interval span").html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         });
         $("#" + windex + "-plus-time-interval span").html(moment().subtract('days', 6).format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
@@ -2035,8 +2047,8 @@ $(document).ready(function() {
                     $('#' + widget['id'] + '-source-list').append(
                         '<div  id="' + windex + '-' + sindex + '-source-item" class="row source-item">' +
                         '<div class="high-name"><strong>' + datasets[source['id']]['description'] + '</strong></div> ' +
-                        '<div class="high-name"> from <strong>' + moment(source['start']).format('MMMM Do YYYY') + '</strong></div>' +
-                        '<div class="high-name"> to <strong>' + moment(source['end']).format('MMMM Do YYYY') + '</strong></div> '
+                        '<div class="high-name"> from <strong>' + moment().advancedTime(source['start']).format('MMMM Do YYYY') + '</strong></div>' +
+                        '<div class="high-name"> to <strong>' + moment().advancedTime(source['end']).format('MMMM Do YYYY') + '</strong></div> '
                     );
                     if (widget.type == "map") {
                         $('#' + widget['id'] + '-source-list').append(
@@ -2058,7 +2070,7 @@ $(document).ready(function() {
                 });
                 $("#" + windex + "-modal").modal().hide();
                 displayWidgets(dashboards[page]['widgets']);
-                widget['modified'] = (new Date()).toISOString();
+                widget['modified'] = (new Date()).format();
                 $.notify('You have inserted a data source.', "success");
             } else {
                 $("#" + windex + "-modal").modal().hide();
@@ -2094,7 +2106,7 @@ $(document).ready(function() {
             $('#' + widget['id'] + ' #' + windex + '-' + sindex + '-edit-dataset').on('change', function() {
                 var dataset = datasets[$(this).val()];
                 $('#' + widget['id'] + ' #' + windex + '-' + sindex + '-edit-info').html(
-                    '<div class="option-value"> The data is available from ' + moment(dataset['start']).format('MMMM Do YYYY') + ' to ' + (dataset['end'] == null ? 'two days ago' : moment(dataset['end']).format('MMMM Do YYYY')) + '. </div>' +
+                    '<div class="option-value"> The data is available from ' + moment().advancedTime(dataset['start']).format('MMMM Do YYYY') + ' to ' + (dataset['end'] == null ? 'two days ago' : moment().advancedTime(dataset['end']).format('MMMM Do YYYY')) + '. </div>' +
                     '<div class="option-value"> The data is available in ' + dataset['language'] + '. </div>');
             });
 
@@ -2114,14 +2126,14 @@ $(document).ready(function() {
                 cancelClass: 'btn-small',
                 format: 'DD.MM.YYYY',
                 separator: ' to ',
-                startDate: moment(widget['sources'][sindex]['start']),
-                endDate: moment(widget['sources'][sindex]['end'])
+                startDate: moment().advancedTime(widget['sources'][sindex]['start']),
+                endDate: moment().advancedTime(widget['sources'][sindex]['end'])
             }, function(start, end) {
-                widget['sources'][sindex]['start'] = start.toISOString();
-                widget['sources'][sindex]['end'] = end.toISOString();
+                widget['sources'][sindex]['start'] = start.format();
+                widget['sources'][sindex]['end'] = end.format();
                 $("#" + windex + "-" + sindex + "-edit-time-interval span").html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
             });
-            $("#" + windex + "-" + sindex + "-edit-time-interval span").html(moment(widget['sources'][sindex]['start']).format('MMMM D, YYYY') + ' - ' + moment(widget['sources'][sindex]['end']).format('MMMM D, YYYY'));
+            $("#" + windex + "-" + sindex + "-edit-time-interval span").html(moment().advancedTime(widget['sources'][sindex]['start']).format('MMMM D, YYYY') + ' - ' + moment().advancedTime(widget['sources'][sindex]['end']).format('MMMM D, YYYY'));
 
             // Single change open action
             $('#' + widget['id'] + ' #' + windex + '-' + sindex + '-modify').click(function(e) {
@@ -2143,7 +2155,7 @@ $(document).ready(function() {
 
                 if ($('#' + widget['id'] + ' #' + windex + '-' + sindex + '-edit-type') == 'map') {
                     $('#' + widget['id'] + ' #' + windex + '-' + sindex + '-edit-info').html(
-                        '<div class="option-value"> The data is available from ' + moment(dataset['start']).format('MMMM Do YYYY, h:mm:ss a') + ' to ' + (dataset['end'] == null ? 'two days ago' : moment(dataset['end']).format('MMMM Do YYYY, h:mm:ss a')) + '. </div>' +
+                        '<div class="option-value"> The data is available from ' + moment().advancedTime(dataset['start']).format('MMMM Do YYYY, h:mm:ss a') + ' to ' + (dataset['end'] == null ? 'two days ago' : moment().advancedTime(dataset['end']).format('MMMM Do YYYY, h:mm:ss a')) + '. </div>' +
                         '<div class="option-value"> The data is available in ' + dataset['language'] + '. </div>');
                 } else $('#' + widget['id'] + ' #' + windex + '-edit-info').empty();
             });
@@ -2157,9 +2169,9 @@ $(document).ready(function() {
                 if (widget.type == 'map') {
                     dashboards[page]['widgets'][windex]["highmarker"] = [];
                     dashboards[page]['widgets'][windex]["highmarkericon"] = [];
-                    dashboards[page]['widgets'][windex]['modified'] = (new Date()).toISOString();
+                    dashboards[page]['widgets'][windex]['modified'] = (new Date()).format();
                     dashboards[page]['widgets'][windex]['sources'][sindex]['id'] = $("#" + windex + "-" + sindex + "-edit-dataset").val();
-                    dashboards[page]['widgets'][windex]['sources'][sindex]['chart'] = $("#" + windex + "-" + sindex + "-edit-type").val();
+                    dashboards[page]['widgets'][windex]['sources'][sindex]['chart'] = $("#" + windex + "-" + sindex + "-edit-marker").val();
                     dashboards[page]['widgets'][windex]['sources'][sindex]['aggregation'] = $("#" + windex + "-" + sindex + "-edit-aggregation").val();
                     dashboards[page]['widgets'][windex]['sources'][sindex]['granularity'] = $("#" + windex + "-" + sindex + "-edit-granularity").val();
                     dashboards[page]['widgets'][windex]['sources'][sindex]['keyword'] = $("#" + windex + "-" + sindex + "-edit-keyword").val().toLowerCase();
