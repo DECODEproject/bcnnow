@@ -526,7 +526,6 @@ $(document).ready(function() {
  + ',lt@' + moment().advancedTime(widget['sources'][sindex]['end']).format().replace('Z', '')
  + '&';
         $('#' + widget['id'] + '-loader').show();
-        console.log(url_api + dataset['name'] + '?' + operators  + aggregation + parameters + sort + is_observation + conditions + filters)
         $.ajax({
             url: url_api + dataset['name'] + '?' + operators + aggregation + parameters + sort + is_observation + conditions + filters,
             success: function(data) {
@@ -2070,7 +2069,7 @@ $(document).ready(function() {
                 });
                 $("#" + windex + "-modal").modal().hide();
                 displayWidgets(dashboards[page]['widgets']);
-                widget['modified'] = (new Date()).format();
+                widget['modified'] = (new Date()).toISOString();
                 $.notify('You have inserted a data source.', "success");
             } else {
                 $("#" + windex + "-modal").modal().hide();
@@ -2169,7 +2168,7 @@ $(document).ready(function() {
                 if (widget.type == 'map') {
                     dashboards[page]['widgets'][windex]["highmarker"] = [];
                     dashboards[page]['widgets'][windex]["highmarkericon"] = [];
-                    dashboards[page]['widgets'][windex]['modified'] = (new Date()).format();
+                    dashboards[page]['widgets'][windex]['modified'] = (new Date()).toISOString();
                     dashboards[page]['widgets'][windex]['sources'][sindex]['id'] = $("#" + windex + "-" + sindex + "-edit-dataset").val();
                     dashboards[page]['widgets'][windex]['sources'][sindex]['chart'] = $("#" + windex + "-" + sindex + "-edit-marker").val();
                     dashboards[page]['widgets'][windex]['sources'][sindex]['aggregation'] = $("#" + windex + "-" + sindex + "-edit-aggregation").val();
