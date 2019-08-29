@@ -85,7 +85,7 @@ class BicingCollector:
         items = data['stations']
         if len(items) >= 0:
             for index, item in enumerate(items):
-                StorageHelper().store(self.buildRecord(item, start_date).toJSON())
+                StorageHelper().store(self.buildRecord(item, start_date).toJSON(), False)
                 #print(str(datetime.datetime.now()) + ' ' + '            ' + str(index+1) + ' of ' + str(len(items)) + ' Saving ' + record.toJSON())
 
 

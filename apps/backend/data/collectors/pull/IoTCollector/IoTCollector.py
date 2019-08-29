@@ -151,7 +151,7 @@ class IoTCollector:
         item = data.copy()
         del item['sensors']
         for sensor in data['sensors']:
-            if (sensor['description'] != 'Humidity'): StorageHelper().store(self.buildRecord({**item, **sensor},community_id).toJSON())
+            if (sensor['description'] != 'Humidity'): StorageHelper().store(self.buildRecord({**item, **sensor},community_id).toJSON(),False)
             total +=1 
         return total
 
