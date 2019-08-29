@@ -22,15 +22,17 @@ class BicingCollector:
 
     # Start reader process
     def start(self, base, resourceIDs=[]):
-        print(str(datetime.datetime.now()) + ' ' + 'Start collection')
+        ts = datetime.now()
+        print(str(ts) + ' ' + 'Start collection')
         total = 0
         url = base
         print(str(datetime.datetime.now()) + ' ' + '    ' + ' Access to URL: ' + url)
         data = self.sendRequest(url)
         self.saveData(data)
         total += len(data['stations'])
-        print(str(datetime.datetime.now()) + ' ' + '     Total: ' + str("{0:0>9}".format(total)))
-        print(str(datetime.datetime.now()) + ' ' + 'End collection')
+        tend=datetime.datetime.now()
+        print(str(tend) + ' ' + '     Total: ' + str("{0:0>9}".format(total)))
+        print(str(tend) + ' ' + 'End collection '+str(ts))
 
     # Send request to get data
     def sendRequest(self, url):

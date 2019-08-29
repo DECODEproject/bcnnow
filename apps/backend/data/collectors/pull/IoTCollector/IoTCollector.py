@@ -51,9 +51,10 @@ class IoTCollector:
 
     # This method starts the collection process
     def start(self, base, community_id, community_seckey, minutes):
-        print(str(datetime.now()) + ' ' + 'Start collection')
-        print(str(datetime.now()) + ' ' + '    Collecting collection for ' + community_id)
-        print(str(datetime.now()) + ' ' + '        ' + ' Access to URL: ' + base)
+        ts=datetime.now()
+        print(str(ts) + ' ' + 'Start collection')
+        print(str(ts) + ' ' + '    Collecting collection for ' + community_id)
+        print(str(ts) + ' ' + '        ' + ' Access to URL: ' + base)
         client = DatastoreClient(base)
         # create a read request for the policy/community of interest. Note we leave
         # `end_time` nil so we are trying to read everything up until "now"
@@ -96,8 +97,9 @@ class IoTCollector:
             # else get the next cursor value and fetch again
             rr.page_cursor = resp.next_page_cursor
             resp = client.read_data(rr)
-        print(str(datetime.now()) + ' ' + '         Total: ' + str("{0:0>9}".format(total)))
-        print(str(datetime.now()) + ' ' + 'End collection')
+        tend=datetime.now()
+        print(str(tend) + ' ' + '         Total: ' + str("{0:0>9}".format(total)))
+        print(str(tend) + ' ' + 'End collection ' +str(ts))
 
     # This method builds an HabitatgesUsTuristic BaseRecord
     def buildRecord(self, item, community_id):
