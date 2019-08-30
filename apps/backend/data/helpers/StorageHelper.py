@@ -2,7 +2,7 @@ from pymongo import MongoClient, GEO2D
 from kafka import KafkaProducer
 from config.config import Config
 import json
-import datetime
+from datetime import datetime
 
 cfg = Config().get()
 
@@ -13,7 +13,9 @@ class StorageHelper:
         return
     # Store record in Kafka or MongoDB
     def store(self, record,check_old=True):
+        print("store")
         json_record = json.loads(record, encoding="utf8")
+        ts = datetime.timestamp(datetime.now())
         collection = StorageHelper.db[json_record['source']]
         try:
             if(check_old):
@@ -25,6 +27,7 @@ class StorageHelper:
                     #print(str(datetime.datetime.now()) + ' ' + '              Updated to ' + cfg['collectors']['common']['destination'] + ' ' + record)
             else:
                 collection.insert_one(json_record)
-        except:
-            print(str(datetime.datetime.now()) + ' ' + '              Error with ' + cfg['collectors']['common']['destination'] + ' ' + record)
+        except Exception as e:
+            print(str(e))
+        print(datetime.timestamp(datetime.now())-ts)
 
