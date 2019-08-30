@@ -304,7 +304,6 @@ class BasicDataAccess(Resource):
         dashboard_ids = []
         for dashboard in dashboard_community:
             dashboard_ids.append(dashboard.dashboard_id)
-        dashboard_ids.sort()
 
         # get dashboard json contents from MongoDB
         client = MongoClient(cfg['storage']['ipaddress'], cfg['storage']['port'])

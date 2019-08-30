@@ -764,8 +764,7 @@ $(document).ready(function() {
                     type: 'scatter',
                     line: {
                         color: color_palette[widget['data'].length],
-                        width: 1,
-                        shape: 'spline'
+                        width: 1
                     }
                 });
             }
@@ -996,8 +995,7 @@ $(document).ready(function() {
                                     type: 'scatter',
                                     line: {
                                         color: color_palette[widget['data'].length + 1],
-                                        width: 1,
-                                        shape: 'spline'
+                                        width: 1
                                     }
                                 });
 

@@ -25,13 +25,13 @@ class Config:
                 "iot": {
                     "ca9bc7f7-5689-47fa-8215-c78c104c8d3c": {
                         "community_id": "ca9bc7f7-5689-47fa-8215-c78c104c8d3c",
-                        "community_seckey": "",
+                        "community_seckey": "CPzY3PvJXXwl9JVWKyLhpo36xbD3729XBZV3XoTVig8=",
                         "base_url": "https://datastore.decodeproject.eu",
                         "minutes": 2,
                     },
                     "a9c6a771-0418-405c-9000-25f6b0017bf0": {
                         "community_id": "a9c6a771-0418-405c-9000-25f6b0017bf0",
-                        "community_seckey": "",
+                        "community_seckey": "CPzY3PvJXXwl9JVWKyLhpo36xbD3729XBZV3XoTVig8=",
                         "base_url": "https://datastore.decodeproject.eu",
                         "minutes": 2,
                     }

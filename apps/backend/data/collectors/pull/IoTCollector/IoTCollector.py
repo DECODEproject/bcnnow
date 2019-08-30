@@ -69,6 +69,7 @@ class IoTCollector:
         resp = client.read_data(rr)
         # load the decryption script
         __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        print (os.path.join(__location__, 'decrypt.lua'))
         with open(os.path.join(__location__, 'decrypt.lua')) as file:
             script = file.read()
         # create decryption keys - this should be replaced with the private key loaded
