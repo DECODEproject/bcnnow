@@ -12,7 +12,7 @@ from apps.backend.data.helpers.LocationHelper import LocationHelper
 from apps.backend.data.helpers.GeneralHelper import GeneralHelper
 from apps.backend.data.helpers.StorageHelper import StorageHelper
 
-import datetime
+from datetime import datetime
 import requests
 
 class BicingCollector:
@@ -26,11 +26,11 @@ class BicingCollector:
         print(str(ts) + ' ' + 'Start collection')
         total = 0
         url = base
-        print(str(datetime.datetime.now()) + ' ' + '    ' + ' Access to URL: ' + url)
+        print(str(datetime.now()) + ' ' + '    ' + ' Access to URL: ' + url)
         data = self.sendRequest(url)
         self.saveData(data)
         total += len(data['stations'])
-        tend=datetime.datetime.now()
+        tend=datetime.now()
         print(str(tend) + ' ' + '     Total: ' + str("{0:0>9}".format(total)))
         print(str(tend) + ' ' + 'End collection '+str(ts))
 
@@ -44,7 +44,7 @@ class BicingCollector:
                 data = response.json()
                 return data
             except:
-                print(str(datetime.datetime.now()) + ' ' + '         Reconnecting...')
+                print(str(datetime.now()) + ' ' + '         Reconnecting...')
                 flag = True
 
     # Build a record in the standard format
@@ -83,7 +83,7 @@ class BicingCollector:
 
     # Save data to permanent storage
     def saveData(self, data):
-        start_date = str(datetime.datetime.now())
+        start_date = str(datetime.now())
         items = data['stations']
         if len(items) >= 0:
             for index, item in enumerate(items):
