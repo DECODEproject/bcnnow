@@ -69,6 +69,7 @@ function getPrivateDashboards() {
                 xhr.setRequestHeader ("Authorization", "Bearer " + cookieValue);
             },
             success: function(data) {
+console.log(JSON.stringify(data));
                 // var returnValue = jQuery.extend(true, {}, data);
                 return data;
             },

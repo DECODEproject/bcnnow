@@ -210,17 +210,21 @@ class BasicDataAccess(Resource):
                     query.append({"$sort": { "_id": 1 }})
                     
                     results = list(collection.aggregate((query), allowDiskUse=True))
-
         # Build query results
-        records = [] if noRecords else [dumps(element) for index, element in enumerate(results[(page-1)*page_size:page*page_size]) if index < limit and index % step == 0]
+        #records = [] if noRecords else [dumps(element) for index, element in enumerate(results[(page-1)*page_size:page*page_size]) if index < limit and index % step == 0]
         count = (results.count() / step if not isGroup else len(results) / step) #if limit == 2147483647 else limit
         next = (base + source + '?page=' + str(page+1) + '&page_size=' + str(page_size) + (''.join(['&'+key+'='+value[0] for key, value in basic_parameters.items()]))) if page * page_size < count else ""
         current = base + source + '?page=' + str(page) + '&page_size=' + str(page_size) + (''.join(['&'+key+'='+value[0] for key, value in basic_parameters.items()]))
         success = "true"
-        return json.loads('{"success": ' + json.dumps(success) + ', ' \
-                            '"count": ' + json.dumps(count) + ', ' \
-                            '"records": [' + ','.join(records) + '], ' \
-                            '"links": {"current": ' + json.dumps(current) + ', "next": ' + json.dumps(next) + '}}')
+        try:
+            json.dumps(results)
+        except:
+            results = json.loads(dumps(results))
+        return {"success":True,"count":count,"records":results,"link":{"current":current, "next":next}}
+        #return json.loads('{"success": ' + json.dumps(success) + ', ' \
+        #                    '"count": ' + json.dumps(count) + ', ' \
+        #                    '"records": [' + ','.join(records) + '], ' \
+        #                    '"links": {"current": ' + json.dumps(current) + ', "next": ' + json.dumps(next) + '}}')
 
     @require_oauth('profile')
     def get_available_datasets(self):
@@ -304,6 +308,7 @@ class BasicDataAccess(Resource):
         dashboard_ids = []
         for dashboard in dashboard_community:
             dashboard_ids.append(dashboard.dashboard_id)
+        dashboard_ids.sort()
 
         # get dashboard json contents from MongoDB
         client = MongoClient(cfg['storage']['ipaddress'], cfg['storage']['port'])
@@ -312,7 +317,6 @@ class BasicDataAccess(Resource):
 
         return_dict = {}
         for dashboard_id in dashboard_ids:
-
             query_cursor = collection.find({"id": dashboard_id})
 
             for cursor in query_cursor:
@@ -325,7 +329,7 @@ class BasicDataAccess(Resource):
         ret = JSONEncoder().encode(return_dict)
         return json.loads(ret)
 
-    @require_oauth('profile')
+
     def post_new_dashboard(self):
         user = OAuthManager.get_current_user()
         dashboard = json.loads(request.data.decode("utf-8"))
