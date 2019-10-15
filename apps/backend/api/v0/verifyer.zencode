@@ -2,12 +2,12 @@
 ZEN:begin(0)
 
 ZEN:parse([[
-Scenario 'coconut': "To run by the checker and prints OK in stout if verified"
-        Given that I use the verification key by 'issuer_identifier'
-        and that I have a valid credential proof
-        When I aggregate all the verification keys
-        and the credential proof is verified correctly
-        Then print string 'OK'
+Scenario coconut: verify proof
+Given that I have a valid 'verifier' from 'MadHatter'
+and I have a valid 'credential proof'
+When I aggregate the verifiers
+and I verify the credential proof
+Then print 'Success' 'OK' as 'string'
 ]])
 
 ZEN:run()
