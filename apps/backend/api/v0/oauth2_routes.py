@@ -165,6 +165,13 @@ class OAuthManager(Resource):
         }
 
         try:
+            contract = """Scenario coconut: verify proof
+            Given that I have a valid 'verifier' from 'issuer_identifier'
+            and I have a valid 'credential proof'
+            When I aggregate the verifiers
+            and I verify the credential proof
+            Then print 'Success' 'OK' as 'string'
+                    """
 
             current_app.logger.info("starting callback")
             authorizable_attribute_id = data['credential']['authorizable_attribute_id']
@@ -181,8 +188,8 @@ class OAuthManager(Resource):
                 credential_issuer_endpoint_address + "/authorizable_attribute/{}".format(authorizable_attribute_id))
             if res.ok:
 
-                credential_key = json.dumps(res.json()["verification_key"]).encode()
-                value = json.dumps(data['credential']['value']).encode()
+                credential_key = json.dumps(res.json()["verification_key"])
+                value = json.dumps(data['credential']['value'])
                 ## check with zenroom if login is valid
                 verify_response_msg = "OK"
                 current_app.logger.info("\tvalue: {}".format(value))
@@ -191,11 +198,17 @@ class OAuthManager(Resource):
                     with open('verifyer.zencode') as file:
                         verify_credential_script = file.read()
                     try:
-                        verify_response, errs = zenroom.execute(verify_credential_script.encode(), data=credential_key,
-                                                                keys=value)
-                        verify_response_msg = verify_response.decode()
-                    except:
-                        verify_response_msg = "not OK"
+                        verify_response = zenroom.zencode_exec(contract, data=credential_key, keys=value)
+                        verify_response_stdout = verify_response.stdout
+                        print("response: " + verify_response_stdout)
+
+                        if(verify_response_stdout.found("OK")!=-1):
+                            verify_response_msg="OK"
+                        else:
+                            verify_response_msg="not OK"
+                    except Exception as e:
+                        print("Error in zenroom")
+
 
                 if verify_response_msg == "OK":
                     tkn_manager = TokenManager()
