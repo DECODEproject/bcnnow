@@ -35,7 +35,7 @@ class Config:
                   "base_url": "/home/code/projects/bcnnow/",
             },
             "db": {
-                "url": "mysql://root:**@mysqldb:3306/bcnnow"
+                "url": "mysql://root:root@127.0.0.1:3306/bcnnow"
             },
             "oauth": {
                 "client_username": "**",
