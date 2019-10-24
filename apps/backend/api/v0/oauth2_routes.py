@@ -208,7 +208,7 @@ class OAuthManager(Resource):
                             verify_response_msg="not OK"
                     except Exception as e:
                         print("Error in zenroom")
-
+                        
 
                 if verify_response_msg == "OK":
                     tkn_manager = TokenManager()
