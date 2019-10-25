@@ -198,11 +198,11 @@ class OAuthManager(Resource):
                     with open('verifyer.zencode') as file:
                         verify_credential_script = file.read()
                     try:
-                        verify_response = zenroom.zencode_exec(contract, data=credential_key, keys=value)
+                        verify_response = zenroom.zencode_exec(contract, data=credential_key, keys=value.replace('"proof"','"credential_proof"'))
                         verify_response_stdout = verify_response.stdout
                         print("response: " + verify_response_stdout)
 
-                        if(verify_response_stdout.found("OK")!=-1):
+                        if(verify_response_stdout.find("OK")!=-1):
                             verify_response_msg="OK"
                         else:
                             verify_response_msg="not OK"
@@ -249,7 +249,7 @@ class OAuthManager(Resource):
                         token = authorization.create_token_response(request)
                         return token
                     else:
-                        response = jsonify(message="Invalid Tokken")
+                        response = jsonify(message="Invalid Token")
                         response.status_code = 401
                         return response
                 else:
