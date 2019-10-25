@@ -14,6 +14,6 @@ pyproj==1.9.6
 qrcode==6.1
 Shapely==1.6.4.post2
 xmltodict==0.12.0
-zenroom==1.0.6
+zenroom==1.0.7rc2
 mysqlclient==1.4.2
 Image==1.5.27
