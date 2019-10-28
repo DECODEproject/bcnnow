@@ -213,8 +213,10 @@ class OAuthManager(Resource):
                 if verify_response_msg == "OK":
                     tkn_manager = TokenManager()
                     tkn_status = tkn_manager.validate_token(session_token)
+                    print("token status "+tkn_status)
                     if tkn_status == '1':
                         # login
+                        print("valid token creating auth")
                         request.headers.environ['HTTP_AUTHORIZATION'] = \
                             'Basic ' + b64encode(bytes(cfg['oauth']['client_username'] + ':'
                                                        + cfg['oauth']['client_password'], 'utf-8')).decode('utf-8')
