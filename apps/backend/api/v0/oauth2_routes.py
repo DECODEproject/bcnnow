@@ -224,6 +224,8 @@ class OAuthManager(Resource):
                         data2 = ImmutableMultiDict([('grant_type', 'password'), ('username', session_token),
                                                     ('scope', 'profile'), ('password', 'dummy')])
                         request.form = data2
+                        print("request data created.")
+
 
                         # Get personal data
                         name = ""
@@ -246,9 +248,11 @@ class OAuthManager(Resource):
                                     area = districts[profile_data['value']]
 
                         User.update_user(session_token, name, city, age, area)
+                        print("User updated")
                         User.user_add_community(session_token, bcn_community_obj.id)
-
+                        print("User added to community")
                         token = authorization.create_token_response(request)
+                        print("token created")
                         return token
                     else:
                         response = jsonify(message="Invalid Token")
