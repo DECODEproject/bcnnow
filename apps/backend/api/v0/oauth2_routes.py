@@ -251,9 +251,18 @@ class OAuthManager(Resource):
                         print("User updated")
                         User.user_add_community(session_token, bcn_community_obj.id)
                         print("User added to community")
-                        token = authorization.create_token_response(request)
-                        print("token created")
-                        return token
+                        
+                        headers = {'Authorization': 'Basic QXpyV0xIOHh3MXhHWW9QQkJ0MWxQNHhsOlYyQ1F0NjdqT1hUcGVWNEJyRE11bVFPY2thMUhFcFFtRFdwNzJsMW1udXR6NTJqOA=='} #  + b64encode(bytes(cfg['oauth']['client_username'] + ':' + cfg['oauth']['client_password'], 'utf-8')).decode('utf-8')}
+                        PARAMS = {'grant_type': 'password', 'username': session_token, 'scope': 'profile', 'password': 'dummy'}
+                        r = requests.post(url='http://84.88.76.45:887/oauth/login', params=PARAMS, headers=headers)
+                        data = r.json()
+                        response = jsonify(message="Logged OK")
+                        response.status_code = 200
+                        return response
+                        
+                        # token = authorization.create_token_response(request)
+                        # print("token created")
+                        # return token
                     else:
                         response = jsonify(message="Invalid Token")
                         response.status_code = 401
