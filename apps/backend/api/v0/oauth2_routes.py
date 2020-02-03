@@ -166,12 +166,12 @@ class OAuthManager(Resource):
 
         try:
             contract = """Scenario coconut: verify proof
-            Given that I have a valid 'verifier' from 'issuer_identifier'
-            and I have a valid 'credential proof'
-            When I aggregate the verifiers
-            and I verify the credential proof
-            Then print 'Success' 'OK' as 'string'
-                    """
+                Given that I have a valid 'verifier' from 'issuer_identifier'
+                and I have a valid 'credential proof'
+                When I aggregate the verifiers
+                and I verify the credential proof
+                Then print 'Success' 'OK' as 'string'
+                        """
 
             current_app.logger.info("starting callback")
             authorizable_attribute_id = data['credential']['authorizable_attribute_id']
@@ -184,8 +184,10 @@ class OAuthManager(Resource):
             # print("bcn_community_obj: " + bcn_community_obj)
             current_app.logger.info("URL: " + credential_issuer_endpoint_address + "/authorizable_attribute/{}".format(
                 authorizable_attribute_id))
-            res = requests.get(
-                credential_issuer_endpoint_address + "/authorizable_attribute/{}".format(authorizable_attribute_id))
+            call = credential_issuer_endpoint_address + "/authorizable_attribute/{}".format(authorizable_attribute_id)
+            res = requests.get(call)
+            #    credential_issuer_endpoint_address + "/authorizable_attribute/{}".format(authorizable_attribute_id))
+            print(call + " -- Returned: " + res.text)
             if res.ok:
 
                 credential_key = json.dumps(res.json()["verification_key"])
@@ -198,22 +200,22 @@ class OAuthManager(Resource):
                     with open('verifyer.zencode') as file:
                         verify_credential_script = file.read()
                     try:
-                        verify_response = zenroom.zencode_exec(contract, data=credential_key, keys=value.replace('"proof"','"credential_proof"'))
+                        verify_response = zenroom.zencode_exec(contract, data=credential_key,
+                                                               keys=value.replace('"proof"', '"credential_proof"'))
                         verify_response_stdout = verify_response.stdout
                         print("response: " + verify_response_stdout)
 
-                        if(verify_response_stdout.find("OK")!=-1):
-                            verify_response_msg="OK"
+                        if (verify_response_stdout.find("OK") != -1):
+                            verify_response_msg = "OK"
                         else:
-                            verify_response_msg="not OK"
+                            verify_response_msg = "not OK"
                     except Exception as e:
                         print("Error in zenroom")
-                        
 
                 if verify_response_msg == "OK":
                     tkn_manager = TokenManager()
                     tkn_status = tkn_manager.validate_token(session_token)
-                    print("token status "+tkn_status)
+                    print("token status " + tkn_status)
                     if tkn_status == '1':
                         # login
                         print("valid token creating auth")
@@ -226,40 +228,44 @@ class OAuthManager(Resource):
                         request.form = data2
                         print("request data created.")
 
-
                         # Get personal data
                         name = ""
                         city = "Barcelona"
                         age = ""
                         area = ""
                         profile_data_array = data['optionalAttributes']
+                        print("optionalAttributes: " + str(profile_data_array))
                         for profile_data in profile_data_array:
-                            if profile_data['attribute_id'] == "schema:dateOfBirth":
-                                # process age dd/mm/yyyy
-                                day, month, year = profile_data['value'].split('/')
-                                today = date.today()
-                                age = today.year - int(year) - ((today.month, today.day) < (int(month), int(day)))
-                            if profile_data['attribute_id'] == "schema:name":
+                            if profile_data['attribute_id'] == "ageRange":
+                                age = profile_data[
+                                    'value']  # today.year - int(year) - ((today.month, today.day) < (int(month), int(day)))
+                            if profile_data['attribute_id'] == "name":
                                 name = profile_data['value']
-                            if profile_data['attribute_id'] == "schema:city":
+                            if profile_data['attribute_id'] == "city":
                                 city = profile_data['value']
-                            if profile_data['attribute_id'] == "schema:district":
-                                if profile_data['value'] in districts:
-                                    area = districts[profile_data['value']]
+                            if profile_data['attribute_id'] == "district":
+                                area = profile_data['value']
+
+                        print("Name: " + name)
+                        print("City: " + city)
+                        print("Age: " + age)
+                        print("Area: " + area)
 
                         User.update_user(session_token, name, city, age, area)
-                        print("User updated")
+                        # print("User updated")
                         User.user_add_community(session_token, bcn_community_obj.id)
-                        print("User added to community")
-                        
-                        headers = {'Authorization': 'Basic QXpyV0xIOHh3MXhHWW9QQkJ0MWxQNHhsOlYyQ1F0NjdqT1hUcGVWNEJyRE11bVFPY2thMUhFcFFtRFdwNzJsMW1udXR6NTJqOA=='} #  + b64encode(bytes(cfg['oauth']['client_username'] + ':' + cfg['oauth']['client_password'], 'utf-8')).decode('utf-8')}
-                        PARAMS = {'grant_type': 'password', 'username': session_token, 'scope': 'profile', 'password': 'dummy'}
-                        r = requests.post(url='http://84.88.76.45:887/oauth/login', params=PARAMS, headers=headers)
+                        # print("User added to community")
+
+                        headers = {
+                            'Authorization': 'Basic QXpyV0xIOHh3MXhHWW9QQkJ0MWxQNHhsOlYyQ1F0NjdqT1hUcGVWNEJyRE11bVFPY2thMUhFcFFtRFdwNzJsMW1udXR6NTJqOA=='}  # + b64encode(bytes(cfg['oauth']['client_username'] + ':' + cfg['oauth']['client_password'], 'utf-8')).decode('utf-8')}
+                        PARAMS = {'grant_type': 'password', 'username': session_token, 'scope': 'profile',
+                                  'password': 'dummy'}
+                        r = requests.post(url='http://172.18.0.1:8080/oauth/login', params=PARAMS, headers=headers)
                         data = r.json()
                         response = jsonify(message="Logged OK")
                         response.status_code = 200
                         return response
-                        
+
                         # token = authorization.create_token_response(request)
                         # print("token created")
                         # return token
@@ -283,7 +289,8 @@ class OAuthManager(Resource):
             response.status_code = 412
             return response
 
-    @staticmethod
+
+@staticmethod
     def check_login():
         data = request.args
         username = data['session']
