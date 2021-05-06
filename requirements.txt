@@ -1,4 +1,4 @@
-Flask_Cors==3.0.6
+Flask_Cors==3.0.9
 Flask==0.10.1
 pandas==0.22.0
 Authlib==0.10
